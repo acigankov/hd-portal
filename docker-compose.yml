@@ -23,11 +23,12 @@ services:
 
   mysql:
     image: mysql:8.0
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: hd-portal
-      MYSQL_USER: hd-admin
-      MYSQL_PASSWORD: s=V&L5712H|*
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_USER_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
       - db_data:/var/lib/mysql
     ports:
