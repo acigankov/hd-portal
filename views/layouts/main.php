@@ -102,12 +102,12 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             <!--begin::Start Navbar Links-->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
+                    <a class="nav-link" data-lte-toggle="sidebar" href="/" role="button">
                         <i class="bi bi-list"></i>
                     </a>
                 </li>
-                <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Home</a></li>
-                <li class="nav-item d-none d-md-block"><a href="#" class="nav-link">Contact</a></li>
+                <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Home</a></li>
+                <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Contact</a></li>
             </ul>
             <!--end::Start Navbar Links-->
             <!--begin::End Navbar Links-->
@@ -299,7 +299,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         <!--begin::Sidebar Brand-->
         <div class="sidebar-brand">
             <!--begin::Brand Link-->
-            <a href="./index.html" class="brand-link">
+            <a href="/" class="brand-link">
                 <!--begin::Brand Image-->
                 <img
                         src="<?php echo Yii::getAlias('@web/img/logo/logo.svg');?>"
