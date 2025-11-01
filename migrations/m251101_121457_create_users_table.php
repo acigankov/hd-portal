@@ -3,19 +3,21 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `{{%user}}`.
+ * Handles the creation of table `{{%users}}`.
  */
-class m251025_071040_create_user_table extends Migration
+class m251101_121457_create_users_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
+
+
     public function safeUp()
     {
-        $this->createTable('{{%user}}', [
+        $this->createTable('{{%users}}', [
             'id' => $this->primaryKey()->notNull(),
             'username' => $this->char(64)->notNull(),
-            'password' => $this->char(64)->notNull(),
+            'password_hash' => $this->char(64)->notNull(),
             'authKey' => $this->char(32),
             'accessToken' => $this->string()
         ]);
