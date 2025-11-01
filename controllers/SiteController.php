@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -32,7 +34,7 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post'],
+//                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -61,8 +63,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $user = User::findIdentity(1);
+//        VarDumper::dump($user, 10, true);
 
-        return $this->render('index');
+
+        return $this->render('index', ['user' => $user]);
     }
 
     /**
@@ -72,9 +77,11 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+//        if (!Yii::$app->user->isGuest) {
+//            return $this->goHome();
+//        }
+
+        $this->layout = 'login-layout';
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
