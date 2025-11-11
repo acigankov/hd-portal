@@ -2,11 +2,38 @@
 
 namespace app\models;
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
+use yii\web\IdentityInterface;
 
+/**
+ * @param $id
+ */
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
 
+    const STATUS_ACTIVE = 1;
+    const STATUS_DISABLED = 0;
+
+    /**
+     * @return array[]
+     */
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'], // если нужно
+                ],
+                // Опционально: задайте формат значения
+                // 'value' => new \yii\db\Expression('NOW()'), // для DATETIME
+            ],
+        ];
+    }
     /**
      * @return string
      */
@@ -16,7 +43,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param $id
+     * @return IdentityInterface|null the identity object that matches the given token.
      */
     public static function findIdentity($id)
     {

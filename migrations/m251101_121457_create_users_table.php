@@ -21,6 +21,7 @@ class m251101_121457_create_users_table extends Migration
             'authKey' => $this->char(32),
             'accessToken' => $this->string()
         ]);
+
     }
 
     /**
@@ -28,6 +29,6 @@ class m251101_121457_create_users_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%user}}');
+        $this->dropTable('{{%users}}');
     }
 }
