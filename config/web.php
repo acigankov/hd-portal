@@ -6,6 +6,7 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'language' => 'ru-RU',
     'bootstrap' => ['log', 'debug'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -17,6 +18,10 @@ $config = [
             // Опционально: ограничение по IP
             'allowedIPs' => ['*'],
         ],
+        'rbac' => [
+            'class' => 'yii2mod\rbac\Module',
+        ],
+
     ],
     'components' => [
         'request' => [
@@ -29,6 +34,10 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => false,
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'defaultRoles' => ['guest', 'user'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -55,6 +64,16 @@ $config = [
             'rules' => [
                 '' => 'site/index',
                 'login' => 'site/login'
+            ],
+        ],
+        'i18n' => [
+            'translations' => [
+                'yii2mod.rbac' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    // Путь к файлам переводов в vendor
+                    'basePath' => '@vendor/yii2mod/yii2-rbac/messages',
+
+                ],
             ],
         ],
     ],

@@ -32,22 +32,24 @@
             <p>Проблемы</p>
         </a>
     </li>
+    <?php if (Yii::$app->user->can('admin')) : ?>
 
-    <li class="nav-header">Администрирование</li>
+        <li class="nav-header">Администрирование</li>
 
-    <li class="nav-item">
-        <a href="/" class="nav-link ">
-            <i class="nav-icon bi bi-gear"></i>
-            <p>Настройки</p>
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link ">
+                        <i class="nav-icon bi bi-gear"></i>
+                        <p>Настройки</p>
+                    </a>
+                </li>
 
-    <li class="nav-item">
-        <a href="/" class="nav-link ">
-            <i class="nav-icon bi bi-people-fill"></i>
-            <p>Пользователи</p>
-        </a>
-    </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link ">
+                        <i class="nav-icon bi bi-people-fill"></i>
+                        <p>Пользователи</p>
+                    </a>
+                </li>
 
+    <?php endif; ?>
 </ul>
 <!--end::Sidebar Menu-->
