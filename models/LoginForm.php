@@ -19,7 +19,6 @@ class LoginForm extends Model
     public $rememberMe = true;
     private $_user = false;
 
-
     /**
      * @return array the validation rules.
      */
@@ -64,8 +63,6 @@ class LoginForm extends Model
         }
         return false;
     }
-
-
 
     /**
      * Находит пользователя по имени пользователя (username).
