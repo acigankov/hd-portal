@@ -5,8 +5,6 @@
 $this->title = 'Dashboard';
 ?>
 
-<!--begin::App Main-->
-<main class="app-main">
 
     <!--begin::App Content Header-->
     <div class="app-content-header">
@@ -30,11 +28,6 @@ $this->title = 'Dashboard';
     <!--begin::App Content-->
     <div class="app-content">
         <!--begin::Container-->
-
-        <h1>Сюда надо КОНТЕНТ! </h1>
-
-        <?php //echo $content; ?>
-
         <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
@@ -451,5 +444,4 @@ $this->title = 'Dashboard';
         <!--end::Container-->
     </div>
     <!--end::App Content-->
-</main>
-<!--end::App Main-->
+

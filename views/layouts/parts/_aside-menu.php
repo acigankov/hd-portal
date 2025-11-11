@@ -32,6 +32,8 @@
             <p>Проблемы</p>
         </a>
     </li>
+
+
     <?php if (Yii::$app->user->can('admin')) : ?>
 
         <li class="nav-header">Администрирование</li>

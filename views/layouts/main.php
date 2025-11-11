@@ -126,7 +126,13 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     </aside>
     <!--end::Sidebar-->
 
-    <?= $content; ?>
+    <!--begin::App Main-->
+    <main class="app-main">
+
+        <?= $content; ?>
+
+    </main>
+    <!--end::App Main-->
 
     <!--begin::Footer-->
         <footer class="app-footer">
