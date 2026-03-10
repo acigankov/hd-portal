@@ -4,8 +4,6 @@
 
 $this->title = 'Dashboard';
 ?>
-
-
     <!--begin::App Content Header-->
     <div class="app-content-header">
         <!--begin::Container-->
