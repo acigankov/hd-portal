@@ -19,7 +19,7 @@ $config = [
             'allowedIPs' => ['*'],
         ],
         'rbac' => [
-            'class' => 'yii2mod\rbac\Module',
+            'class' => 'app\modules\rbac\Module',
         ],
 
     ],
