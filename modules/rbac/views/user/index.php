@@ -9,6 +9,7 @@ use yii\widgets\Pjax;
 /* @var $gridViewColumns array */
 /* @var $dataProvider \yii\data\ArrayDataProvider */
 /* @var $searchModel \app\modules\rbac\models\search\AssignmentSearch */
+/* @var $model \app\models\User*/
 
 $this->title = Yii::t('yii2mod.rbac', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
@@ -44,7 +45,7 @@ $this->render('/layouts/_sidebar');
             <div class="row">
                 <!--begin::Col-->
                 <div class="col">
-                    тута юзеры
+                    <?php echo \yii\helpers\VarDumper::dump($model, 10, true); ?>
                 </div>
                 <!--end::Col-->
             </div>

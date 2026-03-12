@@ -191,7 +191,7 @@ use yii\helpers\Html;
                     <li class="user-footer">
                         <a href="#" class="btn btn-default btn-flat">Profile</a>
                         <!-- Или через Html::a с data-method -->
-                        <?= Html::a('выйти', ['site/logout'], ['data' => ['method' => 'post'], 'class' => 'btn btn-default btn-flat float-end"']) ?>
+                        <?= Html::a('выйти', ['/site/logout'], ['data' => ['method' => 'post'], 'class' => 'btn btn-default btn-flat float-end"']) ?>
 <!--                        <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>-->
                     </li>
                     <!--end::Menu Footer-->
