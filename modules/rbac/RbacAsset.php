@@ -14,7 +14,8 @@ class RbacAsset extends AssetBundle
     /**
      * @var string
      */
-    public $sourcePath = 'app/modules/rbac/assets';
+
+    public $sourcePath = '@app/modules/rbac/assets/';
 
     /**
      * @var array

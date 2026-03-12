@@ -2,7 +2,7 @@
 
 /** @var yii\web\View $this */
 
-$this->title = 'Dashboard';
+$this->title = 'Дашборд';
 ?>
     <!--begin::App Content Header-->
     <div class="app-content-header">
@@ -10,11 +10,11 @@ $this->title = 'Dashboard';
         <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-                <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+                <div class="col-sm-6"><h3 class="mb-0">Дашборд</h3></div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                        <li class="breadcrumb-item active" aria-current="page">Дашборд</li>
                     </ol>
                 </div>
             </div>

@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider \yii\data\ArrayDataProvider */
 /* @var $searchModel \app\modules\rbac\models\search\AssignmentSearch */
 
-$this->title = Yii::t('yii2mod.rbac', 'Assignments');
+$this->title = Yii::t('yii2mod.rbac', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 $this->render('/layouts/_sidebar');
 ?>
@@ -44,20 +44,7 @@ $this->render('/layouts/_sidebar');
             <div class="row">
                 <!--begin::Col-->
                 <div class="col">
-                    <?php Pjax::begin(['timeout' => 5000]); ?>
-
-                    <?php echo GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'columns' => ArrayHelper::merge($gridViewColumns, [
-                            [
-                                'class' => 'yii\grid\ActionColumn',
-                                'template' => '{view}',
-                            ],
-                        ]),
-                    ]); ?>
-
-                    <?php Pjax::end(); ?>
+                    тута юзеры
                 </div>
                 <!--end::Col-->
             </div>

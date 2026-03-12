@@ -32,7 +32,7 @@ class Module extends \yii\base\Module
     /**
      * @var string the default route of this module. Defaults to 'default'
      */
-    public $defaultRoute = 'assignment';
+    public $defaultRoute = 'user';
 
     /**
      * @var string the namespace that controller classes are in
