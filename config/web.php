@@ -77,6 +77,31 @@ $config = [
             ],
         ],
     ],
+    // ограничить доступ к приложению Yii2 только для авторизованных пользователей до инициализации контроллеров
+    'as beforeRequest' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+            [
+                'actions' => ['login', 'signup', 'request-password-reset', 'error'],
+                'allow' => true,
+                'roles' => ['?'], // Разрешить гостям
+            ],
+            [
+                'allow' => true,
+                'roles' => ['@'], // Все остальные — только для авторизованных
+            ],
+            [
+                'allow' => false,
+                'roles' => ['?'],
+                'denyCallback' => function ($rule, $action) {
+                    return $action->controller->redirect(['site/login'])->send();
+                },
+            ],
+        ],
+        'denyCallback' => function ($rule, $action) {
+            return Yii::$app->response->redirect(['site/login']);
+        },
+    ],
     'params' => $params,
 ];
 

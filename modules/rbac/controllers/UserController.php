@@ -2,12 +2,11 @@
 
 namespace app\modules\rbac\controllers;
 
-use app\controllers\BaseController;
 use app\models\User;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 
-class UserController extends BaseController
+class UserController extends Controller
 {
     /**
      * Returns a list of behaviors that this component should behave as.
@@ -16,23 +15,18 @@ class UserController extends BaseController
      */
     public function behaviors(): array
     {
-
-        $behaviors = parent::behaviors();
-
-        $childBehaviors = [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'index' => ['get'],
-                    'view' => ['get'],
-                    'create' => ['get', 'post'],
-                    'update' => ['get', 'post'],
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-
-        return array_merge($behaviors, $childBehaviors);
+            return [
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'index' => ['get'],
+                        'view' => ['get'],
+                        'create' => ['get', 'post'],
+                        'update' => ['get', 'post'],
+                        'delete' => ['post'],
+                    ],
+                ]
+            ];
     }
 
     /**
