@@ -72,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($model as $item):?>
                                     <tr>
                                         <td><?= $item->id ?></td>
-                                        <td><?= $item->username ?></td>
+                                        <td><?= $item->login ?></td>
                                         <td><?= $item->email ?></td>
                                         <td><?= $item->created_at ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>

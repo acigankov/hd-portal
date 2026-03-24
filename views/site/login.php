@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'id' => 'login-form',
             ]); ?>
 
-            <?= $form->field($model, 'username')->textInput(['placeholder' => 'Логин'])->label('Введите логин:') ?>
+            <?= $form->field($model, 'login')->textInput(['placeholder' => 'Логин'])->label('Введите логин:') ?>
 
             <?= $form->field($model, 'password')->passwordInput(['placeholder' => 'Пароль'])->label('Введите пароль:')  ?>
 

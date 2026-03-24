@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ]); ?>
 
-                            <?= $form->field($model, 'username')
+                            <?= $form->field($model, 'login')
                                 ->textInput(['autofocus' => true, 'placeholder' => 'Введите имя пользователя'])
                                 ->label('Имя пользователя *') ?>
 

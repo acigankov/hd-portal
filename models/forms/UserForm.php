@@ -7,15 +7,15 @@ use app\models\User;
 
 class UserForm extends Model
 {
-    public $username;
+    public $login;
     public $email;
     public $password;
 
     public function rules()
     {
         return [
-            [['username', 'email', 'password'], 'required'],
-            ['username', 'string', 'max' => 255],
+            [['login', 'email', 'password'], 'required'],
+            ['login', 'string', 'max' => 255],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['password', 'string', 'min' => 6],
@@ -25,7 +25,7 @@ class UserForm extends Model
     public function attributeLabels()
     {
         return [
-            'username' => 'Имя пользователя',
+            'login' => 'Логин пользователя',
             'email' => 'Email',
             'password' => 'Пароль',
         ];
@@ -42,7 +42,7 @@ class UserForm extends Model
         }
 
         $user = new User();
-        $user->username = $this->username;
+        $user->login = $this->login;
         $user->email = $this->email;
         $user->setPassword($this->password);
         $user->generateAuthKey();

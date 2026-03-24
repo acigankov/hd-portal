@@ -9,7 +9,7 @@ class m260324_070716_alter_column_email_not_nul_no_default extends Migration
      */
     public function safeUp()
     {
-        // 3. Меняем ограничение на NOT NULL
+        //  Меняем ограничение на NOT NULL
         $this->alterColumn('{{%users}}', 'email', $this->string(255)->notNull());
     }
 

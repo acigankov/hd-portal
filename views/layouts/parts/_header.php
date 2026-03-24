@@ -160,7 +160,7 @@ use yii\helpers\Html;
                             class="user-image rounded-circle shadow"
                             alt="User Image"
                     />
-                    <span class="d-none d-md-inline"><?= YII::$app->user->identity->username?></span>
+                    <span class="d-none d-md-inline"><?= YII::$app->user->identity->login?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <!--begin::User Image-->
@@ -171,7 +171,7 @@ use yii\helpers\Html;
                                 alt="User Image"
                         />
                         <p>
-                            <?= YII::$app->user->identity->username?>
+                            <?= YII::$app->user->identity->login?>
                             <small>Member since Nov. 2023</small>
                         </p>
                     </li>
