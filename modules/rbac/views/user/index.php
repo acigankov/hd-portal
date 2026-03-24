@@ -63,11 +63,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Login</th>
+                                    <th>Логин</th>
                                     <th>E-mail</th>
                                     <th>Создан</th>
-                                    <th>Status</th>
-                                    <th>Дейстивия</th>
+                                    <th>Статус</th>
+                                    <th>Действия</th>
                                 </tr>
                                 </thead>
                                 <tbody>

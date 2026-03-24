@@ -16,6 +16,7 @@ class UserForm extends Model
         return [
             [['login', 'email', 'password'], 'required'],
             ['login', 'string', 'max' => 255],
+            ['login', 'unique', 'targetClass' => User::class, 'message' => 'Этот логин уже занят.'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['password', 'string', 'min' => 6],
