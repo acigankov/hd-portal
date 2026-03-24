@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <!--begin::Row-->
             <div class="row mb-4">
                 <div class="col">
-                    <a class="btn btn-primary" href="<?= Url::to('/rbac/user/create')?>" role="button">Новый пользоватль</a>
+                    <a class="btn btn-primary" href="<?= Url::to('/rbac/user/create')?>" role="button">Новый пользователь</a>
                 </div>
 
             </div>
