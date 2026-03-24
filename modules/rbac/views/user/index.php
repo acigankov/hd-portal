@@ -12,7 +12,9 @@ use yii\helpers\Url;
 
 $this->title = Yii::t('yii2mod.rbac', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
+
 <div class="assignment-index">
 
     <!--begin::App Content Header-->
@@ -61,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>User</th>
+                                    <th>Login</th>
                                     <th>E-mail</th>
                                     <th>Создан</th>
                                     <th>Status</th>
@@ -74,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= $item->id ?></td>
                                         <td><?= $item->login ?></td>
                                         <td><?= $item->email ?></td>
-                                        <td><?= $item->created_at ?></td>
+                                        <td><?= $item->formattedCreatedAt ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>
                                         <td>John Doe</td>
                                     </tr>

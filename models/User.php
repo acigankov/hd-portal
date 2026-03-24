@@ -146,4 +146,9 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
+
+    public function getFormattedCreatedAt()
+    {
+        return Yii::$app->formatter->asDateTime($this->created_at, 'php:d.m.Y');
+    }
 }

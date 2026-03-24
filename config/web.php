@@ -7,6 +7,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-RU',
+    'timeZone' => 'Europe/Moscow', // укажите свой часовой пояс
     'bootstrap' => ['log', 'debug'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -24,6 +25,12 @@ $config = [
 
     ],
     'components' => [
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'dateFormat' => 'php:d.m.Y',
+            'timeFormat' => 'php:H:i:s',
+            'datetimeFormat' => 'dd.MM.yyyy HH:mm:ss',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'Vi9dMsXZ4Vz2DROQZsOtK2KoOJJDsAcr',
@@ -76,6 +83,7 @@ $config = [
                 ],
             ],
         ],
+
     ],
     // ограничить доступ к приложению Yii2 только для авторизованных пользователей до инициализации контроллеров
     'as beforeRequest' => [
