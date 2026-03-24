@@ -7,6 +7,8 @@ use app\models\forms\UserForm;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class UserController extends Controller
 {
@@ -29,6 +31,19 @@ class UserController extends Controller
                     ],
                 ]
             ];
+    }
+
+    /**
+     * @param $id
+     * @return User|null
+     */
+    protected function findModel($id)
+    {
+        if (($model = User::findOne(['id' => $id])) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('Страница не найдена.');
     }
 
     /**
@@ -58,6 +73,28 @@ class UserController extends Controller
         }
 
         return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return string|Response
+     */
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+
+        if (Yii::$app->request->isPost) {
+            if ($model->delete()) {
+                Yii::$app->session->setFlash('success', 'Пользователь успешно удален.');
+            } else {
+                Yii::$app->session->setFlash('error', 'Ошибка при удалении пользователя.');
+            }
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('delete', [
             'model' => $model,
         ]);
     }

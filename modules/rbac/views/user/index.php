@@ -78,7 +78,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><?= $item->email ?></td>
                                         <td><?= $item->formattedCreatedAt ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>
-                                        <td>John Doe</td>
+                                        <td>
+                                            <?php if($item->id > 1):?>
+                                                <?= Html::a(
+                                                        'Удалить',
+                                                        Url::to(['/rbac/user/delete', 'id' => $item->id]),
+                                                        ['data' => ['method' => 'post'],
+                                                        'class' => 'btn btn-danger btn-sm'])
+                                                ?>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
 
                                 <?php endforeach;?>
