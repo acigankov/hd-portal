@@ -1,22 +1,19 @@
 <?php
 
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
+use app\models\User;
 use yii\helpers\Html;
-use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
 /* @var $gridViewColumns array */
 /* @var $dataProvider \yii\data\ArrayDataProvider */
 /* @var $searchModel \app\modules\rbac\models\search\AssignmentSearch */
-/* @var $model \app\models\User*/
+/* @var $model User*/
 
 $this->title = Yii::t('yii2mod.rbac', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
-$this->render('/layouts/_sidebar');
 ?>
 <div class="assignment-index">
-
 
     <!--begin::App Content Header-->
     <div class="app-content-header">
@@ -42,12 +39,20 @@ $this->render('/layouts/_sidebar');
         <!--begin::Container-->
         <div class="container-fluid">
             <!--begin::Row-->
+            <div class="row mb-4">
+                <div class="col">
+                    <a class="btn btn-primary" href="<?= Url::to('/rbac/user/create')?>" role="button">Новый пользоватль</a>
+                </div>
+
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
             <div class="row">
                 <!--begin::Col-->
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Responsive Hover Table</h3>
+                            <h3 class="card-title">Список Пользователей</h3>
 
                         </div>
                         <!-- /.card-header -->
@@ -57,7 +62,8 @@ $this->render('/layouts/_sidebar');
                                 <tr>
                                     <th>ID</th>
                                     <th>User</th>
-                                    <th>Date</th>
+                                    <th>E-mail</th>
+                                    <th>Создан</th>
                                     <th>Status</th>
                                     <th>Дейстивия</th>
                                 </tr>
@@ -67,6 +73,7 @@ $this->render('/layouts/_sidebar');
                                     <tr>
                                         <td><?= $item->id ?></td>
                                         <td><?= $item->username ?></td>
+                                        <td><?= $item->email ?></td>
                                         <td><?= $item->created_at ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>
                                         <td>John Doe</td>
