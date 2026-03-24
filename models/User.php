@@ -18,7 +18,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     const STATUS_DISABLED = 0;
 
     public $password; // временное поле для хранения пароля при создании/изменении
-    public $auth_key; // временное поле для хранения пароля при создании/изменении
 
     /**
      * @return array[]
@@ -42,6 +41,11 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
+
+            if ($insert) {
+                $this->generateAuthKey();
+            }
+
             // Обрабатываем created_at
             if (!empty($this->created_at)) {
                 if (is_numeric($this->created_at)) {
@@ -56,6 +60,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
             }
             return true;
         }
+
         return false;
     }
     /**
@@ -92,7 +97,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findByLogin(string $login): User
     {
-        return static::findOne(['username' => $login]);
+        return static::findOne(['login' => $login]);
     }
 
     /**
@@ -108,15 +113,15 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($auth_key) : bool
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $auth_key;
     }
 
     /**
@@ -145,6 +150,14 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function generateAuthKey()
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * Генерирует случайный access_token (для api)
+     */
+    public function generateAccessToken()
+    {
+        $this->access_token = Yii::$app->security->generateRandomString();
     }
 
     public function getFormattedCreatedAt()
