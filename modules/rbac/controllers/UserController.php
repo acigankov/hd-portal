@@ -79,23 +79,32 @@ class UserController extends Controller
 
     /**
      * @param $id
-     * @return string|Response
+     * @return string|array|Response
+     * @throws NotFoundHttpException
      */
+    // Удаление пользователя (возвращает JSON для AJAX или делает редирект)
     public function actionDelete($id)
     {
+        $request = Yii::$app->request;
         $model = $this->findModel($id);
 
-        if (Yii::$app->request->isPost) {
-            if ($model->delete()) {
-                Yii::$app->session->setFlash('success', 'Пользователь успешно удален.');
-            } else {
-                Yii::$app->session->setFlash('error', 'Ошибка при удалении пользователя.');
+        // Очистка связанных данных (если нужно)
+        // $model->deleteRelatedData();
+
+        if ($model->delete()) {
+            if ($request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ['success' => true, 'message' => 'Пользователь удален'];
             }
-            return $this->redirect(['index']);
+            Yii::$app->session->setFlash('success', 'Пользователь успешно удален');
+        } else {
+            if ($request->isAjax) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ['success' => false, 'message' => 'Не удалось удалить пользователя'];
+            }
+            Yii::$app->session->setFlash('error', 'Не удалось удалить пользователя');
         }
 
-        return $this->render('delete', [
-            'model' => $model,
-        ]);
+        return $this->redirect(['index']);
     }
 }
