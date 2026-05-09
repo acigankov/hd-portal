@@ -74,14 +74,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tbody>
                                 <?php foreach ($model as $item):?>
                                     <tr>
-                                        <td><?= $item->id ?></td>
+                                        <td><?=  Html::a($item->id, ['/rbac/user/view', 'id' => $item->id]) ?> </td>
                                         <td><?= $item->login ?></td>
                                         <td><?= $item->email ?></td>
                                         <td><?= $item->formattedCreatedAt ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>
                                         <td>
                                             <?php if($item->id > 1):?>
-                                             
+                                                <?= Html::a('Редактировать', Yii::$app->urlManager->createUrl(['rbac/user/update', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
                                                 <?= Html::button('Удалить', [
                                                     'class' => 'btn btn-danger btn-sm delete-btn',
                                                     'data-id' => $item->id,
@@ -111,31 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <!--end::App Content-->
 
     <!-- Модальное окно подтверждения -->
-<!--    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">-->
-<!--      <div class="modal-dialog modal-dialog-centered" role="document">-->
-<!--        <div class="modal-content">-->
-<!--          <div class="modal-header d-flex justify-content-between">-->
-<!--            <h4 class="modal-title" id="myModalLabel">Подтверждение удаления</h4>-->
-<!--            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-<!---->
-<!--          </div>-->
-<!--          <div class="modal-body">-->
-<!--            Вы действительно хотите удалить пользователя <strong id="deleteUserName"></strong>?-->
-<!--          </div>-->
-<!--          <div class="modal-footer">-->
-<!--            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>-->
-<!--            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Да, удалить</button>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!---->
-
-<!--    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">-->
-<!--        Launch demo modal-->
-<!--    </button>-->
-
-    <!-- Modal -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -153,7 +128,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
-
 
     <?php
     $csrfToken = Yii::$app->request->csrfToken;
