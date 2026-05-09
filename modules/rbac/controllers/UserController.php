@@ -57,7 +57,7 @@ class UserController extends Controller
     public function actionIndex (): string
     {
 
-        $model = User::findAll(['status' => User::STATUS_ACTIVE]);
+        $model = User::find()->all();
 
         return $this->render('index', ['model' => $model]);
     }
