@@ -14,8 +14,8 @@ use yii\helpers\Html;
                     <i class="bi bi-list"></i>
                 </a>
             </li>
-            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Home</a></li>
-            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Contact</a></li>
+            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Мои заявки </a></li>
+            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Мое еще что-нибудь</a></li>
 
         </ul>
         <!--begin::End Navbar Links-->

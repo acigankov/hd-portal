@@ -11,7 +11,7 @@ use yii\web\View;
 /* @var $searchModel \app\modules\rbac\models\search\AssignmentSearch */
 /* @var $model User*/
 
-$this->title = Yii::t('yii2mod.rbac', 'Users');
+$this->title = Yii::t('yii2mod.rbac', 'Пользователи');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
