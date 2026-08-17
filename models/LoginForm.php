@@ -13,21 +13,20 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    public $username;
+
+    public $login;
     public $password;
     public $rememberMe = true;
-
     private $_user = false;
-
 
     /**
      * @return array the validation rules.
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            // username and password are both required
-            [['username', 'password'], 'required'],
+            // login and password are both required
+            [['login', 'password'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -42,22 +41,22 @@ class LoginForm extends Model
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
+
+    public function validatePassword($attribute, $params = [])
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Неправильное имя пользователя или пароль.');
             }
         }
     }
 
     /**
-     * Logs in a user using the provided username and password.
+     * Logs in a user using the provided login and password.
      * @return bool whether the user is logged in successfully
      */
-    public function login()
+    public function login(): bool
     {
         if ($this->validate()) {
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
@@ -66,14 +65,19 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Находит пользователя по имени пользователя (login).
      *
-     * @return User|null
+     * Если пользователь уже был найден ранее, возвращает кэшированный результат
+     * из свойства $this->_user. В противном случае выполняет поиск через
+     * User::findByLogin() и сохраняет результат в кэш.
+     *
+     * @return User|null Объект пользователя, если найден; null — если не найден
+     *         или произошла ошибка при поиске.
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         if ($this->_user === false) {
-            $this->_user = User::findByUsername($this->username);
+            $this->_user = User::findByLogin($this->login);
         }
 
         return $this->_user;

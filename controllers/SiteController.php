@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -18,17 +20,6 @@ class SiteController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -37,7 +28,6 @@ class SiteController extends Controller
             ],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -61,7 +51,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $user = User::findIdentity(1);
+//        VarDumper::dump($user, 10, true);
+
+
+        return $this->render('index', ['user' => $user]);
     }
 
     /**
@@ -71,13 +65,11 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
+        $this->layout = 'login-layout';
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->goHome();
         }
 
         $model->password = '';

@@ -6,6 +6,8 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'language' => 'ru-RU',
+    'timeZone' => 'Europe/Moscow', // укажите свой часовой пояс
     'bootstrap' => ['log', 'debug'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -17,8 +19,18 @@ $config = [
             // Опционально: ограничение по IP
             'allowedIPs' => ['*'],
         ],
+        'rbac' => [
+            'class' => 'app\modules\rbac\Module',
+        ],
+
     ],
     'components' => [
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'dateFormat' => 'php:d.m.Y',
+            'timeFormat' => 'php:H:i:s',
+            'datetimeFormat' => 'dd.MM.yyyy HH:mm:ss',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'Vi9dMsXZ4Vz2DROQZsOtK2KoOJJDsAcr',
@@ -28,7 +40,11 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+            'defaultRoles' => ['guest', 'user'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -53,8 +69,46 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'site/index',
+                'login' => 'site/login'
             ],
         ],
+        'i18n' => [
+            'translations' => [
+                'yii2mod.rbac' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    // Путь к файлам переводов в vendor
+                    'basePath' => '@vendor/yii2mod/yii2-rbac/messages',
+
+                ],
+            ],
+        ],
+
+    ],
+    // ограничить доступ к приложению Yii2 только для авторизованных пользователей до инициализации контроллеров
+    'as beforeRequest' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+            [
+                'actions' => ['login', 'signup', 'request-password-reset', 'error'],
+                'allow' => true,
+                'roles' => ['?'], // Разрешить гостям
+            ],
+            [
+                'allow' => true,
+                'roles' => ['@'], // Все остальные — только для авторизованных
+            ],
+            [
+                'allow' => false,
+                'roles' => ['?'],
+                'denyCallback' => function ($rule, $action) {
+                    return $action->controller->redirect(['site/login'])->send();
+                },
+            ],
+        ],
+        'denyCallback' => function ($rule, $action) {
+            return Yii::$app->response->redirect(['site/login']);
+        },
     ],
     'params' => $params,
 ];
@@ -65,14 +119,14 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-//        'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['*', '::1'], // или ваш IP-адрес
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['*', '::1'],
     ];
 }
 

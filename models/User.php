@@ -2,38 +2,83 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
+use yii\web\IdentityInterface;
+
+/**
+ * @param $id
+ */
+class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+    const STATUS_ACTIVE = 1;
+    const STATUS_DISABLED = 0;
 
+    public $password; // временное поле для хранения пароля при создании/изменении
 
     /**
-     * {@inheritdoc}
+     * @return array[]
+     */
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                    BaseActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'], // если нужно
+                ],
+                // Опционально: задайте формат значения
+                // 'value' => new \yii\db\Expression('NOW()'), // для DATETIME
+            ],
+        ];
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+
+            if ($insert) {
+                $this->generateAuthKey();
+            }
+
+            // Обрабатываем created_at
+            if (!empty($this->created_at)) {
+                if (is_numeric($this->created_at)) {
+                    $this->created_at = date('Y-m-d H:i:s', (int)$this->created_at);
+                }
+                // Дополнительно можно проверять другие форматы
+            }
+
+            // Аналогично для updated_at, если нужно
+            if (!empty($this->updated_at) && is_numeric($this->updated_at)) {
+                $this->updated_at = date('Y-m-d H:i:s', (int)$this->updated_at);
+            }
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     * @return string
+     */
+    public static function tableName(): string
+    {
+        return '{{users}}';
+    }
+
+    /**
+     * @param $id
+     * @return IdentityInterface|null the identity object that matches the given token.
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
+
     }
 
     /**
@@ -41,30 +86,18 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['access_token' => $token]);
     }
 
     /**
      * Finds user by username
      *
-     * @param string $username
-     * @return static|null
+     * @param string $login
+     * @return User
      */
-    public static function findByUsername($username)
+    public static function findByLogin(string $login): User
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['login' => $login]);
     }
 
     /**
@@ -80,15 +113,15 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($auth_key) : bool
     {
-        return $this->authKey === $authKey;
+        return $this->auth_key === $auth_key;
     }
 
     /**
@@ -99,6 +132,36 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return \Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    /**
+     * Устанавливает пароль, хешируя его перед сохранением в БД
+     * @param string $password Пароль в открытом виде
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Генерирует случайный ключ аутентификации (для «Запомнить меня»)
+     */
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * Генерирует случайный access_token (для api)
+     */
+    public function generateAccessToken()
+    {
+        $this->access_token = Yii::$app->security->generateRandomString();
+    }
+
+    public function getFormattedCreatedAt()
+    {
+        return Yii::$app->formatter->asDateTime($this->created_at, 'php:d.m.Y');
     }
 }
