@@ -1,93 +1,95 @@
 <?php
 
+use app\models\Organization;
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\web\View;
 
-/** @var yii\web\View $this */
-/** @var app\models\Organization $model */
+/* @var $this \yii\web\View */
+/* @var $model Organization*/
 
-$this->title = $model->name;
+$this->title = 'Просмотр организации';
 $this->params['breadcrumbs'][] = ['label' => 'Организации', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
-<div class="organization-view">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1><?= Html::encode($this->title) ?></h1>
-        <div>
-            <?php if (Yii::$app->user->can('admin')): ?>
-                <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
-                    'class' => 'btn btn-danger',
-                    'data' => [
-                        'confirm' => 'Вы уверены, что хотите удалить эту организацию?',
-                        'method' => 'post',
-                    ],
-                ]) ?>
-            <?php endif; ?>
-            <?= Html::a('Назад к списку', ['index'], ['class' => 'btn btn-secondary']) ?>
-        </div>
-    </div>
+<div class="assignment-index">
 
-    <div class="card">
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <span class="badge <?= $model->status === \app\models\Organization::STATUS_ACTIVE ? 'bg-success' : 'bg-secondary' ?>">
-                        <?= $model->getStatusLabel() ?>
-                    </span>
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
+                    </ol>
                 </div>
             </div>
-
-            <?= DetailView::widget([
-                'model' => $model,
-                'options' => [
-                    'class' => 'table table-striped table-bordered detail-table'
-                ],
-                'attributes' => [
-                    'id',
-                    'name',
-                    'inn',
-                    'kpp',
-                    'ogrn',
-                    [
-                        'attribute' => 'legal_address',
-                        'format' => 'ntext',
-                    ],
-                    [
-                        'attribute' => 'actual_address',
-                        'format' => 'ntext',
-                    ],
-                    'phone',
-                    'email:email',
-                    [
-                        'attribute' => 'website',
-                        'format' => 'url',
-                    ],
-                    'director_name',
-                    [
-                        'attribute' => 'created_at',
-                        'format' => 'datetime',
-                    ],
-                    [
-                        'attribute' => 'updated_at',
-                        'format' => 'datetime',
-                    ],
-                    [
-                        'attribute' => 'created_by',
-                        'value' => function ($model) {
-                            return $model->createdBy ? $model->createdBy->login : null;
-                        },
-                    ],
-                    [
-                        'attribute' => 'updated_by',
-                        'value' => function ($model) {
-                            return $model->updatedBy ? $model->updatedBy->login : null;
-                        },
-                    ],
-                ],
-            ]) ?>
+            <!--end::Row-->
         </div>
+        <!--end::Container-->
     </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Организация (а - ля профиль )</h3>
+
+
+
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <p>Название: <?= Html::encode($model->name)?> </p>
+                            <p>ИНН: <?= Html::encode($model->inn)?> </p>
+                            <p>КПП: <?= Html::encode($model->kpp)?> </p>
+                            <p>ОГРН: <?= Html::encode($model->ogrn)?> </p>
+                            <p>Юридический адрес: <?= Html::encode($model->legal_address)?> </p>
+                            <p>Фактический адрес: <?= Html::encode($model->actual_address)?> </p>
+                            <p>Телефон: <?= Html::encode($model->phone)?> </p>
+                            <p>Email: <?= Html::encode($model->email)?> </p>
+                            <p>Сайт: <?= Html::a(Html::encode($model->website), $model->website, ['target' => '_blank'])?> </p>
+                            <p>Директор: <?= Html::encode($model->director_name)?> </p>
+                            <p>Статус:
+                                <?php
+                                $badgeClass = $model->status === Organization::STATUS_ACTIVE ? 'bg-success' : 'bg-secondary';
+                                ?>
+                                <span class="badge <?= $badgeClass ?>"><?= Html::encode($model->getStatusLabel()) ?></span>
+                            </p>
+
+                            <hr>
+
+                            <p>Создана: <?= $model->formattedCreatedAt ?> </p>
+                            <p>Обновлена: <?= $model->formattedUpdatedAt ?> </p>
+                            <?php if ($model->createdBy): ?>
+                                <p>Создал: <?= Html::encode($model->createdBy->login)?> </p>
+                            <?php endif; ?>
+                            <?php if ($model->updatedBy): ?>
+                                <p>Обновил: <?= Html::encode($model->updatedBy->login)?> </p>
+                            <?php endif; ?>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!--end::Col-->
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
+
 
 </div>

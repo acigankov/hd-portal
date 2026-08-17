@@ -1,131 +1,191 @@
 <?php
 
+use app\models\Organization;
 use yii\helpers\Html;
-use yii\grid\ActionColumn;
-use yii\grid\GridView;
+use yii\web\View;
 
-/** @var yii\web\View $this */
-/** @var app\models\OrganizationSearch $searchModel */
-/** @var yii\data\ActiveDataProvider $dataProvider */
+/* @var $this \yii\web\View */
+/* @var $searchModel \app\models\OrganizationSearch */
+/* @var $dataProvider \yii\data\ActiveDataProvider */
+/* @var $model Organization[]*/
 
 $this->title = 'Организации';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
-<div class="organization-index">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1><?= Html::encode($this->title) ?></h1>
-        <?php if (Yii::$app->user->can('admin')): ?>
-            <p>
-                <?= Html::a('Создать организацию', ['create'], ['class' => 'btn btn-success']) ?>
-            </p>
-        <?php endif; ?>
+<div class="assignment-index">
+
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
+                    </ol>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
     </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row mb-4">
+                <div class="col">
+                    <?php if (Yii::$app->user->can('admin')): ?>
+                        <a class="btn btn-primary" href="<?= \yii\helpers\Url::to(['/organization/create'])?>" role="button">Новая организация</a>
+                    <?php endif; ?>
+                </div>
 
-    <div class="card">
-        <div class="card-body">
-            <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+            </div>
+            <!--end::Row-->
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Список Организаций</h3>
 
-            <?= GridView::widget([
-                'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'options' => [
-                    'class' => 'table-responsive'
-                ],
-                'tableOptions' => [
-                    'class' => 'table table-striped table-hover'
-                ],
-                'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Название</th>
+                                    <th>ИНН</th>
+                                    <th>КПП</th>
+                                    <th>Директор</th>
+                                    <th>Телефон</th>
+                                    <th>Email</th>
+                                    <th>Статус</th>
+                                    <th>Действия</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ($dataProvider->getModels() as $item):?>
+                                    <tr>
+                                        <td><?= $item->id ?></td>
+                                        <td><?= Html::a(Html::encode($item->name), ['/organization/view', 'id' => $item->id]) ?></td>
+                                        <td><?= Html::encode($item->inn) ?></td>
+                                        <td><?= Html::encode($item->kpp) ?></td>
+                                        <td><?= Html::encode($item->director_name) ?></td>
+                                        <td><?= Html::encode($item->phone) ?></td>
+                                        <td><?= Html::encode($item->email) ?></td>
+                                        <td>
+                                            <?php
+                                            $badgeClass = $item->status === Organization::STATUS_ACTIVE ? 'bg-success' : 'bg-secondary';
+                                            ?>
+                                            <span class="badge <?= $badgeClass ?>"><?= Html::encode($item->getStatusLabel()) ?></span>
+                                        </td>
+                                        <td>
+                                            <?= Html::a('Просмотр', Yii::$app->urlManager->createUrl(['organization/view', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
+                                            <?php if(Yii::$app->user->can('admin')): ?>
+                                                <?= Html::a('Редактировать', Yii::$app->urlManager->createUrl(['organization/update', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
+                                                <?= Html::button('Удалить', [
+                                                    'class' => 'btn btn-danger btn-sm delete-btn',
+                                                    'data-id' => $item->id,
+                                                    'data-name' => $item->name,
+                                                    'data-url' => Yii::$app->urlManager->createUrl(['organization/delete', 'id' => $item->id]),
+                                                    'data-toggle' => 'modal',
+                                                    'data-target' => '#confirmDeleteModal',
+                                                ]) ?>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
 
-                    [
-                        'attribute' => 'name',
-                        'label' => 'Название',
-                        'format' => 'raw',
-                        'value' => function ($model) {
-                            return Html::a(Html::encode($model->name), ['view', 'id' => $model->id]);
-                        },
-                    ],
-                    [
-                        'attribute' => 'inn',
-                        'label' => 'ИНН',
-                        'value' => function ($model) {
-                            return Html::encode($model->inn);
-                        },
-                    ],
-                    [
-                        'attribute' => 'kpp',
-                        'label' => 'КПП',
-                        'value' => function ($model) {
-                            return Html::encode($model->kpp);
-                        },
-                    ],
-                    [
-                        'attribute' => 'director_name',
-                        'label' => 'Директор',
-                        'value' => function ($model) {
-                            return Html::encode($model->director_name);
-                        },
-                    ],
-                    [
-                        'attribute' => 'phone',
-                        'label' => 'Телефон',
-                        'value' => function ($model) {
-                            return Html::encode($model->phone);
-                        },
-                    ],
-                    [
-                        'attribute' => 'email',
-                        'label' => 'Email',
-                        'format' => 'email',
-                        'value' => function ($model) {
-                            return Html::encode($model->email);
-                        },
-                    ],
-                    [
-                        'attribute' => 'status',
-                        'label' => 'Статус',
-                        'format' => 'raw',
-                        'value' => function ($model) {
-                            $badgeClass = $model->status === \app\models\Organization::STATUS_ACTIVE ? 'bg-success' : 'bg-secondary';
-                            return '<span class="badge ' . $badgeClass . '">' . Html::encode($model->getStatusLabel()) . '</span>';
-                        },
-                        'filter' => [
-                            \app\models\Organization::STATUS_ACTIVE => 'Активна',
-                            \app\models\Organization::STATUS_INACTIVE => 'Неактивна',
-                        ],
-                    ],
+                                <?php endforeach;?>
 
-                    [
-                        'class' => ActionColumn::class,
-                        'header' => 'Действия',
-                        'template' => '{view}',
-                        'buttons' => [
-                            'view' => function ($url, $model) {
-                                return Html::a('<i class="bi bi-eye"></i>', $url, [
-                                    'class' => 'btn btn-sm btn-outline-primary',
-                                    'title' => 'Просмотр',
-                                    'data-bs-toggle' => 'tooltip',
-                                ]);
-                            },
-                        ],
-                        'visibleButtons' => [
-                            'update' => Yii::$app->user->can('admin'),
-                            'delete' => Yii::$app->user->can('admin'),
-                        ],
-                    ],
-                ],
-            ]) ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!--end::Col-->
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
+
+    <!-- Модальное окно подтверждения -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Подтверждение удаления</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Подтвердите удаление организации:  <span class="fw-bold fs-5" id="deleteUserName"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Да, удалить</button>
+                </div>
+            </div>
         </div>
     </div>
 
-</div>
+    <?php
+    $csrfToken = Yii::$app->request->csrfToken;
 
-<?php
-$js = <<<JS
-$(document).ready(function() {
-    $('[data-bs-toggle="tooltip"]').tooltip();
-});
-JS;
-$this->registerJs($js);
-?>
+    $this->registerJs(<<<JS
+    var deleteUrl = '';
+    var csrfToken = '{$csrfToken}';
+
+    // При клике на кнопку удаления — открываем модалку
+    $('.delete-btn').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        deleteUrl = $(this).data('url');
+        var name = $(this).data('name');
+        $('#deleteUserName').text(name);
+        $('#confirmDeleteModal').modal('show');
+    });
+
+    // При клике на "Да, удалить"
+    $('#confirmDeleteBtn').on('click', function() {
+        if (!deleteUrl) return;
+
+        $.ajax({
+            url: deleteUrl,
+            type: 'POST',
+            data: {
+                _csrf: csrfToken
+            },
+            success: function(response) {
+                if (response.success) {
+                    location.reload();
+                } else {
+                    alert(response.message || 'Не удалось удалить организацию');
+                    $('#confirmDeleteModal').modal('hide');
+                }
+            },
+            error: function() {
+                alert('Произошла ошибка при удалении');
+                $('#confirmDeleteModal').modal('hide');
+            }
+        });
+    });
+JS
+        , View::POS_END);
+    ?>
+
+
+</div>

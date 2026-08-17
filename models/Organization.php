@@ -132,6 +132,24 @@ class Organization extends ActiveRecord
     }
 
     /**
+     * Возвращает дату создания в формате d.m.Y H:i
+     * @return string
+     */
+    public function getFormattedCreatedAt()
+    {
+        return $this->created_at ? date('d.m.Y H:i', strtotime($this->created_at)) : '';
+    }
+
+    /**
+     * Возвращает дату обновления в формате d.m.Y H:i
+     * @return string
+     */
+    public function getFormattedUpdatedAt()
+    {
+        return $this->updated_at ? date('d.m.Y H:i', strtotime($this->updated_at)) : '';
+    }
+
+    /**
      * {@inheritdoc}
      * @return OrganizationQuery the active query used by this AR class.
      */
