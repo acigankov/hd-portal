@@ -33,10 +33,16 @@
         </a>
     </li>
 
-
     <?php if (Yii::$app->user->can('admin')) : ?>
 
         <li class="nav-header">Администрирование</li>
+
+                <li class="nav-item">
+                    <a href="/organization" class="nav-link ">
+                        <i class="nav-icon bi bi-building"></i>
+                        <p>Организации</p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="/" class="nav-link ">
