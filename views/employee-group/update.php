@@ -1,0 +1,88 @@
+<?php
+
+use app\models\EmployeeGroup;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $model app\models\EmployeeGroup */
+/* @var $organizations app\models\Organization[] */
+/* @var $form yii\widgets\ActiveForm */
+
+$this->title = 'Редактировать группу: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Группы сотрудников', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = 'Редактирование';
+?>
+
+<div class="assignment-index">
+
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Администрирование</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
+                    </ol>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Редактирование группы сотрудников</h3>
+
+
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <?php $form = ActiveForm::begin(); ?>
+
+                            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'description')->textarea(['rows' => 4]) ?>
+                            <?= $form->field($model, 'organization_id')->dropDownList(
+                                \yii\helpers\ArrayHelper::map($organizations, 'id', 'name'),
+                                ['prompt' => 'Выберите организацию']
+                            ) ?>
+                            <?= $form->field($model, 'status')->dropDownList([
+                                EmployeeGroup::STATUS_ACTIVE => 'Активна',
+                                EmployeeGroup::STATUS_INACTIVE => 'Неактивна',
+                            ]) ?>
+
+                            <div class="form-group">
+                                <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
+                                <?= Html::a('Отмена', ['index'], ['class' => 'btn btn-default']) ?>
+                            </div>
+
+                            <?php ActiveForm::end(); ?>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!--end::Col-->
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
+
+
+</div>
