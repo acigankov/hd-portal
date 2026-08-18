@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\EmployeeGroup */
 /* @var $organizations app\models\Organization[] */
+/* @var $allEmployees app\models\User[] */
 /* @var $form yii\widgets\ActiveForm */
 
 $this->title = 'Создать группу сотрудников';
@@ -38,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="app-content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-6">
+            <div class="col-12">
                 <div class="employee-group-form">
                     <div class="card">
                         <div class="card-body">
@@ -73,7 +74,30 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ])
                                 ->label('Статус') ?>
 
-                            <div class="form-group">
+                            <hr class="my-4">
+                            
+                            <h4>Сотрудники группы</h4>
+                            <p class="text-muted mb-3">Выберите сотрудников, которые будут входить в эту группу:</p>
+                            
+                            <?php if (!empty($allEmployees)): ?>
+                                <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                                    <?php foreach ($allEmployees as $employee): ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   name="EmployeeGroup[employee_ids][]" 
+                                                   value="<?= $employee->id ?>" 
+                                                   id="employee_<?= $employee->id ?>">
+                                            <label class="form-check-label" for="employee_<?= $employee->id ?>">
+                                                <?= Html::encode($employee->login) ?> (<?= Html::encode($employee->email) ?>)
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-muted">Нет доступных сотрудников для добавления.</p>
+                            <?php endif; ?>
+
+                            <div class="form-group mt-3">
                                 <?= Html::submitButton('<i class="fas fa-save"></i> Создать группу', [
                                     'class' => 'btn btn-primary'
                                 ]) ?>

@@ -5,7 +5,6 @@ __pycache__/
 *.o
 *.obj
 *.class
-*.exe
 *.dll
 *.so
 *.a
@@ -16,9 +15,27 @@ node_modules/
 vendor/
 composer.lock
 *.lock
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment
 .env
 .env.local
-*.env.*
+.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
 
 # Build directories
 dist/
@@ -26,27 +43,10 @@ build/
 target/
 coverage/
 htmlcov/
-*.log
-*.tmp
-*.swp
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-Thumbs.db
-.DS_Store
-
-# Cache directories
-.cache/
 .mypy_cache/
 .pytest_cache/
-.coverage
-.julia/
-zig-cache/
 
-# Compressed files
+# Compression files
 *.zip
 *.gz
 *.tar

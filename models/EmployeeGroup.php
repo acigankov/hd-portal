@@ -26,6 +26,11 @@ class EmployeeGroup extends ActiveRecord
     const STATUS_INACTIVE = 0;
 
     /**
+     * @var array IDs выбранных сотрудников для добавления в группу
+     */
+    public $employee_ids = [];
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -62,6 +67,7 @@ class EmployeeGroup extends ActiveRecord
             [['organization_id', 'created_by', 'updated_by'], 'integer'],
             [['status'], 'integer'],
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
+            [['employee_ids'], 'safe'],
         ];
     }
 
@@ -80,6 +86,7 @@ class EmployeeGroup extends ActiveRecord
             'updated_at' => 'Дата обновления',
             'created_by' => 'Создатель',
             'updated_by' => 'Редактор',
+            'employee_ids' => 'Сотрудники',
         ];
     }
 
