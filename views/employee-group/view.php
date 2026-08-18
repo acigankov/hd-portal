@@ -152,20 +152,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Выберите сотрудников:</label>
-                            <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                            <select id="modal-employee-select" name="employee_ids[]" multiple="multiple" style="width: 100%;">
                                 <?php foreach ($allEmployees as $employee): ?>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" 
-                                               name="employee_ids[]" 
-                                               value="<?= $employee->id ?>" 
-                                               id="employee_<?= $employee->id ?>"
-                                               <?= in_array($employee->id, $currentMemberIds) ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="employee_<?= $employee->id ?>">
-                                            <?= Html::encode($employee->login) ?> (<?= Html::encode($employee->email) ?>)
-                                        </label>
-                                    </div>
+                                    <option value="<?= $employee->id ?>" <?= in_array($employee->id, $currentMemberIds) ? 'selected' : '' ?>>
+                                        <?= Html::encode($employee->login) ?> (<?= Html::encode($employee->email) ?>)
+                                    </option>
                                 <?php endforeach; ?>
-                            </div>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -203,6 +196,24 @@ $this->params['breadcrumbs'][] = $this->title;
     $this->registerJs(<<<JS
     var deleteUrl = '';
     var csrfToken = '{$csrfToken}';
+    
+    // Инициализация Select2 в модальном окне при его открытии
+    $('#editMembersModal').on('shown.bs.modal', function () {
+        if (!$('#modal-employee-select').data('select2')) {
+            $('#modal-employee-select').select2({
+                placeholder: 'Выберите сотрудников...',
+                allowClear: true,
+                language: 'ru',
+                width: '100%',
+                dropdownParent: $('#editMembersModal')
+            });
+        }
+    });
+    
+    // При закрытии модального окна можно очистить (опционально)
+    $('#editMembersModal').on('hidden.bs.modal', function () {
+        // Select2 не удаляем, чтобы сохранить состояние при повторном открытии
+    });
     
     // При клике на кнопку удаления — открываем модалку
     $('.delete-btn').on('click', function(e) {
