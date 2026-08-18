@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="container-fluid">
 
             <!--begin::Row-->
-            <div class="row">
+            <div class="row mb-4">
                 <!--begin::Col-->
                 <div class="col">
                     <div class="card">
@@ -84,17 +84,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <!--end::Row-->
             
             <!--begin::Row - Сотрудники группы-->
-            <div class="row">
+            <div class="row mb-4">
                 <!--begin::Col-->
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Сотрудники группы</h3>
-                            <?php if(Yii::$app->user->can('admin')): ?>
-                                <button type="button" class="btn btn-sm btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#editMembersModal">
-                                    <i class="bi bi-plus-lg"></i> Изменить состав
-                                </button>
-                            <?php endif; ?>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -128,6 +123,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php endif; ?>
                         </div>
                         <!-- /.card-body -->
+                        <?php if(Yii::$app->user->can('admin')): ?>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editMembersModal">
+                                Изменить состав
+                            </button>
+                        </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <!--end::Col-->
