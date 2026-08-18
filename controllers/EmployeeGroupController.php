@@ -131,6 +131,7 @@ class EmployeeGroupController extends Controller
     public function actionCreate()
     {
         $model = new EmployeeGroup();
+        $selectedEmployeeIds = [];
 
         if ($model->load(Yii::$app->request->post())) {
             // Сохраняем группу
@@ -154,6 +155,9 @@ class EmployeeGroupController extends Controller
                 
                 Yii::$app->session->setFlash('success', 'Группа сотрудников успешно создана.');
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                // Если есть ошибки валидации, сохраняем выбранные сотрудники для повторного отображения
+                $selectedEmployeeIds = Yii::$app->request->post('EmployeeGroup', [])['employee_ids'] ?? [];
             }
         }
 
@@ -167,6 +171,7 @@ class EmployeeGroupController extends Controller
             'model' => $model,
             'organizations' => $organizations,
             'allEmployees' => $allEmployees,
+            'selectedEmployeeIds' => $selectedEmployeeIds,
         ]);
     }
 
@@ -180,6 +185,7 @@ class EmployeeGroupController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $selectedEmployeeIds = [];
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
@@ -206,6 +212,9 @@ class EmployeeGroupController extends Controller
                 
                 Yii::$app->session->setFlash('success', 'Группа сотрудников успешно обновлена.');
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                // Если есть ошибки валидации, сохраняем выбранные сотрудники для повторного отображения
+                $selectedEmployeeIds = Yii::$app->request->post('EmployeeGroup', [])['employee_ids'] ?? [];
             }
         }
 
@@ -219,6 +228,7 @@ class EmployeeGroupController extends Controller
             'model' => $model,
             'organizations' => $organizations,
             'allEmployees' => $allEmployees,
+            'selectedEmployeeIds' => $selectedEmployeeIds,
         ]);
     }
 

@@ -8,6 +8,12 @@ use yii\widgets\ActiveForm;
 /* @var $organizations app\models\Organization[] */
 /* @var $allEmployees app\models\User[] */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $selectedEmployeeIds array */
+
+$selectedIds = isset($selectedEmployeeIds) ? $selectedEmployeeIds : [];
+if (!$model->isNewRecord && empty($selectedIds)) {
+    $selectedIds = \yii\helpers\ArrayHelper::getColumn($model->employees, 'id');
+}
 
 $this->title = 'Создать группу сотрудников';
 $this->params['breadcrumbs'][] = ['label' => 'Группы сотрудников', 'url' => ['index']];
@@ -19,7 +25,8 @@ $this->registerJs(<<<JS
             placeholder: 'Выберите сотрудников для добавления в группу',
             allowClear: true,
             language: 'ru',
-            width: '100%'
+            width: '100%',
+            dropdownParent: $('.employee-group-form').closest('.card')
         });
     });
 JS);
@@ -93,7 +100,7 @@ JS);
                             <?php if (!empty($allEmployees)): ?>
                                 <?= Html::dropDownList(
                                     'EmployeeGroup[employee_ids]',
-                                    null,
+                                    $selectedIds,
                                     \yii\helpers\ArrayHelper::map($allEmployees, 'id', function($employee) {
                                         return $employee->login . ' (' . $employee->email . ')';
                                     }),
