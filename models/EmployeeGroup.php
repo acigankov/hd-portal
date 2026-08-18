@@ -111,6 +111,16 @@ class EmployeeGroup extends ActiveRecord
     }
 
     /**
+     * Возвращает сотрудников в группе
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMembers()
+    {
+        return $this->hasMany(User::class, ['id' => 'user_id'])
+            ->viaTable('{{%employee_group_members}}', ['employee_group_id' => 'id']);
+    }
+
+    /**
      * Возвращает статус в виде строки
      * @return string
      */

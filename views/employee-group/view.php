@@ -82,10 +82,101 @@ $this->params['breadcrumbs'][] = $this->title;
                 <!--end::Col-->
             </div>
             <!--end::Row-->
+            
+            <!--begin::Row - Сотрудники группы-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Сотрудники группы</h3>
+                            <?php if(Yii::$app->user->can('admin')): ?>
+                                <button type="button" class="btn btn-sm btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#editMembersModal">
+                                    <i class="bi bi-plus-lg"></i> Изменить состав
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <?php if (!empty($model->members)): ?>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px;">#</th>
+                                                <th>ФИО</th>
+                                                <th>Login</th>
+                                                <th>Email</th>
+                                                <th style="width: 150px;">Дата добавления</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $i = 1; foreach ($model->members as $member): ?>
+                                                <tr>
+                                                    <td><?= $i++ ?></td>
+                                                    <td><?= Html::encode($member->login ?? '-') ?></td>
+                                                    <td><?= Html::encode($member->login ?? '-') ?></td>
+                                                    <td><?= Html::encode($member->email ?? '-') ?></td>
+                                                    <td><?= $model->getFormattedCreatedAt() ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-muted mb-0">В этой группе пока нет сотрудников.</p>
+                            <?php endif; ?>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!--end::Col-->
+            </div>
+            <!--end::Row-->
         </div>
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+
+    <!-- Модальное окно редактирования состава -->
+    <?php if(Yii::$app->user->can('admin')): ?>
+    <div class="modal fade" id="editMembersModal" tabindex="-1" role="dialog" aria-labelledby="editMembersModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form method="post" action="<?= Yii::$app->urlManager->createUrl(['employee-group/add-members', 'id' => $model->id]) ?>">
+                    <input type="hidden" name="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editMembersModalLabel">Изменить состав группы</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Выберите сотрудников:</label>
+                            <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                                <?php foreach ($allEmployees as $employee): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" 
+                                               name="employee_ids[]" 
+                                               value="<?= $employee->id ?>" 
+                                               id="employee_<?= $employee->id ?>"
+                                               <?= in_array($employee->id, $currentMemberIds) ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="employee_<?= $employee->id ?>">
+                                            <?= Html::encode($employee->login) ?> (<?= Html::encode($employee->email) ?>)
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
 
     <!-- Модальное окно подтверждения -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

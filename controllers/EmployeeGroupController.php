@@ -8,6 +8,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use app\models\EmployeeGroup;
+use app\models\EmployeeGroupMember;
+use app\models\User;
 use app\models\Organization;
 
 /**
@@ -66,9 +68,59 @@ class EmployeeGroupController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        
+        // Получаем всех сотрудников
+        $allEmployees = User::find()->where(['status' => User::STATUS_ACTIVE])->all();
+        
+        // Получаем текущих сотрудников группы
+        $currentMemberIds = EmployeeGroupMember::find()
+            ->where(['employee_group_id' => $id])
+            ->select('user_id')
+            ->column();
+        
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'allEmployees' => $allEmployees,
+            'currentMemberIds' => $currentMemberIds,
         ]);
+    }
+
+    /**
+     * Adds employees to a group.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionAddMembers($id)
+    {
+        $model = $this->findModel($id);
+        
+        if (Yii::$app->request->isPost) {
+            $employeeIds = Yii::$app->request->post('employee_ids', []);
+            
+            // Удаляем текущих сотрудников
+            EmployeeGroupMember::deleteAll(['employee_group_id' => $id]);
+            
+            // Добавляем новых
+            if (!empty($employeeIds)) {
+                $userId = Yii::$app->user->id;
+                $now = date('Y-m-d H:i:s');
+                
+                foreach ($employeeIds as $employeeId) {
+                    $member = new EmployeeGroupMember();
+                    $member->employee_group_id = $id;
+                    $member->user_id = $employeeId;
+                    $member->created_at = $now;
+                    $member->created_by = $userId;
+                    $member->save(false);
+                }
+            }
+            
+            Yii::$app->session->setFlash('success', 'Сотрудники группы успешно обновлены.');
+            return $this->redirect(['view', 'id' => $id]);
+        }
+        
+        throw new NotFoundHttpException('Запрошенная страница не найдена.');
     }
 
     /**
