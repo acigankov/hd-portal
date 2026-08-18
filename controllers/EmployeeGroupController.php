@@ -189,32 +189,8 @@ class EmployeeGroupController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                // Если указаны сотрудники, обновляем их в группе
-                $employeeIds = Yii::$app->request->post('EmployeeGroup', [])['employee_ids'] ?? [];
-                
-                // Удаляем текущих сотрудников
-                EmployeeGroupMember::deleteAll(['employee_group_id' => $id]);
-                
-                // Добавляем новых
-                if (!empty($employeeIds)) {
-                    $userId = Yii::$app->user->id;
-                    $now = date('Y-m-d H:i:s');
-                    
-                    foreach ($employeeIds as $employeeId) {
-                        $member = new EmployeeGroupMember();
-                        $member->employee_group_id = $id;
-                        $member->user_id = $employeeId;
-                        $member->created_at = $now;
-                        $member->created_by = $userId;
-                        $member->save(false);
-                    }
-                }
-                
                 Yii::$app->session->setFlash('success', 'Группа сотрудников успешно обновлена.');
                 return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                // Если есть ошибки валидации, сохраняем выбранные сотрудники для повторного отображения
-                $selectedEmployeeIds = Yii::$app->request->post('EmployeeGroup', [])['employee_ids'] ?? [];
             }
         }
 
@@ -223,12 +199,18 @@ class EmployeeGroupController extends Controller
         
         // Загружаем всех активных сотрудников
         $allEmployees = User::find()->where(['status' => User::STATUS_ACTIVE])->all();
+        
+        // Получаем текущих сотрудников группы
+        $currentMemberIds = EmployeeGroupMember::find()
+            ->where(['employee_group_id' => $id])
+            ->select('user_id')
+            ->column();
 
         return $this->render('update', [
             'model' => $model,
             'organizations' => $organizations,
             'allEmployees' => $allEmployees,
-            'selectedEmployeeIds' => $selectedEmployeeIds,
+            'selectedEmployeeIds' => $currentMemberIds,
         ]);
     }
 

@@ -19,6 +19,7 @@ use yii\db\BaseActiveRecord;
  * @property string|null $updated_at Дата обновления
  * @property int|null $created_by ID пользователя создателя
  * @property int|null $updated_by ID пользователя редактора
+ * @property User[] $members Сотрудники в группе
  */
 class EmployeeGroup extends ActiveRecord
 {

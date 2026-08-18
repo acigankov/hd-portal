@@ -23,12 +23,17 @@ $this->params['breadcrumbs'][] = 'Редактирование';
 
 $this->registerJs(<<<JS
     $(document).ready(function() {
-        $('#employee-select').select2({
-            placeholder: 'Выберите сотрудников для добавления в группу',
-            allowClear: true,
-            language: 'ru',
-            width: '100%',
-            dropdownParent: $('.employee-group-form').closest('.card')
+        // Инициализация Select2 в модальном окне при его открытии
+        $('#editMembersModal').on('shown.bs.modal', function () {
+            if (!$('#modal-employee-select').data('select2')) {
+                $('#modal-employee-select').select2({
+                    placeholder: 'Выберите сотрудников...',
+                    allowClear: true,
+                    language: 'ru',
+                    width: '100%',
+                    dropdownParent: $('#editMembersModal')
+                });
+            }
         });
     });
 JS);
@@ -88,24 +93,37 @@ JS);
                             <hr class="my-4">
                             
                             <h4>Сотрудники группы</h4>
-                            <p class="text-muted mb-3">Выберите сотрудников, которые будут входить в эту группу:</p>
+                            <p class="text-muted mb-3">Текущий состав группы:</p>
                             
-                            <?php if (!empty($allEmployees)): ?>
-                                <?= Html::dropDownList(
-                                    'EmployeeGroup[employee_ids]',
-                                    $selectedIds,
-                                    \yii\helpers\ArrayHelper::map($allEmployees, 'id', function($employee) {
-                                        return $employee->login . ' (' . $employee->email . ')';
-                                    }),
-                                    [
-                                        'id' => 'employee-select',
-                                        'class' => 'form-control',
-                                        'multiple' => 'multiple',
-                                        'prompt' => 'Выберите сотрудников...'
-                                    ]
-                                ) ?>
+                            <?php if (!empty($model->members)): ?>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 50px;">#</th>
+                                                <th>Login</th>
+                                                <th>Email</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php $i = 1; foreach ($model->members as $member): ?>
+                                                <tr>
+                                                    <td><?= $i++ ?></td>
+                                                    <td><?= Html::encode($member->login ?? '-') ?></td>
+                                                    <td><?= Html::encode($member->email ?? '-') ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             <?php else: ?>
-                                <p class="text-muted">Нет доступных сотрудников для добавления.</p>
+                                <p class="text-muted mb-3">В этой группе пока нет сотрудников.</p>
+                            <?php endif; ?>
+                            
+                            <?php if(Yii::$app->user->can('admin')): ?>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editMembersModal">
+                                    <i class="bi bi-plus-lg"></i> Изменить состав
+                                </button>
                             <?php endif; ?>
 
                             <div class="form-group mt-3">
@@ -128,3 +146,36 @@ JS);
 
 
 </div>
+
+    <!-- Модальное окно редактирования состава -->
+    <?php if(Yii::$app->user->can('admin')): ?>
+    <div class="modal fade" id="editMembersModal" tabindex="-1" role="dialog" aria-labelledby="editMembersModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form method="post" action="<?= Yii::$app->urlManager->createUrl(['employee-group/add-members', 'id' => $model->id]) ?>">
+                    <input type="hidden" name="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editMembersModalLabel">Изменить состав группы</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Выберите сотрудников:</label>
+                            <select id="modal-employee-select" name="employee_ids[]" multiple="multiple" style="width: 100%;">
+                                <?php foreach ($allEmployees as $employee): ?>
+                                    <option value="<?= $employee->id ?>" <?= in_array($employee->id, $selectedIds) ? 'selected' : '' ?>>
+                                        <?= Html::encode($employee->login) ?> (<?= Html::encode($employee->email) ?>)
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
