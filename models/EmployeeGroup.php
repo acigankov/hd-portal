@@ -128,6 +128,16 @@ class EmployeeGroup extends ActiveRecord
     }
 
     /**
+     * Алиас для getMembers() для совместимости
+     * Возвращает сотрудников в группе
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployees()
+    {
+        return $this->getMembers();
+    }
+
+    /**
      * Проверяет, есть ли в группе сотрудники
      * @return bool
      */
