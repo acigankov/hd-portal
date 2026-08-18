@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="container-fluid">
 
             <!--begin::Row-->
-            <div class="row">
+            <div class="row mb-4">
                 <!--begin::Col-->
                 <div class="col">
                     <div class="card">
