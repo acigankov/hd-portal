@@ -180,9 +180,25 @@ class EmployeeGroupController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        // Проверяем, есть ли в группе сотрудники
+        if ($model->hasMembers()) {
+            return $this->asJson([
+                'success' => false,
+                'message' => 'Невозможно удалить группу: в ней назначены сотрудники. Сначала удалите всех сотрудников из группы.'
+            ]);
+        }
+
+        $model->delete();
 
         Yii::$app->session->setFlash('success', 'Группа сотрудников успешно удалена.');
+        
+        // Если запрос AJAX, возвращаем JSON
+        if (Yii::$app->request->isAjax) {
+            return $this->asJson(['success' => true]);
+        }
+        
         return $this->redirect(['index']);
     }
 

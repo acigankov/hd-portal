@@ -121,6 +121,15 @@ class EmployeeGroup extends ActiveRecord
     }
 
     /**
+     * Проверяет, есть ли в группе сотрудники
+     * @return bool
+     */
+    public function hasMembers()
+    {
+        return !empty($this->getMembers()->one());
+    }
+
+    /**
      * Возвращает статус в виде строки
      * @return string
      */

@@ -133,6 +133,24 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+    <!-- Модальное окно ошибки -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel"><i class="fas fa-exclamation-triangle me-2"></i>Ошибка</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMessage" class="mb-0"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php
     $csrfToken = Yii::$app->request->csrfToken;
 
@@ -165,12 +183,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.message || 'Не удалось удалить группу');
+                    // Показываем модальное окно с ошибкой
+                    $('#errorMessage').text(response.message || 'Не удалось удалить группу');
+                    $('#errorModal').modal('show');
                     $('#confirmDeleteModal').modal('hide');
                 }
             },
-            error: function() {
-                alert('Произошла ошибка при удалении');
+            error: function(xhr) {
+                var errorMsg = 'Произошла ошибка при удалении';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+                // Показываем модальное окно с ошибкой
+                $('#errorMessage').text(errorMsg);
+                $('#errorModal').modal('show');
                 $('#confirmDeleteModal').modal('hide');
             }
         });
