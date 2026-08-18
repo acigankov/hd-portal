@@ -45,6 +45,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="/employee-group" class="nav-link ">
+                        <i class="nav-icon bi bi-people"></i>
+                        <p>Группы сотрудников</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="/" class="nav-link ">
                         <i class="nav-icon bi bi-gear"></i>
                         <p>Настройки</p>
