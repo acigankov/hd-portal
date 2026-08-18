@@ -32,7 +32,7 @@ class EmployeeGroupController extends Controller
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['create', 'update', 'delete', 'add-members'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
