@@ -181,17 +181,44 @@ class EmployeeGroupController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Группа сотрудников успешно обновлена.');
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                // Если указаны сотрудники, обновляем их в группе
+                $employeeIds = Yii::$app->request->post('EmployeeGroup', [])['employee_ids'] ?? [];
+                
+                // Удаляем текущих сотрудников
+                EmployeeGroupMember::deleteAll(['employee_group_id' => $id]);
+                
+                // Добавляем новых
+                if (!empty($employeeIds)) {
+                    $userId = Yii::$app->user->id;
+                    $now = date('Y-m-d H:i:s');
+                    
+                    foreach ($employeeIds as $employeeId) {
+                        $member = new EmployeeGroupMember();
+                        $member->employee_group_id = $id;
+                        $member->user_id = $employeeId;
+                        $member->created_at = $now;
+                        $member->created_by = $userId;
+                        $member->save(false);
+                    }
+                }
+                
+                Yii::$app->session->setFlash('success', 'Группа сотрудников успешно обновлена.');
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         // Загружаем список организаций для выпадающего списка
         $organizations = Organization::find()->where(['status' => Organization::STATUS_ACTIVE])->all();
+        
+        // Загружаем всех активных сотрудников
+        $allEmployees = User::find()->where(['status' => User::STATUS_ACTIVE])->all();
 
         return $this->render('update', [
             'model' => $model,
             'organizations' => $organizations,
+            'allEmployees' => $allEmployees,
         ]);
     }
 

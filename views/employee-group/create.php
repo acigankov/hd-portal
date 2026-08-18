@@ -12,6 +12,17 @@ use yii\widgets\ActiveForm;
 $this->title = 'Создать группу сотрудников';
 $this->params['breadcrumbs'][] = ['label' => 'Группы сотрудников', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$this->registerJs(<<<JS
+    $(document).ready(function() {
+        $('#employee-select').select2({
+            placeholder: 'Выберите сотрудников для добавления в группу',
+            allowClear: true,
+            language: 'ru',
+            width: '100%'
+        });
+    });
+JS);
 ?>
 
 <!--begin::App Content Header-->
@@ -80,19 +91,19 @@ $this->params['breadcrumbs'][] = $this->title;
                             <p class="text-muted mb-3">Выберите сотрудников, которые будут входить в эту группу:</p>
                             
                             <?php if (!empty($allEmployees)): ?>
-                                <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
-                                    <?php foreach ($allEmployees as $employee): ?>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" 
-                                                   name="EmployeeGroup[employee_ids][]" 
-                                                   value="<?= $employee->id ?>" 
-                                                   id="employee_<?= $employee->id ?>">
-                                            <label class="form-check-label" for="employee_<?= $employee->id ?>">
-                                                <?= Html::encode($employee->login) ?> (<?= Html::encode($employee->email) ?>)
-                                            </label>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
+                                <?= Html::dropDownList(
+                                    'EmployeeGroup[employee_ids]',
+                                    null,
+                                    \yii\helpers\ArrayHelper::map($allEmployees, 'id', function($employee) {
+                                        return $employee->login . ' (' . $employee->email . ')';
+                                    }),
+                                    [
+                                        'id' => 'employee-select',
+                                        'class' => 'form-control',
+                                        'multiple' => 'multiple',
+                                        'prompt' => 'Выберите сотрудников...'
+                                    ]
+                                ) ?>
                             <?php else: ?>
                                 <p class="text-muted">Нет доступных сотрудников для добавления.</p>
                             <?php endif; ?>

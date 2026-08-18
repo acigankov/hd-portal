@@ -7,12 +7,24 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\EmployeeGroup */
 /* @var $organizations app\models\Organization[] */
+/* @var $allEmployees app\models\User[] */
 /* @var $form yii\widgets\ActiveForm */
 
 $this->title = 'Редактировать группу: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Группы сотрудников', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Редактирование';
+
+$this->registerJs(<<<JS
+    $(document).ready(function() {
+        $('#employee-select').select2({
+            placeholder: 'Выберите сотрудников для добавления в группу',
+            allowClear: true,
+            language: 'ru',
+            width: '100%'
+        });
+    });
+JS);
 ?>
 
 <div class="assignment-index">
@@ -66,7 +78,30 @@ $this->params['breadcrumbs'][] = 'Редактирование';
                                 EmployeeGroup::STATUS_INACTIVE => 'Неактивна',
                             ]) ?>
 
-                            <div class="form-group">
+                            <hr class="my-4">
+                            
+                            <h4>Сотрудники группы</h4>
+                            <p class="text-muted mb-3">Выберите сотрудников, которые будут входить в эту группу:</p>
+                            
+                            <?php if (!empty($allEmployees)): ?>
+                                <?= Html::dropDownList(
+                                    'EmployeeGroup[employee_ids]',
+                                    null,
+                                    \yii\helpers\ArrayHelper::map($allEmployees, 'id', function($employee) {
+                                        return $employee->login . ' (' . $employee->email . ')';
+                                    }),
+                                    [
+                                        'id' => 'employee-select',
+                                        'class' => 'form-control',
+                                        'multiple' => 'multiple',
+                                        'prompt' => 'Выберите сотрудников...'
+                                    ]
+                                ) ?>
+                            <?php else: ?>
+                                <p class="text-muted">Нет доступных сотрудников для добавления.</p>
+                            <?php endif; ?>
+
+                            <div class="form-group mt-3">
                                 <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
                                 <?= Html::a('Отмена', ['index'], ['class' => 'btn btn-default']) ?>
                             </div>
