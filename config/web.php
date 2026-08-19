@@ -104,9 +104,9 @@ $config = [
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
             [
-                'actions' => ['login', 'signup', 'request-password-reset', 'error'],
+                'actions' => ['login', 'signup', 'request-password-reset', 'error', 'set-language'],
                 'allow' => true,
-                'roles' => ['?'], // Разрешить гостям
+                'roles' => ['?', '@'], // Разрешить всем (и гостям, и авторизованным)
             ],
             [
                 'allow' => true,

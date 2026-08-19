@@ -161,7 +161,7 @@ use yii\helpers\Html;
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
                         <?= \yii\helpers\Html::a(
-                            '<i class="bi bi-flag"></i> ' . Yii::t('app', 'Russian'),
+                            '<i class="fi fi-rs"></i> ' . Yii::t('app', 'Russian'),
                             ['/site/set-language'],
                             [
                                 'class' => 'dropdown-item language-switcher' . (Yii::$app->language === 'ru-RU' ? ' active' : ''),
@@ -171,7 +171,7 @@ use yii\helpers\Html;
                     </li>
                     <li>
                         <?= \yii\helpers\Html::a(
-                            '<i class="bi bi-flag"></i> ' . Yii::t('app', 'English'),
+                            '<i class="fi fi-us"></i> ' . Yii::t('app', 'English'),
                             ['/site/set-language'],
                             [
                                 'class' => 'dropdown-item language-switcher' . (Yii::$app->language === 'en-US' ? ' active' : ''),
