@@ -137,12 +137,12 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <!--begin::Footer-->
         <footer class="app-footer">
         <!--begin::To the end-->
-        <div class="float-end d-none d-sm-inline">Чтобы делать - надо понимать!</div>
+        <div class="float-end d-none d-sm-inline"><?= Yii::t('app', 'To do - need to understand!') ?></div>
         <!--end::To the end-->
         <!--begin::Copyright-->
         <strong>
             &copy; 2025&nbsp;
-            Powered by
+            <?= Yii::t('app', 'Powered by') ?>
             <a href="<?= Html::encode(Yii::$app->params['appAuthorUrl'])?>" target="_blank" class="text-decoration-none"><?= Html::encode(Yii::$app->params['appAuthor'])?></a>.
         </strong>
         <!--end::Copyright-->

@@ -26,6 +26,17 @@ class SiteController extends Controller
                     'logout' => ['post'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['set-language'],
+                'rules' => [
+                    [
+                        'actions' => ['set-language'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
         ];
     }
     /**
@@ -116,5 +127,22 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Set language action.
+     *
+     * @return Response
+     */
+    public function actionSetLanguage()
+    {
+        $language = Yii::$app->request->post('language');
+        $allowedLanguages = ['ru-RU', 'en-US'];
+        
+        if (in_array($language, $allowedLanguages)) {
+            Yii::$app->session['language'] = $language;
+        }
+        
+        return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
     }
 }

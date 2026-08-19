@@ -7,12 +7,19 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'language' => 'ru-RU',
+    'sourceLanguage' => 'en-US',
     'timeZone' => 'Europe/Moscow', // укажите свой часовой пояс
     'bootstrap' => ['log', 'debug'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'on beforeRequest' => function ($event) {
+        $session = Yii::$app->session;
+        if ($session->has('language')) {
+            Yii::$app->language = $session->get('language');
+        }
+    },
     'modules' => [
         'debug' => [
             'class' => 'yii\debug\Module',
@@ -81,6 +88,13 @@ $config = [
                     'basePath' => '@vendor/yii2mod/yii2-rbac/messages',
 
                 ],
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                    ],
+                ],
             ],
         ],
 
@@ -90,9 +104,9 @@ $config = [
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
             [
-                'actions' => ['login', 'signup', 'request-password-reset', 'error'],
+                'actions' => ['login', 'signup', 'request-password-reset', 'error', 'set-language'],
                 'allow' => true,
-                'roles' => ['?'], // Разрешить гостям
+                'roles' => ['?', '@'], // Разрешить всем (и гостям, и авторизованным)
             ],
             [
                 'allow' => true,

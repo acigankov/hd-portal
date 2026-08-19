@@ -4,7 +4,7 @@
 
 use yii\helpers\Html;
 
-$this->title = 'About';
+$this->title = Yii::t('app', 'About');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-about">
@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php echo Html::img('https://i0.wp.com/9to5mac.com/wp-content/uploads/sites/6/2025/09/sora-app-icon.jpg?w=1500&quality=82&strip=all&ssl=1',['alt'=> 'hopa']);?>
 
     <p>
-        This is the About page. You may modify the following file to customize its content:
+        <?= Yii::t('app', 'This is the About page. You may modify the following file to customize its content:') ?>
     </p>
 
     <code><?= __FILE__ ?></code>
