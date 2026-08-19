@@ -77,7 +77,12 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
-                'login' => 'site/login'
+                'login' => 'site/login',
+                'status' => 'status/index',
+                'status/<id:\d+>' => 'status/view',
+                'status/create' => 'status/create',
+                'status/update/<id:\d+>' => 'status/update',
+                'status/delete/<id:\d+>' => 'status/delete',
             ],
         ],
         'i18n' => [

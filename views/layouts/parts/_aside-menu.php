@@ -33,6 +33,13 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a href="/status" class="nav-link ">
+            <i class="nav-icon bi bi-circle-fill"></i>
+            <p><?= Yii::t('app', 'Statuses') ?></p>
+        </a>
+    </li>
+
     <?php if (Yii::$app->user->can('admin')) : ?>
 
         <li class="nav-header"><?= Yii::t('app', 'Administration') ?></li>
