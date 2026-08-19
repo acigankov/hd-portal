@@ -1,4 +1,4 @@
-```php
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -12,12 +12,17 @@ __pycache__/
 *.out
 
 # Dependencies
-node_modules/
-venv/
+./vendor
+vendor/
 .venv/
-.env
-.env.local
-.env.*
+venv/
+node_modules/
+.mypy_cache/
+.pytest_cache/
+dist/
+build/
+target/
+.gradle/
 
 # Logs and temp files
 *.log
@@ -25,15 +30,10 @@ venv/
 *.swp
 *.swo
 
-# Build directories
-dist/
-build/
-target/
-coverage/
-htmlcov/
-.mypy_cache/
-.pytest_cache/
-.gradle/
+# Environment
+.env
+.env.local
+*.env.*
 
 # Editors
 .vscode/
@@ -42,4 +42,33 @@ htmlcov/
 # System files
 .DS_Store
 Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
