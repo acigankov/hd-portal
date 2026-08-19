@@ -11,57 +11,57 @@
     <li class="nav-item">
         <a href="/" class="nav-link active">
             <i class="nav-icon bi bi-speedometer"></i>
-            <p>Дашборд</p>
+            <p><?= Yii::t('app', 'Dashboard') ?></p>
         </a>
     </li>
     <li class="nav-item">
         <a href="/" class="nav-link ">
             <i class="nav-icon bi bi-card-list"></i>
-            <p>Заявки</p>
+            <p><?= Yii::t('app', 'Requests') ?></p>
         </a>
     </li>
     <li class="nav-item">
         <a href="/" class="nav-link ">
             <i class="nav-icon bi bi-card-text"></i>
-            <p>Задачи</p>
+            <p><?= Yii::t('app', 'Tasks') ?></p>
         </a>
     </li>
     <li class="nav-item">
         <a href="/" class="nav-link ">
             <i class="nav-icon bi bi-card-text"></i>
-            <p>Проблемы</p>
+            <p><?= Yii::t('app', 'Problems') ?></p>
         </a>
     </li>
 
     <?php if (Yii::$app->user->can('admin')) : ?>
 
-        <li class="nav-header">Администрирование</li>
+        <li class="nav-header"><?= Yii::t('app', 'Administration') ?></li>
 
                 <li class="nav-item">
                     <a href="/organization" class="nav-link ">
                         <i class="nav-icon bi bi-building"></i>
-                        <p>Организации</p>
+                        <p><?= Yii::t('app', 'Organizations') ?></p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="/employee-group" class="nav-link ">
                         <i class="nav-icon bi bi-people"></i>
-                        <p>Группы сотрудников</p>
+                        <p><?= Yii::t('app', 'Employee Groups') ?></p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="/" class="nav-link ">
                         <i class="nav-icon bi bi-gear"></i>
-                        <p>Настройки</p>
+                        <p><?= Yii::t('app', 'Settings') ?></p>
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a href="/rbac/" class="nav-link ">
                         <i class="nav-icon bi bi-people-fill"></i>
-                        <p>Пользователи</p>
+                        <p><?= Yii::t('app', 'Users') ?></p>
                     </a>
                 </li>
 

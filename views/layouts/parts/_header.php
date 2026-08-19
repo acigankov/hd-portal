@@ -161,7 +161,7 @@ use yii\helpers\Html;
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
                         <?= \yii\helpers\Html::a(
-                            '<i class="fi fi-rs"></i> ' . Yii::t('app', 'Russian'),
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" class="me-2"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM5.5 4.5a1 1 0 1 1 2 0v2.5h2.5a1 1 0 1 1 0 2h-2.5v2.5a1 1 0 1 1-2 0V9H3a1 1 0 1 1 0-2h2.5V4.5z"/></svg>' . Yii::t('app', 'Russian'),
                             ['/site/set-language'],
                             [
                                 'class' => 'dropdown-item language-switcher' . (Yii::$app->language === 'ru-RU' ? ' active' : ''),
@@ -171,7 +171,7 @@ use yii\helpers\Html;
                     </li>
                     <li>
                         <?= \yii\helpers\Html::a(
-                            '<i class="fi fi-us"></i> ' . Yii::t('app', 'English'),
+                            '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16" class="me-2"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zm-1 3v2H5v1h2v2h1V7h2V6H8V4H7z"/></svg>' . Yii::t('app', 'English'),
                             ['/site/set-language'],
                             [
                                 'class' => 'dropdown-item language-switcher' . (Yii::$app->language === 'en-US' ? ' active' : ''),
