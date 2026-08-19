@@ -14,8 +14,8 @@ use yii\helpers\Html;
                     <i class="bi bi-list"></i>
                 </a>
             </li>
-            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Мои заявки </a></li>
-            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link">Мое еще что-нибудь</a></li>
+            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link"><?= Yii::t('app', 'My Requests') ?> </a></li>
+            <li class="nav-item d-none d-md-block"><a href="/" class="nav-link"><?= Yii::t('app', 'My Something Else') ?></a></li>
 
         </ul>
         <!--begin::End Navbar Links-->
@@ -112,7 +112,7 @@ use yii\helpers\Html;
                         <!--end::Message-->
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    <a href="#" class="dropdown-item dropdown-footer"><?= Yii::t('app', 'See All Messages') ?></a>
                 </div>
             </li>
             <!--end::Messages Dropdown Menu-->
@@ -123,24 +123,24 @@ use yii\helpers\Html;
                     <span class="navbar-badge badge text-bg-warning">15</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                    <span class="dropdown-item dropdown-header">15 Notifications</span>
+                    <span class="dropdown-item dropdown-header"><?= Yii::t('app', 'Notifications') ?></span>
                     <div class="dropdown-divider"></div>
                     <a href="#" class="dropdown-item">
-                        <i class="bi bi-envelope me-2"></i> 4 new messages
+                        <i class="bi bi-envelope me-2"></i> 4 <?= Yii::t('app', 'new messages') ?>
                         <span class="float-end text-secondary fs-7">3 mins</span>
                     </a>
                     <div class="dropdown-divider"></div>
                     <a href="#" class="dropdown-item">
-                        <i class="bi bi-people-fill me-2"></i> 8 friend requests
+                        <i class="bi bi-people-fill me-2"></i> 8 <?= Yii::t('app', 'friend requests') ?>
                         <span class="float-end text-secondary fs-7">12 hours</span>
                     </a>
                     <div class="dropdown-divider"></div>
                     <a href="#" class="dropdown-item">
-                        <i class="bi bi-file-earmark-fill me-2"></i> 3 new reports
+                        <i class="bi bi-file-earmark-fill me-2"></i> 3 <?= Yii::t('app', 'new reports') ?>
                         <span class="float-end text-secondary fs-7">2 days</span>
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer"> See All Notifications </a>
+                    <a href="#" class="dropdown-item dropdown-footer"> <?= Yii::t('app', 'See All Notifications') ?> </a>
                 </div>
             </li>
             <!--end::Notifications Dropdown Menu-->
@@ -152,6 +152,38 @@ use yii\helpers\Html;
                 </a>
             </li>
             <!--end::Fullscreen Toggle-->
+            <!--begin::Language Menu Dropdown-->
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#">
+                    <i class="bi bi-globe"></i>
+                    <span class="d-none d-md-inline"><?= Yii::t('app', Yii::$app->language === 'en-US' ? 'English' : 'Russian') ?></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                        <?= \yii\helpers\Html::a(
+                            '<i class="bi bi-flag"></i> ' . Yii::t('app', 'Russian'),
+                            ['/site/set-language'],
+                            [
+                                'class' => 'dropdown-item' . (Yii::$app->language === 'ru-RU' ? ' active' : ''),
+                                'data' => ['method' => 'post'],
+                                'data-language' => 'ru-RU',
+                            ]
+                        ) ?>
+                    </li>
+                    <li>
+                        <?= \yii\helpers\Html::a(
+                            '<i class="bi bi-flag"></i> ' . Yii::t('app', 'English'),
+                            ['/site/set-language'],
+                            [
+                                'class' => 'dropdown-item' . (Yii::$app->language === 'en-US' ? ' active' : ''),
+                                'data' => ['method' => 'post'],
+                                'data-language' => 'en-US',
+                            ]
+                        ) ?>
+                    </li>
+                </ul>
+            </li>
+            <!--end::Language Menu Dropdown-->
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
@@ -180,18 +212,18 @@ use yii\helpers\Html;
                     <li class="user-body">
                         <!--begin::Row-->
                         <div class="row">
-                            <div class="col-4 text-center"><a href="#">Followers</a></div>
-                            <div class="col-4 text-center"><a href="#">Sales</a></div>
-                            <div class="col-4 text-center"><a href="#">Friends</a></div>
+                            <div class="col-4 text-center"><a href="#"><?= Yii::t('app', 'Followers') ?></a></div>
+                            <div class="col-4 text-center"><a href="#"><?= Yii::t('app', 'Sales') ?></a></div>
+                            <div class="col-4 text-center"><a href="#"><?= Yii::t('app', 'Friends') ?></a></div>
                         </div>
                         <!--end::Row-->
                     </li>
                     <!--end::Menu Body-->
                     <!--begin::Menu Footer-->
                     <li class="user-footer">
-                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        <a href="#" class="btn btn-default btn-flat"><?= Yii::t('app', 'Profile') ?></a>
                         <!-- Или через Html::a с data-method -->
-                        <?= Html::a('выйти', ['/site/logout'], ['data' => ['method' => 'post'], 'class' => 'btn btn-default btn-flat float-end"']) ?>
+                        <?= Html::a(Yii::t('app', 'Sign out'), ['/site/logout'], ['data' => ['method' => 'post'], 'class' => 'btn btn-default btn-flat float-end"']) ?>
 <!--                        <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>-->
                     </li>
                     <!--end::Menu Footer-->
