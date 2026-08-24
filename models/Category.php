@@ -113,10 +113,10 @@ class Category extends ActiveRecord
      */
     public function scenarios()
     {
-        $scenarios = parent::scenarios();
-        $scenarios['create'] = ['name', 'code', 'description', 'color', 'icon', 'sort_order', 'for_requests', 'for_tasks', 'for_problems', 'status'];
-        $scenarios['update'] = ['name', 'code', 'description', 'color', 'icon', 'sort_order', 'for_requests', 'for_tasks', 'for_problems', 'status'];
-        return $scenarios;
+        return [
+            'create' => ['name', 'code', 'description', 'color', 'icon', 'sort_order', 'for_requests', 'for_tasks', 'for_problems', 'status'],
+            'update' => ['name', 'code', 'description', 'color', 'icon', 'sort_order', 'for_requests', 'for_tasks', 'for_problems', 'status'],
+        ];
     }
 
     /**
