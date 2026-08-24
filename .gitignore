@@ -1,34 +1,28 @@
-```php
-# Dependencies
-vendor/
-composer.lock
+```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
 
-# Logs
+# Dependencies
+.venv/
+venv/
+node_modules/
+
+# Logs and temp files
 *.log
-logs/
+*.tmp
+*.swp
 
 # Environment
 .env
 .env.local
 .env.*
 
-# IDE
+# Editors
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Cache
-cache/
-tmp/
-*.tmp
-
-# Build artifacts
-build/
-dist/
-target/
 ```

@@ -15,12 +15,6 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="/category" class="nav-link ">
-            <i class="nav-icon bi bi-folder"></i>
-            <p><?= Yii::t('app', 'Categories') ?></p>
-        </a>
-    </li>
-    <li class="nav-item">
         <a href="/" class="nav-link ">
             <i class="nav-icon bi bi-card-list"></i>
             <p><?= Yii::t('app', 'Requests') ?></p>
@@ -42,6 +36,13 @@
     <?php if (Yii::$app->user->can('admin')) : ?>
 
         <li class="nav-header"><?= Yii::t('app', 'Administration') ?></li>
+
+                <li class="nav-item">
+                    <a href="/category" class="nav-link ">
+                        <i class="nav-icon bi bi-folder"></i>
+                        <p><?= Yii::t('app', 'Categories') ?></p>
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a href="/status" class="nav-link ">
