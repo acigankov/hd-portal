@@ -170,7 +170,11 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                                     'bi-info-circle' => Yii::t('app', 'Info Circle'),
                                     'bi-exclamation-triangle' => Yii::t('app', 'Warning'),
                                     'bi-question-circle' => Yii::t('app', 'Question'),
-                                ], ['prompt' => Yii::t('app', 'Select icon...')])
+                                ], [
+                                    'prompt' => Yii::t('app', 'Select icon...'),
+                                    'id' => 'category-icon',
+                                    'class' => 'form-select icon-select',
+                                ])
                                 ->label(Yii::t('app', 'Icon')) ?>
 
                             <?= $form->field($model, 'sort_order')
@@ -260,7 +264,42 @@ $this->registerJs(<<<JS
         }
     });
 })();
+
+// Инициализация Select2 для поля иконки с ограниченной высотой и иконками
+$(document).ready(function() {
+    $('#category-icon').select2({
+        placeholder: '{$model->getAttributeLabel('icon')}',
+        allowClear: true,
+        language: 'ru',
+        width: '100%',
+        dropdownParent: $('.category-form').length ? $('.category-form').closest('.card') : $(document.body),
+        dropdownCssClass: 'icon-dropdown',
+        templateResult: function(option) {
+            if (!option.id) return option.text;
+            return $('<span><i class=\"bi ' + option.id + ' me-2\"></i>' + option.text + '</span>');
+        },
+        templateSelection: function(option) {
+            if (!option.id) return option.text;
+            return $('<span><i class=\"bi ' + option.id + ' me-2\"></i>' + option.text + '</span>');
+        }
+    });
+});
 JS, \yii\web\View::POS_END);
+
+$this->registerCss(<<<CSS
+.icon-dropdown .select2-results__options {
+    max-height: 250px !important;
+}
+.icon-dropdown .select2-result__label {
+    display: flex !important;
+    align-items: center !important;
+}
+.icon-dropdown .select2-result__label i {
+    font-size: 1.1em;
+    min-width: 20px;
+}
+CSS
+, \yii\web\View::POS_HEAD);
 ?>
 
 
