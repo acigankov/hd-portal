@@ -241,4 +241,20 @@ return [
     'Yes' => 'Yes',
     'No' => 'No',
     'Tickets' => 'Tickets',
+    
+    // Authors
+    'Authors' => 'Authors',
+    'New author' => 'New author',
+    'List of Authors' => 'List of Authors',
+    'Full Name' => 'Full Name',
+    'Enter full name' => 'Enter full name',
+    'Enter position' => 'Enter position',
+    'Position' => 'Position',
+    'Confirm deletion of author' => 'Confirm deletion of author',
+    'View author' => 'View author',
+    'Create author' => 'Create author',
+    'Edit author: ' => 'Edit author: ',
+    'Author successfully created.' => 'Author successfully created.',
+    'Author successfully updated.' => 'Author successfully updated.',
+    'Author successfully deleted.' => 'Author successfully deleted.',
 ];

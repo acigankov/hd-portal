@@ -229,6 +229,22 @@ return [
     'Email' => 'Email',
     '#' => '#',
     
+    // Авторы - index
+    'Authors' => 'Авторы',
+    'New author' => 'Новый автор',
+    'List of Authors' => 'Список Авторов',
+    'Full Name' => 'ФИО',
+    'Enter full name' => 'Введите ФИО',
+    'Enter position' => 'Введите должность',
+    'Position' => 'Должность',
+    'Confirm deletion of author' => 'Подтвердите удаление автора',
+    'View author' => 'Просмотр автора',
+    'Create author' => 'Создать автора',
+    'Edit author: ' => 'Редактировать автора: ',
+    'Author successfully created.' => 'Автор успешно создан.',
+    'Author successfully updated.' => 'Автор успешно обновлен.',
+    'Author successfully deleted.' => 'Автор успешно удален.',
+    
     // RBAC - Пользователи
     'Users' => 'Пользователи',
     'New user' => 'Новый пользователь',

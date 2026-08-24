@@ -59,6 +59,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="/author" class="nav-link ">
+                        <i class="nav-icon bi bi-person-badge"></i>
+                        <p><?= Yii::t('app', 'Authors') ?></p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="/" class="nav-link ">
                         <i class="nav-icon bi bi-gear"></i>
                         <p><?= Yii::t('app', 'Settings') ?></p>
