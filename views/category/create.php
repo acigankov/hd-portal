@@ -173,21 +173,12 @@ $this->registerJs(<<<JS
             if (codeInput.value === '') {
                 const transliterated = transliterate(this.value);
                 codeInput.value = transliterated;
-                console.log('Transliterated:', this.value, '->', transliterated);
-            }
-        });
-        
-        // Также обрабатываем событие change для надежности
-        nameInput.addEventListener('change', function() {
-            if (codeInput.value === '') {
-                const transliterated = transliterate(this.value);
-                codeInput.value = transliterated;
             }
         });
     }
 })();
 JS
-);
+, \yii\web\View::POS_END);
 ?>
 
 
