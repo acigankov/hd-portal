@@ -126,11 +126,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $this->registerJs(<<<JS
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
     const nameInput = document.getElementById('category-name');
     const codeInput = document.getElementById('category-code');
     
     if (nameInput && codeInput) {
+        // Флаг: начал ли пользователь ручное редактирование поля Code
+        let manualEditStarted = false;
+        
+        // Отслеживаем начало ручного редактирования поля Code
+        codeInput.addEventListener('focus', function() {
+            manualEditStarted = true;
+        });
+        
         // Функция транслитерации
         function transliterate(text) {
             const translitMap = {
@@ -168,15 +176,16 @@ $this->registerJs(<<<JS
             return result;
         }
         
-        // Автозаполнение поля Code при изменении Name, только если Code пустое
+        // Автозаполнение поля Code при вводе в Name
         nameInput.addEventListener('input', function() {
-            if (codeInput.value === '') {
+            // Автозаполняем только если пользователь не начал ручное редактирование
+            if (!manualEditStarted) {
                 const transliterated = transliterate(this.value);
                 codeInput.value = transliterated;
             }
         });
     }
-})();
+});
 JS
 , \yii\web\View::POS_END);
 ?>
