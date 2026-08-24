@@ -245,6 +245,25 @@ return [
     'Author successfully updated.' => 'Автор успешно обновлен.',
     'Author successfully deleted.' => 'Автор успешно удален.',
     
+    // Категории
+    'Categories' => 'Категории',
+    'New category' => 'Новая категория',
+    'List of Categories' => 'Список Категорий',
+    'Icon' => 'Иконка',
+    'For Requests' => 'Для заявок',
+    'For Tasks' => 'Для задач',
+    'For Problems' => 'Для проблем',
+    'Confirm deletion of category' => 'Подтвердите удаление категории',
+    'View category' => 'Просмотр категории',
+    'Create category' => 'Создать категорию',
+    'Edit category' => 'Редактировать категорию',
+    'Category information' => 'Информация о категории',
+    'Enter category name' => 'Введите название категории',
+    'Category successfully created.' => 'Категория успешно создана.',
+    'Category successfully updated.' => 'Категория успешно обновлена.',
+    'Category successfully deleted.' => 'Категория успешно удалена.',
+    'The requested page does not exist.' => 'Запрошенная страница не найдена.',
+    
     // RBAC - Пользователи
     'Users' => 'Пользователи',
     'New user' => 'Новый пользователь',

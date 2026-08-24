@@ -15,6 +15,12 @@
         </a>
     </li>
     <li class="nav-item">
+        <a href="/category" class="nav-link ">
+            <i class="nav-icon bi bi-folder"></i>
+            <p><?= Yii::t('app', 'Categories') ?></p>
+        </a>
+    </li>
+    <li class="nav-item">
         <a href="/" class="nav-link ">
             <i class="nav-icon bi bi-card-list"></i>
             <p><?= Yii::t('app', 'Requests') ?></p>
@@ -28,7 +34,7 @@
     </li>
     <li class="nav-item">
         <a href="/" class="nav-link ">
-            <i class="nav-icon bi bi-card-text"></i>
+            <i class="nav-icon bi bi-exclamation-triangle"></i>
             <p><?= Yii::t('app', 'Problems') ?></p>
         </a>
     </li>

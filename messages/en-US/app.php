@@ -257,4 +257,23 @@ return [
     'Author successfully created.' => 'Author successfully created.',
     'Author successfully updated.' => 'Author successfully updated.',
     'Author successfully deleted.' => 'Author successfully deleted.',
+    
+    // Categories
+    'Categories' => 'Categories',
+    'New category' => 'New category',
+    'List of Categories' => 'List of Categories',
+    'Icon' => 'Icon',
+    'For Requests' => 'For Requests',
+    'For Tasks' => 'For Tasks',
+    'For Problems' => 'For Problems',
+    'Confirm deletion of category' => 'Confirm deletion of category',
+    'View category' => 'View category',
+    'Create category' => 'Create category',
+    'Edit category' => 'Edit category',
+    'Category information' => 'Category information',
+    'Enter category name' => 'Enter category name',
+    'Category successfully created.' => 'Category successfully created.',
+    'Category successfully updated.' => 'Category successfully updated.',
+    'Category successfully deleted.' => 'Category successfully deleted.',
+    'The requested page does not exist.' => 'The requested page does not exist.',
 ];
