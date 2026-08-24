@@ -55,11 +55,11 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                             ]); ?>
 
                             <?= $form->field($model, 'name')
-                                ->textInput(['maxlength' => 255, 'placeholder' => Yii::t('app', 'Enter category name')])
+                                ->textInput(['maxlength' => 255, 'placeholder' => Yii::t('app', 'Enter category name'), 'id' => 'category-name'])
                                 ->label(Yii::t('app', 'Name') . ' *') ?>
 
                             <?= $form->field($model, 'code')
-                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. hardware, software, network'])
+                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. hardware, software, network', 'id' => 'category-code'])
                                 ->label(Yii::t('app', 'Code') . ' *') ?>
 
                             <?= $form->field($model, 'description')
@@ -126,6 +126,61 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
         </div>
     </div>
 </div>
+
+<?php
+$this->registerJs(<<<JS
+(function() {
+    const nameInput = document.getElementById('category-name');
+    const codeInput = document.getElementById('category-code');
+    
+    if (nameInput && codeInput) {
+        // Функция транслитерации
+        function transliterate(text) {
+            const translitMap = {
+                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+                'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+                'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+                'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+                'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch',
+                'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+                'э': 'e', 'ю': 'yu', 'я': 'ya',
+                'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D',
+                'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh', 'З': 'Z', 'И': 'I',
+                'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N',
+                'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T',
+                'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts', 'Ч': 'Ch',
+                'Ш': 'Sh', 'Щ': 'Sch', 'Ъ': '', 'Ы': 'Y', 'Ь': '',
+                'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+            };
+            
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                result += translitMap[text[i]] || text[i];
+            }
+            
+            // Заменяем все не alphanumeric символы на дефис
+            result = result.replace(/[^a-zA-Z0-9_-]/g, '-');
+            // Удаляем множественные дефисы
+            result = result.replace(/-+/g, '-');
+            // Удаляем дефисы в начале и конце
+            result = result.replace(/^-+|-+$/g, '');
+            // Приводим к нижнему регистру
+            result = result.toLowerCase();
+            
+            return result;
+        }
+        
+        // Автозаполнение поля Code при изменении Name, только если Code пустое
+        nameInput.addEventListener('input', function() {
+            if (codeInput.value === '') {
+                codeInput.value = transliterate(this.value);
+            }
+        });
+    }
+})();
+JS
+);
+?>
 
 
 <!--end::App Content -->

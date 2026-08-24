@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
+use app\components\TransliterationBehavior;
 
 /**
  * Модель категории
@@ -45,6 +46,13 @@ class Category extends ActiveRecord
     public function behaviors()
     {
         return [
+            'transliteration' => [
+                'class' => TransliterationBehavior::class,
+                'sourceAttribute' => 'name',
+                'targetAttribute' => 'code',
+                'onlyOnNewRecords' => true, // Только при создании новой записи
+                'allowManualEdit' => true,  // Разрешить ручное редактирование поля code
+            ],
             [
                 'class' => TimestampBehavior::class,
                 'attributes' => [
