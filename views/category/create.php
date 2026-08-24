@@ -152,7 +152,8 @@ $this->registerJs(<<<JS
             
             let result = '';
             for (let i = 0; i < text.length; i++) {
-                result += translitMap[text[i]] || text[i];
+                const char = text[i];
+                result += translitMap[char] !== undefined ? translitMap[char] : char;
             }
             
             // Заменяем все не alphanumeric символы на дефис
@@ -170,7 +171,17 @@ $this->registerJs(<<<JS
         // Автозаполнение поля Code при изменении Name, только если Code пустое
         nameInput.addEventListener('input', function() {
             if (codeInput.value === '') {
-                codeInput.value = transliterate(this.value);
+                const transliterated = transliterate(this.value);
+                codeInput.value = transliterated;
+                console.log('Transliterated:', this.value, '->', transliterated);
+            }
+        });
+        
+        // Также обрабатываем событие change для надежности
+        nameInput.addEventListener('change', function() {
+            if (codeInput.value === '') {
+                const transliterated = transliterate(this.value);
+                codeInput.value = transliterated;
             }
         });
     }
