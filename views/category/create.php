@@ -1,17 +1,15 @@
 <?php
 
-use app\models\Status;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Status */
+/* @var $model app\models\Category */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = Yii::t('app', 'Edit status') . ': ' . Html::encode($model->name);
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Statuses'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => Html::encode($model->name), 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
+$this->title = Yii::t('app', 'Create category');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Categories'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <!--begin::App Content Header-->
@@ -24,8 +22,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                     <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
-                    <li class="breadcrumb-item"><a href="<?= \yii\helpers\Url::to(['index']) ?>"><?= Yii::t('app', 'Statuses') ?></a></li>
-                    <li class="breadcrumb-item"><a href="<?= \yii\helpers\Url::to(['view', 'id' => $model->id]) ?>"><?= Html::encode($model->name) ?></a></li>
+                    <li class="breadcrumb-item"><a href="<?= \yii\helpers\Url::to(['index']) ?>"><?= Yii::t('app', 'Categories') ?></a></li>
                     <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
                 </ol>
             </div>
@@ -42,11 +39,11 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
     <div class="container-fluid">
         <div class="row">
             <div class="col-8">
-                <div class="status-form">
+                <div class="category-form">
                     <div class="card">
                         <div class="card-body">
                             <?php $form = ActiveForm::begin([
-                                'id' => 'status-update-form',
+                                'id' => 'category-create-form',
                                 'errorCssClass' => 'invalid-feedback',
                                 'fieldConfig' => [
                                     'template' => "{label}\n<div class=\"col\">{input}</div>\n<div class=\"col\">{error}</div>",
@@ -55,11 +52,11 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                             ]); ?>
 
                             <?= $form->field($model, 'name')
-                                ->textInput(['maxlength' => 255, 'placeholder' => Yii::t('app', 'Enter status name')])
+                                ->textInput(['autofocus' => true, 'placeholder' => Yii::t('app', 'Enter category name'), 'id' => 'category-name'])
                                 ->label(Yii::t('app', 'Name') . ' *') ?>
 
                             <?= $form->field($model, 'code')
-                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. new, in_progress, done', 'id' => 'status-code'])
+                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. hardware, software, network', 'id' => 'category-code'])
                                 ->label(Yii::t('app', 'Code') . ' *') ?>
 
                             <?= $form->field($model, 'description')
@@ -79,9 +76,9 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                                 ])
                                 ->label(Yii::t('app', 'Color')) ?>
 
-                            <?= $form->field($model, 'is_default')
-                                ->checkbox()
-                                ->label(Yii::t('app', 'Default')) ?>
+                            <?= $form->field($model, 'icon')
+                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. folder, laptop, wifi'])
+                                ->label(Yii::t('app', 'Icon')) ?>
 
                             <?= $form->field($model, 'sort_order')
                                 ->textInput(['type' => 'number', 'placeholder' => '0'])
@@ -101,16 +98,13 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                                     <div class="form-check form-check-inline">
                                         <?= $form->field($model, 'for_problems')->checkbox(['label' => Yii::t('app', 'Problems'), 'class' => 'form-check-input']) ?>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <?= $form->field($model, 'for_tickets')->checkbox(['label' => Yii::t('app', 'Tickets'), 'class' => 'form-check-input']) ?>
-                                    </div>
                                 </div>
                             </div>
 
                             <?= $form->field($model, 'status')
                                 ->dropDownList([
-                                    Status::STATUS_ACTIVE => Yii::t('app', 'Active'),
-                                    Status::STATUS_INACTIVE => Yii::t('app', 'Inactive'),
+                                    \app\models\Category::STATUS_ACTIVE => Yii::t('app', 'Active'),
+                                    \app\models\Category::STATUS_INACTIVE => Yii::t('app', 'Inactive'),
                                 ])
                                 ->label(Yii::t('app', 'Status')) ?>
 
@@ -118,7 +112,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                                 <?= Html::submitButton('<i class="fas fa-save"></i> ' . Yii::t('app', 'Save'), [
                                     'class' => 'btn btn-primary'
                                 ]) ?>
-                                <?= Html::a(Yii::t('app', 'Cancel'), ['view', 'id' => $model->id], ['class' => 'btn btn-secondary']) ?>
+                                <?= Html::a(Yii::t('app', 'Cancel'), ['index'], ['class' => 'btn btn-secondary']) ?>
                             </div>
 
                             <?php ActiveForm::end(); ?>
@@ -134,8 +128,8 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
 $translitUrl = \yii\helpers\Url::to(['transliterate']);
 $this->registerJs(<<<JS
 (function() {
-    const nameInput = document.querySelector('#status-name');
-    const codeInput = document.getElementById('status-code');
+    const nameInput = document.getElementById('category-name');
+    const codeInput = document.getElementById('category-code');
     
     if (!nameInput || !codeInput) return;
     

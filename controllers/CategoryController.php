@@ -7,13 +7,13 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use app\models\Status;
-use app\models\StatusSearch;
+use app\models\Category;
+use app\models\CategorySearch;
 
 /**
- * StatusController implements the CRUD actions for Status model.
+ * CategoryController implements the CRUD actions for Category model.
  */
-class StatusController extends Controller
+class CategoryController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -46,12 +46,12 @@ class StatusController extends Controller
     }
 
     /**
-     * Lists all Status models.
+     * Lists all Category models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new StatusSearch();
+        $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -61,7 +61,7 @@ class StatusController extends Controller
     }
 
     /**
-     * Displays a single Status model.
+     * Displays a single Category model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -74,16 +74,16 @@ class StatusController extends Controller
     }
 
     /**
-     * Creates a new Status model.
+     * Creates a new Category model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Status();
+        $model = new Category();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Статус успешно создан.');
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Category successfully created.'));
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -93,7 +93,7 @@ class StatusController extends Controller
     }
 
     /**
-     * Updates an existing Status model.
+     * Updates an existing Category model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -104,7 +104,7 @@ class StatusController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Статус успешно обновлен.');
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Category successfully updated.'));
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -114,7 +114,7 @@ class StatusController extends Controller
     }
 
     /**
-     * Deletes an existing Status model.
+     * Deletes an existing Category model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -124,20 +124,20 @@ class StatusController extends Controller
     {
         $this->findModel($id)->delete();
 
-        Yii::$app->session->setFlash('success', 'Статус успешно удален.');
+        Yii::$app->session->setFlash('success', Yii::t('app', 'Category successfully deleted.'));
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Status model based on its primary key value.
+     * Finds the Category model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Status the loaded model
+     * @return Category the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Status::findOne($id)) !== null) {
+        if (($model = Category::findOne($id)) !== null) {
             return $model;
         }
 
