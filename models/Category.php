@@ -109,6 +109,17 @@ class Category extends ActiveRecord
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+        $scenarios['create'] = ['name', 'code', 'description', 'color', 'icon', 'sort_order', 'for_requests', 'for_tasks', 'for_problems', 'status'];
+        $scenarios['update'] = ['name', 'code', 'description', 'color', 'icon', 'sort_order', 'for_requests', 'for_tasks', 'for_problems', 'status'];
+        return $scenarios;
+    }
+
+    /**
      * Возвращает пользователя-создателя
      * @return \yii\db\ActiveQuery
      */
