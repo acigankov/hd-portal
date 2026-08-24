@@ -25,7 +25,7 @@ class CategoryController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view'],
+                        'actions' => ['index', 'view', 'transliterate'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -142,5 +142,26 @@ class CategoryController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Transliterates text to Latin characters.
+     * @return string JSON response with transliteration
+     */
+    public function actionTransliterate()
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        
+        $data = json_decode(file_get_contents('php://input'), true);
+        $text = $data['text'] ?? '';
+        
+        if (empty($text)) {
+            return ['transliteration' => ''];
+        }
+        
+        $behavior = new \app\components\TransliterationBehavior();
+        $transliteration = $behavior->transliterate($text);
+        
+        return ['transliteration' => $transliteration];
     }
 }

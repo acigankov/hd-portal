@@ -1,1 +1,34 @@
-Nothing needs to be added to .gitignore since only a PHP source file was modified and no build artifacts, dependencies, or temporary files were detected in the changes.
+```php
+# Dependencies
+vendor/
+composer.lock
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+cache/
+tmp/
+*.tmp
+
+# Build artifacts
+build/
+dist/
+target/
+```

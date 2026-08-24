@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                                 ->label(Yii::t('app', 'Name') . ' *') ?>
 
                             <?= $form->field($model, 'code')
-                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. new, in_progress, done'])
+                                ->textInput(['maxlength' => 50, 'placeholder' => 'e.g. new, in_progress, done', 'id' => 'status-code'])
                                 ->label(Yii::t('app', 'Code') . ' *') ?>
 
                             <?= $form->field($model, 'description')
@@ -129,6 +129,52 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
         </div>
     </div>
 </div>
+
+<?php
+$translitUrl = \yii\helpers\Url::to(['transliterate']);
+$this->registerJs(<<<JS
+(function() {
+    const nameInput = document.querySelector('#status-name');
+    const codeInput = document.getElementById('status-code');
+    
+    if (!nameInput || !codeInput) return;
+    
+    let manualEdit = false;
+    
+    codeInput.addEventListener('focus', function() {
+        if (this.value !== '') {
+            manualEdit = true;
+        }
+    });
+    
+    codeInput.addEventListener('input', function() {
+        manualEdit = true;
+    });
+    
+    nameInput.addEventListener('input', function() {
+        if (!manualEdit && this.value.trim() !== '') {
+            fetch('$translitUrl', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ text: this.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.transliteration) {
+                    codeInput.value = data.transliteration.toLowerCase().replace(/[^a-z0-9_]/g, '_');
+                    manualEdit = false;
+                }
+            })
+            .catch(err => console.error('Transliteration error:', err));
+        }
+    });
+})();
+JS, \yii\web\View::POS_END);
+?>
 
 
 <!--end::App Content -->
