@@ -37,8 +37,10 @@ htmlcov/
 # Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# System files
+# OS specific
 .DS_Store
 Thumbs.db
 ```
