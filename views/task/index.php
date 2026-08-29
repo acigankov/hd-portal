@@ -2,11 +2,15 @@
 
 use app\models\Task;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\web\View;
 
 /* @var $this \yii\web\View */
 /* @var $searchModel \app\models\TaskSearch */
 /* @var $dataProvider \yii\data\ActiveDataProvider */
+/* @var $categories array */
+/* @var $statuses array */
+/* @var $users array */
 
 $this->title = Yii::t('app', 'Tasks');
 $this->params['breadcrumbs'][] = $this->title;
@@ -80,18 +84,24 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><span class="badge bg-info"><?= Html::encode($item->task_number) ?></span></td>
                                         <td><?= Html::a(Html::encode($item->title), ['/task/view', 'id' => $item->id]) ?></td>
                                         <td>
-                                            <?php if ($item->category): ?>
-                                                <span class="badge <?= $item->category->color ?>">
-                                                    <?= Html::encode($item->category->name) ?>
+                                            <?php 
+                                            $category = $categories[$item->category_id] ?? null;
+                                            if ($category): 
+                                            ?>
+                                                <span class="badge <?= Html::encode($category->color) ?>">
+                                                    <?= Html::encode($category->name) ?>
                                                 </span>
                                             <?php else: ?>
                                                 -
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?php if ($item->status): ?>
-                                                <span class="badge <?= $item->status->color ?>">
-                                                    <?= Html::encode($item->status->name) ?>
+                                            <?php 
+                                            $status = $statuses[$item->status_id] ?? null;
+                                            if ($status): 
+                                            ?>
+                                                <span class="badge <?= Html::encode($status->color) ?>">
+                                                    <?= Html::encode($status->name) ?>
                                                 </span>
                                             <?php else: ?>
                                                 -
@@ -103,8 +113,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                             </span>
                                         </td>
                                         <td>
-                                            <?php if ($item->responsible): ?>
-                                                <?= Html::encode($item->responsible->login) ?>
+                                            <?php 
+                                            $user = $users[$item->responsible_id] ?? null;
+                                            if ($user): 
+                                            ?>
+                                                <?= Html::encode($user->login) ?>
                                             <?php else: ?>
                                                 -
                                             <?php endif; ?>

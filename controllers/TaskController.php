@@ -57,10 +57,18 @@ class TaskController extends Controller
     {
         $searchModel = new TaskSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        // Получаем все категории и статусы для отображения (чтобы избежать ошибок при доступе к свойствам)
+        $categories = \yii\helpers\ArrayHelper::index(Category::find()->active()->all(), 'id');
+        $statuses = \yii\helpers\ArrayHelper::index(Status::find()->active()->all(), 'id');
+        $users = \yii\helpers\ArrayHelper::index(User::find()->where(['status' => User::STATUS_ACTIVE])->all(), 'id');
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'categories' => $categories,
+            'statuses' => $statuses,
+            'users' => $users,
         ]);
     }
 
