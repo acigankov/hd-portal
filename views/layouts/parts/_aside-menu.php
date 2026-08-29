@@ -21,7 +21,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="/" class="nav-link ">
+        <a href="/task" class="nav-link ">
             <i class="nav-icon bi bi-card-text"></i>
             <p><?= Yii::t('app', 'Tasks') ?></p>
         </a>
