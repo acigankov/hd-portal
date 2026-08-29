@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             $category = $categories[$item->category_id] ?? null;
                                             if ($category): 
                                             ?>
-                                                <span class="badge <?= Html::encode($category->color) ?>">
+                                                <span class="badge bg-<?= Html::encode($category->color) ?>">
                                                     <?= Html::encode($category->name) ?>
                                                 </span>
                                             <?php else: ?>
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             $status = $statuses[$item->status_id] ?? null;
                                             if ($status): 
                                             ?>
-                                                <span class="badge <?= Html::encode($status->color) ?>">
+                                                <span class="badge bg-<?= Html::encode($status->color) ?>">
                                                     <?= Html::encode($status->name) ?>
                                                 </span>
                                             <?php else: ?>

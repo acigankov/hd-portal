@@ -103,12 +103,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->input('date', ['format' => 'yyyy-MM-dd'])
                                 ->label(Yii::t('app', 'Due Date')) ?>
 
-                            <?= $form->field($model, 'status')
-                                ->dropDownList([
-                                    \app\models\Task::STATUS_ACTIVE => Yii::t('app', 'Active'),
-                                    \app\models\Task::STATUS_INACTIVE => Yii::t('app', 'Inactive'),
-                                ])
-                                ->label(Yii::t('app', 'Status')) ?>
 
                             <div class="form-group">
                                 <?= Html::submitButton('<i class="fas fa-save"></i> ' . Yii::t('app', 'Save'), [

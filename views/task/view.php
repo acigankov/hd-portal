@@ -6,9 +6,12 @@ use yii\web\View;
 /* @var $this \yii\web\View */
 /* @var $model \app\models\Task */
 
+
 $this->title = Yii::t('app', 'View task') . ': ' . Html::encode($model->task_number);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Tasks'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = Yii::t('app', 'View');
+
+$status = $model->getStatusById($model->status_id);
 
 ?>
 
@@ -70,7 +73,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'View');
                                         <th><?= $model->getAttributeLabel('category_id') ?></th>
                                         <td>
                                             <?php if ($model->category): ?>
-                                                <span class="badge <?= $model->category->color ?>">
+                                                <span class="badge bg-<?= $model->category->color ?>">
                                                     <?= Html::encode($model->category->name) ?>
                                                 </span>
                                             <?php else: ?>
@@ -81,9 +84,9 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'View');
                                     <tr>
                                         <th><?= $model->getAttributeLabel('status_id') ?></th>
                                         <td>
-                                            <?php if ($model->status): ?>
-                                                <span class="badge <?= $model->status->color ?>">
-                                                    <?= Html::encode($model->status->name) ?>
+                                            <?php if ($status): ?>
+                                                <span class="badge bg-<?= $status->color ?>">
+                                                    <?= Html::encode($status->name) ?>
                                                 </span>
                                             <?php else: ?>
                                                 <span class="text-muted"><?= Yii::t('app', 'Not specified') ?></span>
@@ -126,15 +129,6 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'View');
                                             <?php else: ?>
                                                 <span class="text-muted"><?= Yii::t('app', 'Not specified') ?></span>
                                             <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><?= $model->getAttributeLabel('status') ?></th>
-                                        <td>
-                                            <?php
-                                            $badgeClass = $model->status === \app\models\Task::STATUS_ACTIVE ? 'bg-success' : 'bg-secondary';
-                                            ?>
-                                            <span class="badge <?= $badgeClass ?>"><?= Html::encode($model->getStatusLabel()) ?></span>
                                         </td>
                                     </tr>
                                     <tr>

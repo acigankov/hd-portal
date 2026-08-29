@@ -20,7 +20,7 @@ use yii\db\BaseActiveRecord;
  * @property int|null $responsible_id ID ответственного
  * @property int $priority Приоритет (1-низкий, 2-средний, 3-высокий)
  * @property string|null $due_date Срок выполнения
- * @property int $status Статус записи (1 - активен, 0 - неактивен)
+// * @property int $status Статус записи (1 - активен, 0 - неактивен)
  * @property string $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  * @property int|null $created_by ID пользователя создателя
@@ -33,8 +33,8 @@ use yii\db\BaseActiveRecord;
  */
 class Task extends ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
+//    const STATUS_ACTIVE = 1;
+//    const STATUS_INACTIVE = 0;
     
     const PRIORITY_LOW = 1;
     const PRIORITY_MEDIUM = 2;
@@ -78,7 +78,6 @@ class Task extends ActiveRecord
             [['due_date'], 'date', 'format' => 'yyyy-MM-dd'],
             [['task_number'], 'string', 'max' => 20],
             [['task_number'], 'unique', 'message' => 'Задача с таким номером уже существует'],
-            [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
             [['priority'], 'in', 'range' => [self::PRIORITY_LOW, self::PRIORITY_MEDIUM, self::PRIORITY_HIGH]],
         ];
     }
@@ -152,12 +151,13 @@ class Task extends ActiveRecord
 
     /**
      * Возвращает статус
-     * @return \yii\db\ActiveQuery
+     * @return Status
      */
-    public function getStatus()
+    public function getStatusById($id)
     {
-        return $this->hasOne(Status::class, ['id' => 'status_id']);
+        return Status::findOne(['id' => $id ]);
     }
+
 
     /**
      * Возвращает автора
