@@ -3,6 +3,7 @@
 use app\models\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use Yii;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -10,6 +11,12 @@ use yii\widgets\ActiveForm;
 
 $this->title = Yii::t('yii2mod.rbac', 'Редактрирование пользователя');
 $this->params['breadcrumbs'][] = $this->title;
+
+// Получаем список ролей из RBAC
+$roles = [];
+foreach (Yii::$app->authManager->getRoles() as $name => $role) {
+    $roles[$name] = $role->description ?: $name;
+}
 ?>
 
 <div class="assignment-index">
@@ -56,10 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $form->field($model, 'login')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-                            <?= $form->field($model, 'role')->dropDownList([
-                                'admin' => 'Администратор',
-                                'operator' => 'Оператор',
-                            ]) ?>
+                            <?= $form->field($model, 'role')->dropDownList($roles) ?>
                             <?= $form->field($model, 'status')->dropDownList([
                                 User::STATUS_ACTIVE => 'Активен',
                                 User::STATUS_DISABLED => 'Неактивен',

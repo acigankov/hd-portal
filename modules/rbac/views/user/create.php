@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use Yii;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -9,6 +10,12 @@ use yii\widgets\ActiveForm;
 
 $this->title = Yii::t('yii2mod.rbac', 'Создание пользователя');
 $this->params['breadcrumbs'][] = $this->title;
+
+// Получаем список ролей из RBAC
+$roles = [];
+foreach (Yii::$app->authManager->getRoles() as $name => $role) {
+    $roles[$name] = $role->description ?: $name;
+}
 ?>
 
 
@@ -63,10 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->label('Email *') ?>
 
                             <?= $form->field($model, 'role')
-                                ->dropDownList([
-                                    'admin' => 'Администратор',
-                                    'operator' => 'Оператор',
-                                ], ['prompt' => 'Выберите роль'])
+                                ->dropDownList($roles, ['prompt' => 'Выберите роль'])
                                 ->label('Роль *') ?>
 
                             <?= $form->field($model, 'password')
