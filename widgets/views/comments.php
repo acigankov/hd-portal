@@ -51,17 +51,11 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
             <?= Html::hiddenInput('entity_class', $modelClass) ?>
             <?= Html::hiddenInput('entity_id', $modelId) ?>
             <div class="form-group">
-                <?= \yii\widgets\ActiveField::widget([
-                    'name' => 'text',
-                    'model' => new \app\models\Comment(),
-                    'attribute' => 'text',
-                    'label' => false,
-                    'inputOptions' => [
-                        'class' => 'form-control',
-                        'placeholder' => 'Напишите комментарий...',
-                        'rows' => 3,
-                        'required' => true,
-                    ],
+                <?= Html::textarea('text', '', [
+                    'class' => 'form-control',
+                    'placeholder' => 'Напишите комментарий...',
+                    'rows' => 3,
+                    'required' => true,
                 ]) ?>
             </div>
             <div class="form-group">
@@ -112,16 +106,9 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
                 <div class="edit-form mt-2" id="edit-form-<?= $comment->id ?>" style="display: none;">
                     <?= Html::beginForm(['comment/update', 'id' => $comment->id], 'post', ['class' => 'inline-edit-form']) ?>
                     <div class="form-group">
-                        <?= \yii\widgets\ActiveField::widget([
-                            'name' => 'text',
-                            'model' => $comment,
-                            'attribute' => 'text',
-                            'label' => false,
-                            'inputOptions' => [
-                                'class' => 'form-control',
-                                'rows' => 3,
-                                'value' => $comment->text,
-                            ],
+                        <?= Html::textarea('text', $comment->text, [
+                            'class' => 'form-control',
+                            'rows' => 3,
                         ]) ?>
                     </div>
                     <div class="form-group">
