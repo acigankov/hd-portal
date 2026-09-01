@@ -5,6 +5,7 @@ use yii\base\Security;
 
 /**
  * Добавление 10 пользователей: 1 админ и 9 операторов
+ * Данные максимально приближены к реальности
  */
 class m260820_130000_seed_users_data extends Migration
 {
@@ -15,74 +16,74 @@ class m260820_130000_seed_users_data extends Migration
         $users = [
             // Администратор
             [
-                'login' => 'admin',
-                'password' => 'Admin@123',
+                'login' => 'a.volkov',
+                'password' => 'Volkov@2024',
                 'role' => 'admin',
-                'email' => 'admin@example.com',
+                'email' => 'alexandr.volkov@company.local',
                 'status' => 1,
             ],
             // Операторы
             [
-                'login' => 'operator1',
-                'password' => 'Oper@12345',
+                'login' => 'e.smirnova',
+                'password' => 'Smirnova@2024',
                 'role' => 'operator',
-                'email' => 'operator1@example.com',
+                'email' => 'elena.smirnova@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator2',
-                'password' => 'Oper@23456',
+                'login' => 'd.kuznetsov',
+                'password' => 'Kuznetsov@2024',
                 'role' => 'operator',
-                'email' => 'operator2@example.com',
+                'email' => 'dmitry.kuznetsov@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator3',
-                'password' => 'Oper@34567',
+                'login' => 'o.popova',
+                'password' => 'Popova@2024',
                 'role' => 'operator',
-                'email' => 'operator3@example.com',
+                'email' => 'olga.popova@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator4',
-                'password' => 'Oper@45678',
+                'login' => 'm.sokolov',
+                'password' => 'Sokolov@2024',
                 'role' => 'operator',
-                'email' => 'operator4@example.com',
+                'email' => 'maxim.sokolov@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator5',
-                'password' => 'Oper@56789',
+                'login' => 'n.lebedeva',
+                'password' => 'Lebedeva@2024',
                 'role' => 'operator',
-                'email' => 'operator5@example.com',
+                'email' => 'natalia.lebedeva@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator6',
-                'password' => 'Oper@67890',
+                'login' => 'i.kozlov',
+                'password' => 'Kozlov@2024',
                 'role' => 'operator',
-                'email' => 'operator6@example.com',
+                'email' => 'ivan.kozlov@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator7',
-                'password' => 'Oper@78901',
+                'login' => 'a.novikova',
+                'password' => 'Novikova@2024',
                 'role' => 'operator',
-                'email' => 'operator7@example.com',
+                'email' => 'anna.novikova@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator8',
-                'password' => 'Oper@89012',
+                'login' => 's.morozov',
+                'password' => 'Morozov@2024',
                 'role' => 'operator',
-                'email' => 'operator8@example.com',
+                'email' => 'sergey.morozov@company.local',
                 'status' => 1,
             ],
             [
-                'login' => 'operator9',
-                'password' => 'Oper@90123',
+                'login' => 't.fedorova',
+                'password' => 'Fedorova@2024',
                 'role' => 'operator',
-                'email' => 'operator9@example.com',
+                'email' => 'tatiana.fedorova@company.local',
                 'status' => 1,
             ],
         ];
@@ -102,7 +103,10 @@ class m260820_130000_seed_users_data extends Migration
 
     public function safeDown()
     {
-        $this->delete('{{%users}}', ['role' => 'admin']);
-        $this->delete('{{%users}}', ['role' => 'operator']);
+        $logins = [
+            'a.volkov', 'e.smirnova', 'd.kuznetsov', 'o.popova', 'm.sokolov',
+            'n.lebedeva', 'i.kozlov', 'a.novikova', 's.morozov', 't.fedorova'
+        ];
+        $this->delete('{{%users}}', ['login' => $logins]);
     }
 }
