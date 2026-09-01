@@ -12,8 +12,8 @@ $canDelete = $model->canDelete();
 $author = $model->author;
 ?>
 
-<div class="comment-item" data-comment-id="<?= $model->id ?>">
-    <div class="comment-header d-flex justify-content-between align-items-start mb-2">
+<div class="comment-item border-bottom py-3" data-comment-id="<?= $model->id ?>">
+    <div class="d-flex justify-content-between align-items-start mb-2">
         <div class="comment-author">
             <strong><?= Html::encode($author ? $author->login : Yii::t('app', 'Unknown')) ?></strong>
             <small class="text-muted ms-2">

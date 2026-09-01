@@ -11,50 +11,58 @@ use yii\helpers\Url;
 $sort = $sort ?? 'asc';
 ?>
 
-<div class="card comments-card" id="comments-block">
-    <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#comments-content" aria-expanded="true">
-        <h3 class="card-title mb-0">
-            <i class="fas fa-comments me-2"></i>
-            <?= Yii::t('app', 'Comments') ?>
-            <span class="badge bg-secondary ms-2" id="comments-count"><?= count($comments) ?></span>
-        </h3>
-        <div class="d-flex align-items-center">
-            <div class="btn-group btn-group-sm me-2">
-                <button type="button" class="btn btn-outline-secondary sort-comments" data-sort="asc" title="<?= Yii::t('app', 'Older first') ?>">
-                    <i class="fas fa-sort-amount-down"></i>
-                </button>
-                <button type="button" class="btn btn-outline-secondary sort-comments" data-sort="desc" title="<?= Yii::t('app', 'Newer first') ?>">
-                    <i class="fas fa-sort-amount-up"></i>
-                </button>
+<!--begin::Row-->
+<div class="row">
+    <!--begin::Col-->
+    <div class="col">
+        <div class="card" id="comments-block">
+            <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#comments-content" aria-expanded="true">
+                <h3 class="card-title mb-0">
+                    <i class="fas fa-comments me-2"></i>
+                    <?= Yii::t('app', 'Comments') ?>
+                    <span class="badge bg-secondary ms-2" id="comments-count"><?= count($comments) ?></span>
+                </h3>
+                <div class="d-flex align-items-center">
+                    <div class="btn-group btn-group-sm me-2">
+                        <button type="button" class="btn btn-outline-secondary sort-comments" data-sort="asc" title="<?= Yii::t('app', 'Older first') ?>">
+                            <i class="fas fa-sort-amount-down"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary sort-comments" data-sort="desc" title="<?= Yii::t('app', 'Newer first') ?>">
+                            <i class="fas fa-sort-amount-up"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-chevron-down collapse-indicator"></i>
+                </div>
             </div>
-            <i class="fas fa-chevron-down collapse-indicator"></i>
-        </div>
-    </div>
-    <div class="card-body collapse show" id="comments-content">
-        <!-- Форма добавления комментария -->
-        <div class="comment-form mb-4">
-            <textarea class="form-control" id="new-comment-text" rows="3" 
-                      placeholder="<?= Yii::t('app', 'Write a comment...') ?>"></textarea>
-            <div class="mt-2 text-end">
-                <button type="button" class="btn btn-primary" id="add-comment-btn">
-                    <i class="fas fa-paper-plane me-1"></i>
-                    <?= Yii::t('app', 'Send') ?>
-                </button>
-            </div>
-        </div>
+            <div class="card-body collapse show" id="comments-content">
+                <!-- Форма добавления комментария -->
+                <div class="comment-form mb-4">
+                    <textarea class="form-control" id="new-comment-text" rows="3" 
+                              placeholder="<?= Yii::t('app', 'Write a comment...') ?>"></textarea>
+                    <div class="mt-2 text-end">
+                        <button type="button" class="btn btn-primary" id="add-comment-btn">
+                            <i class="fas fa-paper-plane me-1"></i>
+                            <?= Yii::t('app', 'Send') ?>
+                        </button>
+                    </div>
+                </div>
 
-        <!-- Список комментариев -->
-        <div class="comments-list" id="comments-list">
-            <?php if (empty($comments)): ?>
-                <p class="text-muted text-center" id="no-comments-msg"><?= Yii::t('app', 'No comments yet. Be the first!') ?></p>
-            <?php else: ?>
-                <?php foreach ($comments as $comment): ?>
-                    <?= $this->render('_item', ['model' => $comment]) ?>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                <!-- Список комментариев -->
+                <div class="comments-list" id="comments-list">
+                    <?php if (empty($comments)): ?>
+                        <p class="text-muted text-center" id="no-comments-msg"><?= Yii::t('app', 'No comments yet. Be the first!') ?></p>
+                    <?php else: ?>
+                        <?php foreach ($comments as $comment): ?>
+                            <?= $this->render('_item', ['model' => $comment]) ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     </div>
+    <!--end::Col-->
 </div>
+<!--end::Row-->
 
 <?php
 $this->registerCss(<<<CSS
@@ -81,7 +89,8 @@ $this->registerCss(<<<CSS
     transition: transform 0.3s ease;
 }
 
-.collapsed .collapse-indicator {
+.collapsed .collapse-indicator,
+.collapse-indicator.rotated {
     transform: rotate(-90deg);
 }
 CSS
