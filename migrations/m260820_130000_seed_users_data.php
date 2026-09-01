@@ -17,6 +17,7 @@ class m260820_130000_seed_users_data extends Migration
             // Администратор
             [
                 'login' => 'a.volkov',
+                'name' => 'Александр Волков',
                 'password' => 'Volkov@2024',
                 'role' => 'admin',
                 'email' => 'alexandr.volkov@company.local',
@@ -25,6 +26,7 @@ class m260820_130000_seed_users_data extends Migration
             // Операторы
             [
                 'login' => 'e.smirnova',
+                'name' => 'Елена Смирнова',
                 'password' => 'Smirnova@2024',
                 'role' => 'operator',
                 'email' => 'elena.smirnova@company.local',
@@ -32,6 +34,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 'd.kuznetsov',
+                'name' => 'Дмитрий Кузнецов',
                 'password' => 'Kuznetsov@2024',
                 'role' => 'operator',
                 'email' => 'dmitry.kuznetsov@company.local',
@@ -39,6 +42,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 'o.popova',
+                'name' => 'Ольга Попова',
                 'password' => 'Popova@2024',
                 'role' => 'operator',
                 'email' => 'olga.popova@company.local',
@@ -46,6 +50,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 'm.sokolov',
+                'name' => 'Максим Соколов',
                 'password' => 'Sokolov@2024',
                 'role' => 'operator',
                 'email' => 'maxim.sokolov@company.local',
@@ -53,6 +58,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 'n.lebedeva',
+                'name' => 'Наталья Лебедева',
                 'password' => 'Lebedeva@2024',
                 'role' => 'operator',
                 'email' => 'natalia.lebedeva@company.local',
@@ -60,6 +66,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 'i.kozlov',
+                'name' => 'Иван Козлов',
                 'password' => 'Kozlov@2024',
                 'role' => 'operator',
                 'email' => 'ivan.kozlov@company.local',
@@ -67,6 +74,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 'a.novikova',
+                'name' => 'Анна Новикова',
                 'password' => 'Novikova@2024',
                 'role' => 'operator',
                 'email' => 'anna.novikova@company.local',
@@ -74,6 +82,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 's.morozov',
+                'name' => 'Сергей Морозов',
                 'password' => 'Morozov@2024',
                 'role' => 'operator',
                 'email' => 'sergey.morozov@company.local',
@@ -81,6 +90,7 @@ class m260820_130000_seed_users_data extends Migration
             ],
             [
                 'login' => 't.fedorova',
+                'name' => 'Татьяна Федорова',
                 'password' => 'Fedorova@2024',
                 'role' => 'operator',
                 'email' => 'tatiana.fedorova@company.local',
@@ -91,6 +101,7 @@ class m260820_130000_seed_users_data extends Migration
         foreach ($users as $user) {
             $this->insert('{{%users}}', [
                 'login' => $user['login'],
+                'name' => $user['name'],
                 'password_hash' => $security->generatePasswordHash($user['password']),
                 'email' => $user['email'],
                 'status' => $user['status'],

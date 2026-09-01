@@ -65,6 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <th>ID</th>
                                     <th>Логин</th>
+                                    <th>Имя</th>
                                     <th>E-mail</th>
                                     <th>Создан</th>
                                     <th>Статус</th>
@@ -76,6 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <tr>
                                         <td><?=  Html::a($item->id, ['/rbac/user/view', 'id' => $item->id]) ?> </td>
                                         <td><?= $item->login ?></td>
+                                        <td><?= $item->name ?? '-' ?></td>
                                         <td><?= $item->email ?></td>
                                         <td><?= $item->formattedCreatedAt ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>
