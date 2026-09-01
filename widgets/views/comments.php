@@ -83,7 +83,7 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
                             <?= Yii::$app->formatter->asDatetime($comment->created_at) ?>
                         </small>
                     </div>
-                    <?php if ($currentUser && $currentUser->id == $comment->user_id): ?>
+                    <?php if ($currentUser && $currentUser->id == $comment->author_id): ?>
                     <div class="comment-actions">
                         <button type="button" class="btn btn-tool btn-sm text-danger delete-comment" 
                                 data-id="<?= $comment->id ?>" 
