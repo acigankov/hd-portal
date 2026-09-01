@@ -11,7 +11,7 @@ use yii\db\BaseActiveRecord;
  * Модель комментария
  *
  * @property int $id
- * @property string $entity_type Тип сущности (task, ticket, issue)
+ * @property string $entity_class Класс сущности (app\models\Task, app\models\Ticket, etc.)
  * @property int $entity_id ID сущности
  * @property string $text Текст комментария
  * @property int|null $parent_id ID родительского комментария
@@ -57,12 +57,11 @@ class Comment extends ActiveRecord
     public function rules()
     {
         return [
-            [['entity_type', 'entity_id', 'text', 'author_id'], 'required'],
-            [['entity_type'], 'string', 'max' => 50],
+            [['entity_class', 'entity_id', 'text', 'author_id'], 'required'],
+            [['entity_class'], 'string', 'max' => 255],
             [['entity_id', 'parent_id', 'author_id'], 'integer'],
             [['text'], 'safe'],
             [['is_edited'], 'boolean'],
-            [['entity_type'], 'in', 'range' => ['task', 'ticket', 'issue']],
         ];
     }
 
@@ -73,7 +72,7 @@ class Comment extends ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'entity_type' => Yii::t('app', 'Entity Type'),
+            'entity_class' => Yii::t('app', 'Entity Class'),
             'entity_id' => Yii::t('app', 'Entity ID'),
             'text' => Yii::t('app', 'Text'),
             'parent_id' => Yii::t('app', 'Parent Comment'),

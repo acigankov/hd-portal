@@ -9,13 +9,13 @@ class CommentQuery extends \yii\db\ActiveQuery
 {
     /**
      * Комментарии для конкретной сущности
-     * @param string $entityType тип сущности (task, ticket, issue)
+     * @param string $entityClass класс сущности (app\models\Task, etc.)
      * @param int $entityId ID сущности
      * @return $this
      */
-    public function forEntity($entityType, $entityId)
+    public function forEntity($entityClass, $entityId)
     {
-        return $this->andWhere(['entity_type' => $entityType, 'entity_id' => $entityId]);
+        return $this->andWhere(['entity_class' => $entityClass, 'entity_id' => $entityId]);
     }
 
     /**

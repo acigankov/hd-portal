@@ -43,22 +43,22 @@ class CommentController extends Controller
 
     /**
      * Возвращает комментарии для сущности (AJAX)
-     * @param string $entityType тип сущности (task, ticket, issue)
+     * @param string $entityClass класс сущности (app\models\Task, etc.)
      * @param int $entityId ID сущности
      * @param string $sort сортировка (asc/desc)
      * @return mixed
      */
-    public function actionIndex($entityType, $entityId, $sort = 'asc')
+    public function actionIndex($entityClass, $entityId, $sort = 'asc')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $direction = strtolower($sort) === 'desc' ? SORT_DESC : SORT_ASC;
         
         $comments = Comment::find()
-            ->forEntity($entityType, $entityId)
+            ->forEntity($entityClass, $entityId)
             ->root()
             ->orderByDate($direction)
-            ->with(['author', 'replies.author'])
+            ->with(['author'])
             ->all();
 
         return [
@@ -84,12 +84,13 @@ class CommentController extends Controller
             if ($model->save()) {
                 return [
                     'success' => true,
-                    'comment' => $this->renderComment($model),
+                    'message' => 'Комментарий успешно добавлен.',
                 ];
             } else {
                 return [
                     'success' => false,
                     'errors' => $model->getErrors(),
+                    'message' => 'Ошибка при добавлении комментария.',
                 ];
             }
         }
@@ -123,12 +124,13 @@ class CommentController extends Controller
             if ($model->save()) {
                 return [
                     'success' => true,
-                    'comment' => $this->renderComment($model),
+                    'message' => 'Комментарий успешно обновлен.',
                 ];
             } else {
                 return [
                     'success' => false,
                     'errors' => $model->getErrors(),
+                    'message' => 'Ошибка при сохранении изменений.',
                 ];
             }
         }

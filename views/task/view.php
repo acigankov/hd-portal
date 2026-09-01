@@ -170,10 +170,10 @@ $status = $model->getStatusById($model->status_id);
     <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
-            <?= $this->render('/comment/_list', [
-                'entityType' => 'task',
-                'entityId' => $model->id,
-                'comments' => $comments,
+            <?= \app\widgets\CommentsWidget::widget([
+                'modelClass' => get_class($model),
+                'modelId' => $model->id,
+                'title' => Yii::t('app', 'Comments'),
             ]) ?>
         </div>
         <!--end::Container-->
