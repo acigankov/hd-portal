@@ -338,4 +338,19 @@ return [
     'Item' => 'Элемент',
     'Created At' => 'Создано',
     'Updated At' => 'Обновлено',
+
+    // Комментарии
+    'Comments' => 'Комментарии',
+    'Write a comment...' => 'Написать комментарий...',
+    'Send' => 'Отправить',
+    'No comments yet. Be the first!' => 'Пока нет комментариев. Будьте первыми!',
+    'Older first' => 'Сначала старые',
+    'Newer first' => 'Сначала новые',
+    'Edited' => 'Изменено',
+    'Please enter comment text' => 'Введите текст комментария',
+    'Error adding comment' => 'Ошибка при добавлении комментария',
+    'Error editing comment' => 'Ошибка при редактировании комментария',
+    'Error deleting comment' => 'Ошибка при удалении комментария',
+    'Are you sure you want to delete this comment?' => 'Вы уверены, что хотите удалить этот комментарий?',
+    'Unknown' => 'Неизвестно',
 ];

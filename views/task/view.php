@@ -166,5 +166,18 @@ $status = $model->getStatusById($model->status_id);
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <?= \app\widgets\CommentsWidget::widget([
+                'modelClass' => get_class($model),
+                'modelId' => $model->id,
+                'title' => Yii::t('app', 'Comments'),
+            ]) ?>
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
 
 </div>
