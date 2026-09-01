@@ -7,7 +7,7 @@ use yii\base\Security;
  * Добавление 10 пользователей: 1 админ и 9 операторов
  * Данные максимально приближены к реальности
  */
-class m260820_130000_seed_users_data extends Migration
+class m260901_130000_seed_users_data extends Migration
 {
     public function safeUp()
     {
