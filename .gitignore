@@ -1,88 +1,55 @@
 ```
-# Dependencies
-vendor/
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+dist/
+build/
+*.class
+*.exe
+*.dll
+*.so
+*.a
+*.out
 
-# Logs
+# Dependencies
+.venv/
+venv/
+node_modules/
+target/
+.gradle/
+.mypy_cache/
+.pytest_cache/
+coverage/
+htmlcov/
+.coverage
+
+# Logs and temp files
 *.log
+*.tmp
+*.swp
+*.swo
 
 # Environment
 .env
 .env.local
 .env.*
 
-# IDE
-.idea/
+# Editors
 .vscode/
+.idea/
+*.swp
+*.swo
 
-# OS
+# System files
 .DS_Store
 Thumbs.db
 
-# Tests
-.phpunit.result.cache
-
-# Composer
-composer.lock
-
-# Yii2 specific
-runtime/
-web/assets/
-!web/assets/.gitkeep
-yii
-yii.bat
-
-# Web
-web/index-test.php
-
-# Configuration
-config/test-local.php
-config/params-local.php
-
-# Coverage
-coverage/
-htmlcov/
-*.coverage
-
-# Backup files
-*~
-*.bak
-*.tmp
-
-# Session
-yii2-app-advanced/
-
-# Database
-tests/codeception/fixtures/*.sql
-
-# Cache
-assets/
-!assets/.gitkeep
-
-# Log and runtime files
-runtime/*
-web/assets/*
-
-# Composer install
-composer.phar
-
-# Docker
-.dockerignore
-
-# PHP
-*.php~
-*.swp
-
-# Backup & Temp
-*.tmp
-*~
-
-# Git
-.gitattributes
-
-# Archive
+# Compressed files
 *.zip
-*.tar
 *.gz
+*.tar
 *.tgz
 *.bz2
 *.xz
@@ -102,5 +69,4 @@ composer.phar
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
 ```

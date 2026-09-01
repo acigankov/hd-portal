@@ -54,9 +54,20 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->textInput(['autofocus' => true, 'placeholder' => 'Введите имя пользователя'])
                                 ->label('Имя пользователя *') ?>
 
+                            <?= $form->field($model, 'name')
+                                ->textInput(['placeholder' => 'Введите имя'])
+                                ->label('Имя *') ?>
+
                             <?= $form->field($model, 'email')
                                 ->textInput(['type' => 'email', 'placeholder' => 'user@example.com'])
                                 ->label('Email *') ?>
+
+                            <?= $form->field($model, 'role')
+                                ->dropDownList([
+                                    'admin' => 'Администратор',
+                                    'operator' => 'Оператор',
+                                ], ['prompt' => 'Выберите роль'])
+                                ->label('Роль *') ?>
 
                             <?= $form->field($model, 'password')
                                 ->passwordInput(['placeholder' => 'Минимум 6 символов'])

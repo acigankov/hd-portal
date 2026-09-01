@@ -54,7 +54,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php $form = ActiveForm::begin(); ?>
 
                             <?= $form->field($model, 'login')->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
                             <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+                            <?= $form->field($model, 'role')->dropDownList([
+                                'admin' => 'Администратор',
+                                'operator' => 'Оператор',
+                            ]) ?>
                             <?= $form->field($model, 'status')->dropDownList([
                                 User::STATUS_ACTIVE => 'Активен',
                                 User::STATUS_DISABLED => 'Неактивен',
