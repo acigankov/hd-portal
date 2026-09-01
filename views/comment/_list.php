@@ -98,9 +98,9 @@ CSS
 
 $this->registerJs(<<<JS
 (function() {
-    var entityType = '$entityType';
-    var entityId = $entityId;
-    var currentSort = '$sort';
+    var entityType = '{$entityType}';
+    var entityId = {$entityId};
+    var currentSort = '{$sort}';
     
     // Переключение сворачивания/разворачивания
     $('#comments-block .card-header').on('click', function() {
@@ -123,7 +123,7 @@ $this->registerJs(<<<JS
     $('#add-comment-btn').on('click', function() {
         var text = $('#new-comment-text').val().trim();
         if (!text) {
-            alert('<?= Yii::t('app', 'Please enter comment text') ?>');
+            alert('Please enter comment text');
             return;
         }
         
@@ -158,11 +158,11 @@ $this->registerJs(<<<JS
                         scrollTop: $('#comments-list').offset().top + 200
                     }, 500);
                 } else {
-                    alert('<?= Yii::t('app', 'Error adding comment') ?>');
+                    alert('Error adding comment');
                 }
             },
             error: function() {
-                alert('<?= Yii::t('app', 'Error adding comment') ?>');
+                alert('Error adding comment');
             }
         });
     });
@@ -179,7 +179,7 @@ $this->registerJs(<<<JS
             // Сохранение
             var newText = textarea.val().trim();
             if (!newText) {
-                alert('<?= Yii::t('app', 'Please enter comment text') ?>');
+                alert('Please enter comment text');
                 return;
             }
             
@@ -200,11 +200,11 @@ $this->registerJs(<<<JS
                         commentText.show();
                         editBtn.find('i').removeClass('fa-check').addClass('fa-edit');
                     } else {
-                        alert(response.message || '<?= Yii::t('app', 'Error editing comment') ?>');
+                        alert(response.message || 'Error editing comment');
                     }
                 },
                 error: function() {
-                    alert('<?= Yii::t('app', 'Error editing comment') ?>');
+                    alert('Error editing comment');
                 }
             });
         } else {
@@ -221,7 +221,7 @@ $this->registerJs(<<<JS
     $(document).on('click', '.comment-delete-btn', function() {
         var commentId = $(this).data('comment-id');
         
-        if (!confirm('<?= Yii::t('app', 'Are you sure you want to delete this comment?') ?>')) {
+        if (!confirm('Are you sure you want to delete this comment?')) {
             return;
         }
         
@@ -241,11 +241,11 @@ $this->registerJs(<<<JS
                         $('#no-comments-msg').show();
                     }
                 } else {
-                    alert(response.message || '<?= Yii::t('app', 'Error deleting comment') ?>');
+                    alert(response.message || 'Error deleting comment');
                 }
             },
             error: function() {
-                alert('<?= Yii::t('app', 'Error deleting comment') ?>');
+                alert('Error deleting comment');
             }
         });
     });
@@ -282,5 +282,5 @@ $this->registerJs(<<<JS
     }
 })();
 JS
-);
+, \yii\web\View::POS_END);
 ?>
