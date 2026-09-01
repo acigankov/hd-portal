@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 use yii\filters\VerbFilter;
@@ -57,7 +58,7 @@ class CommentController extends Controller
             ->forEntity($entityClass, $entityId)
             ->root()
             ->orderByDate($direction)
-            ->with(['author'])
+            ->with(['author', 'replies', 'replies.author'])
             ->all();
 
         return [
@@ -79,10 +80,14 @@ class CommentController extends Controller
             $model->is_edited = 0;
 
             if ($model->save()) {
+                // Загружаем автора для отображения
+                $model->author = $model->getAuthor()->one();
+                
                 if (Yii::$app->request->isAjax) {
                     return [
                         'success' => true,
                         'message' => 'Комментарий успешно добавлен.',
+                        'comment' => $this->renderComment($model),
                     ];
                 }
                 // Для обычных запросов - редирект назад
@@ -130,10 +135,14 @@ class CommentController extends Controller
             $model->is_edited = 1;
 
             if ($model->save()) {
+                // Загружаем автора для отображения
+                $model->author = $model->getAuthor()->one();
+                
                 if (Yii::$app->request->isAjax) {
                     return [
                         'success' => true,
                         'message' => 'Комментарий успешно обновлен.',
+                        'comment' => $this->renderComment($model),
                     ];
                 }
                 // Для обычных запросов - редирект назад
@@ -206,6 +215,11 @@ class CommentController extends Controller
      */
     private function renderComment($comment)
     {
+        // Явно загружаем автора, чтобы избежать проблемы с отображением "удаленный пользователь"
+        if (!$comment->isRelationPopulated('author')) {
+            $comment->author = $comment->getAuthor()->one();
+        }
+        
         return Yii::$app->controller->renderPartial('@app/views/comment/_item', [
             'model' => $comment,
         ]);

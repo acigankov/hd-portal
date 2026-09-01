@@ -48,10 +48,12 @@ class CommentsWidget extends Widget
         }
 
         $dataProvider = new ActiveDataProvider([
-            'query' => Comment::find()->where([
-                'entity_class' => $this->modelClass,
-                'entity_id' => $this->modelId,
-            ]),
+            'query' => Comment::find()
+                ->where([
+                    'entity_class' => $this->modelClass,
+                    'entity_id' => $this->modelId,
+                ])
+                ->with(['author']),
             'pagination' => [
                 'pageSize' => 20,
             ],

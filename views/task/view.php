@@ -40,7 +40,7 @@ $status = $model->getStatusById($model->status_id);
     <!--begin::App Content-->
     <div class="app-content">
         <!--begin::Container-->
-        <div class="container-fluid">
+        <div class="container-fluid mb-4">
             <!--begin::Row-->
             <div class="row">
                 <!--begin::Col-->
@@ -164,10 +164,6 @@ $status = $model->getStatusById($model->status_id);
             <!--end::Row-->
         </div>
         <!--end::Container-->
-    </div>
-    <!--end::App Content-->
-    <!--begin::App Content-->
-    <div class="app-content">
         <!--begin::Container-->
         <div class="container-fluid">
             <?= \app\widgets\CommentsWidget::widget([
@@ -179,5 +175,8 @@ $status = $model->getStatusById($model->status_id);
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+
+
+
 
 </div>
