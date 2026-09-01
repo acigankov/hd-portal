@@ -8,7 +8,6 @@ use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use yii\web\Response;
 use app\models\Comment;
 
 /**
@@ -73,8 +72,6 @@ class CommentController extends Controller
      */
     public function actionCreate()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         if (Yii::$app->request->isPost) {
             $model = new Comment();
             $model->load(Yii::$app->request->post());
@@ -82,16 +79,25 @@ class CommentController extends Controller
             $model->is_edited = 0;
 
             if ($model->save()) {
-                return [
-                    'success' => true,
-                    'message' => 'Комментарий успешно добавлен.',
-                ];
+                if (Yii::$app->request->isAjax) {
+                    return [
+                        'success' => true,
+                        'message' => 'Комментарий успешно добавлен.',
+                    ];
+                }
+                // Для обычных запросов - редирект назад
+                return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
             } else {
-                return [
-                    'success' => false,
-                    'errors' => $model->getErrors(),
-                    'message' => 'Ошибка при добавлении комментария.',
-                ];
+                if (Yii::$app->request->isAjax) {
+                    return [
+                        'success' => false,
+                        'errors' => $model->getErrors(),
+                        'message' => 'Ошибка при добавлении комментария.',
+                    ];
+                }
+                // Для обычных запросов - редирект с ошибкой
+                Yii::$app->session->setFlash('error', 'Ошибка при добавлении комментария.');
+                return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
             }
         }
 
@@ -105,16 +111,18 @@ class CommentController extends Controller
      */
     public function actionUpdate($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         $model = $this->findModel($id);
 
         // Проверка прав на редактирование
         if (!$model->canEdit()) {
-            return [
-                'success' => false,
-                'message' => 'У вас нет прав для редактирования этого комментария.',
-            ];
+            if (Yii::$app->request->isAjax) {
+                return [
+                    'success' => false,
+                    'message' => 'У вас нет прав для редактирования этого комментария.',
+                ];
+            }
+            Yii::$app->session->setFlash('error', 'У вас нет прав для редактирования этого комментария.');
+            return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
         }
 
         if (Yii::$app->request->isPost) {
@@ -122,16 +130,26 @@ class CommentController extends Controller
             $model->is_edited = 1;
 
             if ($model->save()) {
-                return [
-                    'success' => true,
-                    'message' => 'Комментарий успешно обновлен.',
-                ];
+                if (Yii::$app->request->isAjax) {
+                    return [
+                        'success' => true,
+                        'message' => 'Комментарий успешно обновлен.',
+                    ];
+                }
+                // Для обычных запросов - редирект назад
+                Yii::$app->session->setFlash('success', 'Комментарий успешно обновлен.');
+                return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
             } else {
-                return [
-                    'success' => false,
-                    'errors' => $model->getErrors(),
-                    'message' => 'Ошибка при сохранении изменений.',
-                ];
+                if (Yii::$app->request->isAjax) {
+                    return [
+                        'success' => false,
+                        'errors' => $model->getErrors(),
+                        'message' => 'Ошибка при сохранении изменений.',
+                    ];
+                }
+                // Для обычных запросов - редирект с ошибкой
+                Yii::$app->session->setFlash('error', 'Ошибка при сохранении изменений.');
+                return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
             }
         }
 
@@ -145,29 +163,40 @@ class CommentController extends Controller
      */
     public function actionDelete($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
         $model = $this->findModel($id);
 
         // Проверка прав на удаление
         if (!$model->canDelete()) {
-            return [
-                'success' => false,
-                'message' => 'У вас нет прав для удаления этого комментария.',
-            ];
+            if (Yii::$app->request->isAjax) {
+                return [
+                    'success' => false,
+                    'message' => 'У вас нет прав для удаления этого комментария.',
+                ];
+            }
+            Yii::$app->session->setFlash('error', 'У вас нет прав для удаления этого комментария.');
+            return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
         }
 
         if ($model->delete()) {
-            return [
-                'success' => true,
-                'message' => 'Комментарий успешно удален.',
-            ];
+            if (Yii::$app->request->isAjax) {
+                return [
+                    'success' => true,
+                    'message' => 'Комментарий успешно удален.',
+                ];
+            }
+            // Для обычных запросов - редирект назад
+            Yii::$app->session->setFlash('success', 'Комментарий успешно удален.');
+            return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
         }
 
-        return [
-            'success' => false,
-            'message' => 'Ошибка при удалении комментария.',
-        ];
+        if (Yii::$app->request->isAjax) {
+            return [
+                'success' => false,
+                'message' => 'Ошибка при удалении комментария.',
+            ];
+        }
+        Yii::$app->session->setFlash('error', 'Ошибка при удалении комментария.');
+        return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
     }
 
     /**

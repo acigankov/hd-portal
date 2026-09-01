@@ -132,7 +132,7 @@ $this->registerJs(<<<JS
             type: 'POST',
             data: {
                 Comment: {
-                    entity_type: entityType,
+                    entity_class: entityType,
                     entity_id: entityId,
                     text: text
                 },
@@ -256,7 +256,7 @@ $this->registerJs(<<<JS
             url: '/comment/index',
             type: 'GET',
             data: {
-                entityType: entityType,
+                entityClass: entityType,
                 entityId: entityId,
                 sort: currentSort
             },

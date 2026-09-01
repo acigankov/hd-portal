@@ -48,10 +48,10 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
         <?php if ($currentUser): ?>
         <div class="mb-3">
             <?= Html::beginForm(['comment/create'], 'post', ['id' => "comment-form-{$uniqueId}", 'class' => 'comment-form']) ?>
-            <?= Html::hiddenInput('entity_class', $modelClass) ?>
-            <?= Html::hiddenInput('entity_id', $modelId) ?>
+            <?= Html::hiddenInput('Comment[entity_class]', $modelClass) ?>
+            <?= Html::hiddenInput('Comment[entity_id]', $modelId) ?>
             <div class="form-group">
-                <?= Html::textarea('text', '', [
+                <?= Html::textarea('Comment[text]', '', [
                     'class' => 'form-control',
                     'placeholder' => 'Напишите комментарий...',
                     'rows' => 3,
@@ -83,7 +83,7 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
                             <?= Yii::$app->formatter->asDatetime($comment->created_at) ?>
                         </small>
                     </div>
-                    <?php if ($currentUser && $currentUser->id == $comment->user_id): ?>
+                    <?php if ($currentUser && $currentUser->id == $comment->author_id): ?>
                     <div class="comment-actions">
                         <button type="button" class="btn btn-tool btn-sm text-danger delete-comment" 
                                 data-id="<?= $comment->id ?>" 
@@ -106,7 +106,7 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
                 <div class="edit-form mt-2" id="edit-form-<?= $comment->id ?>" style="display: none;">
                     <?= Html::beginForm(['comment/update', 'id' => $comment->id], 'post', ['class' => 'inline-edit-form']) ?>
                     <div class="form-group">
-                        <?= Html::textarea('text', $comment->text, [
+                        <?= Html::textarea('Comment[text]', $comment->text, [
                             'class' => 'form-control',
                             'rows' => 3,
                         ]) ?>
