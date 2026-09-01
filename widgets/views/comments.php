@@ -78,7 +78,7 @@ $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Снача�
             <div class="comment-item mb-3 pb-2 border-bottom" id="comment-<?= $comment->id ?>">
                 <div class="d-flex justify-content-between align-items-start mb-1">
                     <div class="author-info">
-                        <strong><?= Html::encode($comment->author->fullName ?? $comment->author->username ?? 'Удаленный пользователь') ?></strong>
+                        <strong><?= Html::encode($comment->author ? ($comment->author->login ?? $comment->author->username ?? 'Удаленный пользователь') : 'Удаленный пользователь') ?></strong>
                         <small class="text-muted ml-2">
                             <?= Yii::$app->formatter->asDatetime($comment->created_at) ?>
                         </small>

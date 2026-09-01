@@ -81,7 +81,7 @@ class CommentController extends Controller
 
             if ($model->save()) {
                 // Загружаем автора для отображения
-                $model->refresh();
+                $model->author = $model->getAuthor()->one();
                 
                 if (Yii::$app->request->isAjax) {
                     return [
@@ -135,10 +135,14 @@ class CommentController extends Controller
             $model->is_edited = 1;
 
             if ($model->save()) {
+                // Загружаем автора для отображения
+                $model->author = $model->getAuthor()->one();
+                
                 if (Yii::$app->request->isAjax) {
                     return [
                         'success' => true,
                         'message' => 'Комментарий успешно обновлен.',
+                        'comment' => $this->renderComment($model),
                     ];
                 }
                 // Для обычных запросов - редирект назад
