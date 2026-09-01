@@ -80,10 +80,19 @@ class TaskController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        
+        // Получаем комментарии для задачи
+        $comments = \app\models\Comment::find()
+            ->forEntity('task', $model->id)
+            ->root()
+            ->orderByDate(SORT_ASC)
+            ->with(['author', 'replies.author'])
+            ->all();
 
         return $this->render('view', [
-            'model' => $this->findModel($id),
-
+            'model' => $model,
+            'comments' => $comments,
         ]);
     }
 

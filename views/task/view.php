@@ -166,5 +166,11 @@ $status = $model->getStatusById($model->status_id);
         <!--end::Container-->
     </div>
     <!--end::App Content-->
+    <!-- Блок комментариев -->
+    <?= $this->render('/comment/_list', [
+        'entityType' => 'task',
+        'entityId' => $model->id,
+        'comments' => $comments,
+    ]) ?>
 
 </div>

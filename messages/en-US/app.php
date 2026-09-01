@@ -306,4 +306,19 @@ return [
     'Category successfully updated.' => 'Category successfully updated.',
     'Category successfully deleted.' => 'Category successfully deleted.',
     'The requested page does not exist.' => 'The requested page does not exist.',
+
+    // Comments
+    'Comments' => 'Comments',
+    'Write a comment...' => 'Write a comment...',
+    'Send' => 'Send',
+    'No comments yet. Be the first!' => 'No comments yet. Be the first!',
+    'Older first' => 'Older first',
+    'Newer first' => 'Newer first',
+    'Edited' => 'Edited',
+    'Please enter comment text' => 'Please enter comment text',
+    'Error adding comment' => 'Error adding comment',
+    'Error editing comment' => 'Error editing comment',
+    'Error deleting comment' => 'Error deleting comment',
+    'Are you sure you want to delete this comment?' => 'Are you sure you want to delete this comment?',
+    'Unknown' => 'Unknown',
 ];
