@@ -72,32 +72,40 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
+     * Ищет активного пользователя по ID.
+     *
+     * Деактивированные пользователи (status = STATUS_DISABLED) не должны
+     * проходить аутентификацию, поэтому статус проверяется здесь.
+     *
      * @param $id
-     * @return IdentityInterface|null the identity object that matches the given token.
+     * @return IdentityInterface|null
      */
-    public static function findIdentity($id)
+    public static function findIdentity($id): ?IdentityInterface
     {
-        return static::findOne($id);
-
+        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): ?IdentityInterface
     {
-        return static::findOne(['access_token' => $token]);
+        if (empty($token)) {
+            return null;
+        }
+
+        return static::findOne(['access_token' => $token, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
-     * Finds user by username
+     * Ищет активного пользователя по логину.
      *
      * @param string $login
-     * @return User
+     * @return User|null null, если пользователь не найден или деактивирован
      */
-    public static function findByLogin(string $login): User
+    public static function findByLogin(string $login): ?User
     {
-        return static::findOne(['login' => $login]);
+        return static::findOne(['login' => $login, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**

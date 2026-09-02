@@ -75,9 +75,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($model as $item):?>
                                     <tr>
                                         <td><?=  Html::a($item->id, ['/rbac/user/view', 'id' => $item->id]) ?> </td>
-                                        <td><?= $item->login ?></td>
-                                        <td><?= $item->email ?></td>
-                                        <td><?= $item->formattedCreatedAt ?></td>
+                                        <td><?= Html::encode($item->login) ?></td>
+                                        <td><?= Html::encode($item->email) ?></td>
+                                        <td><?= Html::encode($item->formattedCreatedAt) ?></td>
                                         <td><?= $item->status == 1 ? 'Активен' : 'Неактивен' ?></td>
                                         <td>
                                             <?php if($item->id > 1):?>
