@@ -22,6 +22,7 @@ use yii\db\BaseActiveRecord;
  * @property int|null $created_by ID пользователя создателя
  * @property int|null $updated_by ID пользователя редактора
  * @property Organization $organization Организация
+ * @property string $fullName ФИО автора (алиас full_name, используется в видах задач)
  */
 class Author extends ActiveRecord
 {
@@ -123,6 +124,20 @@ class Author extends ActiveRecord
     public function getStatusLabel()
     {
         return $this->status === self::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Inactive');
+    }
+
+    /**
+     * ФИО автора.
+     *
+     * Виды задач (views/task/{view,create,update}.php) обращаются к свойству
+     * fullName, поэтому геттер обязателен: без него ActiveRecord бросает
+     * UnknownPropertyException.
+     *
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return (string)$this->full_name;
     }
 
     /**
