@@ -5,6 +5,7 @@ use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Ticket */
+/* @var $mailboxes app\models\Mailbox[] */
 /* @var $organizations app\models\Organization[] */
 /* @var $authors app\models\Author[] */
 /* @var $categories app\models\Category[] */
@@ -37,6 +38,7 @@ $this->title = 'Заявка ' . $model->ticket_number;
     <div class="container-fluid">
         <?= $this->render('_form', [
             'model' => $model,
+            'mailboxes' => $mailboxes,
             'organizations' => $organizations,
             'authors' => $authors,
             'categories' => $categories,

@@ -2,7 +2,12 @@
 
 namespace app\controllers;
 
+use app\components\mail\AttachmentPolicy;
+use app\components\mail\AttachmentStorage;
+use app\components\mail\OutgoingReplyMailer;
 use app\models\Author;
+use app\models\EmailAttachment;
+use app\models\Mailbox;
 use app\models\Organization;
 use app\models\Ticket;
 use app\models\TicketReply;
@@ -13,6 +18,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * Раздел заявок: список, карточка с обсуждением, создание, редактирование,
@@ -30,7 +36,7 @@ class TicketController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view'],
+                        'actions' => ['index', 'view', 'attachment'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -96,12 +102,53 @@ class TicketController extends Controller
         $reply = new TicketReply();
         $reply->ticket_id = $model->id;
 
+        // По умолчанию ответ уходит заявителю, если это возможно: почтовые
+        // заявки чаще всего требуют именно ответа, а не внутренней заметки.
+        $reply->is_public = $model->getCanEmailAuthor();
+
         return $this->render('view', [
             'model' => $model,
             'replies' => $model->replies,
             'reply' => $reply,
             'statuses' => Ticket::statusList(),
             'canProcess' => User::canProcessTickets(),
+            'canEmailAuthor' => $model->getCanEmailAuthor(),
+            'attachments' => EmailAttachment::groupedByReply((int)$model->id),
+        ]);
+    }
+
+    /**
+     * Скачивание вложения из письма.
+     *
+     * Файлы лежат вне web-корня, поэтому единственный способ их получить —
+     * это действие, доступное только авторизованному сотруднику. Содержимое
+     * всегда отдаётся как загрузка и с нейтральным типом: письмо пришло
+     * извне, и открывать его HTML или SVG в браузере на домене портала нельзя.
+     *
+     * @param int $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionAttachment($id)
+    {
+        $attachment = EmailAttachment::findOne((int)$id);
+
+        if ($attachment === null) {
+            throw new NotFoundHttpException('Вложение не найдено.');
+        }
+
+        $path = $attachment->getAbsolutePath();
+
+        if ($path === null) {
+            throw new NotFoundHttpException('Файл вложения не найден в хранилище.');
+        }
+
+        Yii::$app->response->headers->set('X-Content-Type-Options', 'nosniff');
+        Yii::$app->response->headers->set('Content-Security-Policy', "default-src 'none'");
+
+        return Yii::$app->response->sendFile($path, $attachment->original_name, [
+            'mimeType' => 'application/octet-stream',
+            'inline' => false,
         ]);
     }
 
@@ -167,6 +214,7 @@ class TicketController extends Controller
 
         $reply = new TicketReply();
         $reply->load(Yii::$app->request->post());
+        $reply->uploadedFiles = UploadedFile::getInstances($reply, 'uploadedFiles');
 
         // Служебные поля задаёт сервер: иначе сторону, автора и тип записи
         // можно было бы подменить скрытыми полями формы.
@@ -177,6 +225,9 @@ class TicketController extends Controller
             $reply->user_id = null;
             $reply->author_id = $model->author_id;
             $reply->author_name = $model->getAuthorDisplayName();
+            // Запись от заявителя — часть переписки, но письмо по ней не шлётся:
+            // ответ ему же самому был бы почтовой петлёй.
+            $reply->is_public = true;
         } else {
             $reply->author_side = TicketReply::SIDE_OPERATOR;
             $reply->author_id = null;
@@ -184,13 +235,80 @@ class TicketController extends Controller
             $reply->author_name = TicketReply::currentUserName();
         }
 
-        if ($reply->save()) {
-            Yii::$app->session->setFlash('success', 'Ответ добавлен.');
-        } else {
+        if (!$reply->save()) {
             Yii::$app->session->setFlash('error', 'Не удалось сохранить ответ: ' . $this->firstError($reply));
+
+            return $this->redirect(['view', 'id' => $model->id, '#' => 'discussion']);
         }
 
+        // Файлы сохраняются до постановки письма в очередь: отправка берёт
+        // вложения из базы, а не из формы.
+        $this->saveReplyAttachments($model, $reply);
+
+        Yii::$app->session->setFlash('success', $this->replySavedMessage($model, $reply));
+
         return $this->redirect(['view', 'id' => $model->id, '#' => 'discussion']);
+    }
+
+    /**
+     * Сохраняет файлы, приложенные сотрудником к ответу.
+     *
+     * Файл ложится в то же хранилище, что и вложения входящих писем,
+     * и сразу виден в заявке — даже если это внутренняя заметка и письмо
+     * никуда не уйдёт. Ошибка на файле не отменяет уже сохранённый ответ.
+     *
+     * @param Ticket $ticket
+     * @param TicketReply $reply
+     */
+    protected function saveReplyAttachments(Ticket $ticket, TicketReply $reply): void
+    {
+        $files = is_array($reply->uploadedFiles) ? $reply->uploadedFiles : [];
+
+        if (empty($files)) {
+            return;
+        }
+
+        $storage = new AttachmentStorage();
+        $failed = [];
+
+        foreach ($files as $file) {
+            $name = AttachmentPolicy::sanitizeFileName((string)$file->name);
+            $content = @file_get_contents($file->tempName);
+
+            if ($content === false || $content === '') {
+                $failed[] = $name;
+
+                continue;
+            }
+
+            try {
+                $path = $storage->save((int)($ticket->mailbox_id ?: 0), $content, $name);
+            } catch (\Throwable $exception) {
+                Yii::error('Не удалось сохранить файл «' . $name . '»: ' . $exception->getMessage(), __METHOD__);
+                $failed[] = $name;
+
+                continue;
+            }
+
+            $attachment = new EmailAttachment();
+            $attachment->reply_id = (int)$reply->id;
+            $attachment->original_name = $name;
+            $attachment->mime_type = mb_substr((string)$file->type, 0, 150) ?: 'application/octet-stream';
+            $attachment->size = strlen($content);
+            $attachment->storage_path = $path;
+            $attachment->checksum = hash('sha256', $content);
+            $attachment->is_inline = false;
+
+            if (!$attachment->save()) {
+                $storage->delete($path);
+                $failed[] = $name;
+                Yii::error('Не удалось записать вложение ответа: ' . $this->firstError($attachment), __METHOD__);
+            }
+        }
+
+        if (!empty($failed)) {
+            Yii::$app->session->setFlash('error', 'Не удалось приложить файлы: ' . implode(', ', $failed) . '.');
+        }
     }
 
     /**
@@ -240,12 +358,44 @@ class TicketController extends Controller
     }
 
     /**
+     * Постановка ответа в очередь и текст сообщения для сотрудника.
+     *
+     * Сотрудник должен сразу понимать, уйдёт ли его ответ заявителю:
+     * молчаливое сохранение без отправки — частая причина потерянных обращений.
+     *
+     * @param Ticket $model
+     * @param TicketReply $reply
+     * @return string
+     */
+    protected function replySavedMessage(Ticket $model, TicketReply $reply): string
+    {
+        if (!$reply->getIsFromOperator()) {
+            return 'Ответ заявителя добавлен в обсуждение.';
+        }
+
+        if (!$reply->is_public) {
+            return 'Внутренняя заметка сохранена — заявителю она не отправлена.';
+        }
+
+        if ((new OutgoingReplyMailer())->queue($reply) !== null) {
+            return 'Ответ сохранён и поставлен в очередь на отправку на ' . $model->author_email . '.';
+        }
+
+        if (empty($model->author_email)) {
+            return 'Ответ сохранён. Email заявителя не указан, поэтому письмо не отправлено.';
+        }
+
+        return 'Ответ сохранён, но письмо не отправлено: у заявки нет почтового канала с настроенной отправкой.';
+    }
+
+    /**
      * Справочники для формы заявки
      * @return array
      */
     protected function formData(): array
     {
         return [
+            'mailboxes' => Mailbox::find()->orderBy(['name' => SORT_ASC])->all(),
             'organizations' => Organization::find()->andWhere(['status' => 1])->orderBy(['name' => SORT_ASC])->all(),
             'authors' => Author::find()->andWhere(['status' => 1])->orderBy(['full_name' => SORT_ASC])->all(),
             'categories' => Ticket::categoryList(),

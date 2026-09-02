@@ -59,6 +59,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="/mailbox" class="nav-link ">
+                        <i class="nav-icon bi bi-envelope-at"></i>
+                        <p><?= Yii::t('app', 'Mailboxes') ?></p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="/employee-group" class="nav-link ">
                         <i class="nav-icon bi bi-people"></i>
                         <p><?= Yii::t('app', 'Employee Groups') ?></p>
