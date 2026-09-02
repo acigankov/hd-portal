@@ -17,6 +17,7 @@ use yii\db\IntegrityException;
  * @property string $subject Тема обращения
  * @property string|null $description Описание обращения
  * @property int|null $organization_id ID организации
+ * @property int|null $mailbox_id Почтовый ящик, через который поступило обращение
  * @property int|null $author_id ID заявителя в справочнике авторов
  * @property string $author_name ФИО заявителя (слепок на момент обращения)
  * @property string|null $author_email Email заявителя
@@ -31,6 +32,7 @@ use yii\db\IntegrityException;
  * @property int|null $updated_by ID пользователя редактора
  *
  * @property Organization|null $organization
+ * @property Mailbox|null $mailbox
  * @property Author|null $author
  * @property User|null $assigned
  * @property Category|null $category
@@ -94,7 +96,7 @@ class Ticket extends ActiveRecord
             [['subject', 'author_name', 'author_email'], 'string', 'max' => 255],
             [['author_phone'], 'string', 'max' => 50],
             [['description'], 'string'],
-            [['organization_id', 'author_id', 'assigned_id', 'category_id', 'status_id', 'priority'], 'integer'],
+            [['organization_id', 'mailbox_id', 'author_id', 'assigned_id', 'category_id', 'status_id', 'priority'], 'integer'],
             [['author_email'], 'email'],
             [['priority'], 'default', 'value' => self::PRIORITY_MEDIUM],
             [['priority'], 'in', 'range' => array_keys(self::priorityList())],
@@ -103,6 +105,7 @@ class Ticket extends ActiveRecord
             // Ссылочная целостность проверяется до обращения к БД, чтобы
             // пользователь видел понятную ошибку вместо ошибки внешнего ключа.
             [['organization_id'], 'exist', 'targetClass' => Organization::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
+            [['mailbox_id'], 'exist', 'targetClass' => Mailbox::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
             [['author_id'], 'exist', 'targetClass' => Author::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
             [['assigned_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
             [['category_id'], 'exist', 'targetClass' => Category::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
@@ -121,6 +124,7 @@ class Ticket extends ActiveRecord
             'subject' => 'Тема',
             'description' => 'Описание',
             'organization_id' => 'Организация',
+            'mailbox_id' => 'Почтовый канал',
             'author_id' => 'Заявитель из справочника',
             'author_name' => 'Автор обращения',
             'author_email' => 'Email автора',
@@ -258,6 +262,31 @@ class Ticket extends ActiveRecord
     public function getOrganization()
     {
         return $this->hasOne(Organization::class, ['id' => 'organization_id']);
+    }
+
+    /**
+     * Почтовый ящик, с которого пришло обращение и на который уйдут ответы
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMailbox()
+    {
+        return $this->hasOne(Mailbox::class, ['id' => 'mailbox_id']);
+    }
+
+    /**
+     * Можно ли ответить заявителю по email.
+     *
+     * Нужен и почтовый канал с настроенным SMTP, и адрес заявителя:
+     * заявка, созданная оператором с телефона, письма не порождает.
+     *
+     * @return bool
+     */
+    public function getCanEmailAuthor(): bool
+    {
+        return !empty($this->author_email)
+            && $this->mailbox !== null
+            && $this->mailbox->is_active
+            && $this->mailbox->getCanSend();
     }
 
     /**

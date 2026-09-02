@@ -40,6 +40,7 @@ return [
     'Administration' => 'Администрирование',
     'Organizations' => 'Организации',
     'Employee Groups' => 'Группы сотрудников',
+    'Mailboxes' => 'Почтовые каналы',
     'Settings' => 'Настройки',
     'Users' => 'Пользователи',
     

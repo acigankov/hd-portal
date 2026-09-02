@@ -2,7 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\mail\OutgoingReplyMailer;
 use app\models\Author;
+use app\models\Mailbox;
 use app\models\Organization;
 use app\models\Ticket;
 use app\models\TicketReply;
@@ -96,12 +98,17 @@ class TicketController extends Controller
         $reply = new TicketReply();
         $reply->ticket_id = $model->id;
 
+        // По умолчанию ответ уходит заявителю, если это возможно: почтовые
+        // заявки чаще всего требуют именно ответа, а не внутренней заметки.
+        $reply->is_public = $model->getCanEmailAuthor();
+
         return $this->render('view', [
             'model' => $model,
             'replies' => $model->replies,
             'reply' => $reply,
             'statuses' => Ticket::statusList(),
             'canProcess' => User::canProcessTickets(),
+            'canEmailAuthor' => $model->getCanEmailAuthor(),
         ]);
     }
 
@@ -177,6 +184,9 @@ class TicketController extends Controller
             $reply->user_id = null;
             $reply->author_id = $model->author_id;
             $reply->author_name = $model->getAuthorDisplayName();
+            // Запись от заявителя — часть переписки, но письмо по ней не шлётся:
+            // ответ ему же самому был бы почтовой петлёй.
+            $reply->is_public = true;
         } else {
             $reply->author_side = TicketReply::SIDE_OPERATOR;
             $reply->author_id = null;
@@ -184,11 +194,13 @@ class TicketController extends Controller
             $reply->author_name = TicketReply::currentUserName();
         }
 
-        if ($reply->save()) {
-            Yii::$app->session->setFlash('success', 'Ответ добавлен.');
-        } else {
+        if (!$reply->save()) {
             Yii::$app->session->setFlash('error', 'Не удалось сохранить ответ: ' . $this->firstError($reply));
+
+            return $this->redirect(['view', 'id' => $model->id, '#' => 'discussion']);
         }
+
+        Yii::$app->session->setFlash('success', $this->replySavedMessage($model, $reply));
 
         return $this->redirect(['view', 'id' => $model->id, '#' => 'discussion']);
     }
@@ -240,12 +252,44 @@ class TicketController extends Controller
     }
 
     /**
+     * Постановка ответа в очередь и текст сообщения для сотрудника.
+     *
+     * Сотрудник должен сразу понимать, уйдёт ли его ответ заявителю:
+     * молчаливое сохранение без отправки — частая причина потерянных обращений.
+     *
+     * @param Ticket $model
+     * @param TicketReply $reply
+     * @return string
+     */
+    protected function replySavedMessage(Ticket $model, TicketReply $reply): string
+    {
+        if (!$reply->getIsFromOperator()) {
+            return 'Ответ заявителя добавлен в обсуждение.';
+        }
+
+        if (!$reply->is_public) {
+            return 'Внутренняя заметка сохранена — заявителю она не отправлена.';
+        }
+
+        if ((new OutgoingReplyMailer())->queue($reply) !== null) {
+            return 'Ответ сохранён и поставлен в очередь на отправку на ' . $model->author_email . '.';
+        }
+
+        if (empty($model->author_email)) {
+            return 'Ответ сохранён. Email заявителя не указан, поэтому письмо не отправлено.';
+        }
+
+        return 'Ответ сохранён, но письмо не отправлено: у заявки нет почтового канала с настроенной отправкой.';
+    }
+
+    /**
      * Справочники для формы заявки
      * @return array
      */
     protected function formData(): array
     {
         return [
+            'mailboxes' => Mailbox::find()->orderBy(['name' => SORT_ASC])->all(),
             'organizations' => Organization::find()->andWhere(['status' => 1])->orderBy(['name' => SORT_ASC])->all(),
             'authors' => Author::find()->andWhere(['status' => 1])->orderBy(['full_name' => SORT_ASC])->all(),
             'categories' => Ticket::categoryList(),
