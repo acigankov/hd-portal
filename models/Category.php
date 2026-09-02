@@ -20,6 +20,7 @@ use app\components\TransliterationBehavior;
  * @property int $sort_order Порядок сортировки
  * @property bool $for_requests Применяется к заявкам
  * @property bool $for_tasks Применяется к задачам
+ * @property bool $for_tickets Применяется к заявкам (тикетам)
  * @property bool $for_problems Применяется к проблемам
  * @property int $status Статус записи (1 - активен, 0 - неактивен)
  * @property string $created_at Дата создания
@@ -75,7 +76,7 @@ class Category extends ActiveRecord
             [['code'], 'string', 'max' => 50],
             [['code'], 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/', 'message' => 'Код должен содержать только латинские буквы, цифры, дефис и подчеркивание'],
             [['description'], 'safe'],
-            [['for_requests', 'for_tasks', 'for_problems'], 'boolean'],
+            [['for_requests', 'for_tasks', 'for_problems', 'for_tickets'], 'boolean'],
             [['sort_order', 'status', 'created_by', 'updated_by'], 'integer'],
             [['code'], 'unique', 'message' => 'Категория с таким кодом уже существует'],
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
@@ -99,6 +100,7 @@ class Category extends ActiveRecord
             'for_requests' => Yii::t('app', 'For Requests'),
             'for_tasks' => Yii::t('app', 'For Tasks'),
             'for_problems' => Yii::t('app', 'For Problems'),
+            'for_tickets' => Yii::t('app', 'For Tickets'),
             'entity_types' => Yii::t('app', 'Entity Types'),
             'status' => Yii::t('app', 'Status'),
             'created_at' => Yii::t('app', 'Created At'),
@@ -179,6 +181,9 @@ class Category extends ActiveRecord
         }
         if ($this->for_problems) {
             $types[] = 'problems';
+        }
+        if ($this->for_tickets) {
+            $types[] = 'tickets';
         }
         return $types;
     }

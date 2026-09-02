@@ -87,6 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             if ($item->for_requests) $entityTypes[] = Yii::t('app', 'Requests');
                                             if ($item->for_tasks) $entityTypes[] = Yii::t('app', 'Tasks');
                                             if ($item->for_problems) $entityTypes[] = Yii::t('app', 'Problems');
+                                            if ($item->for_tickets) $entityTypes[] = 'Заявки';
                                             echo implode(', ', $entityTypes);
                                             ?>
                                         </td>

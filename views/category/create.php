@@ -98,6 +98,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <div class="form-check form-check-inline">
                                         <?= $form->field($model, 'for_problems')->checkbox(['label' => Yii::t('app', 'Problems'), 'class' => 'form-check-input']) ?>
                                     </div>
+                                    <div class="form-check form-check-inline">
+                                        <?= $form->field($model, 'for_tickets')->checkbox(['label' => 'Заявки', 'class' => 'form-check-input']) ?>
+                                    </div>
                                 </div>
                             </div>
 
