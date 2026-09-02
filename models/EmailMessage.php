@@ -42,6 +42,7 @@ use yii\db\BaseActiveRecord;
  * @property Mailbox $mailbox
  * @property Ticket|null $ticket
  * @property TicketReply|null $reply
+ * @property EmailAttachment[] $attachments
  */
 class EmailMessage extends ActiveRecord
 {
@@ -137,6 +138,16 @@ class EmailMessage extends ActiveRecord
     public function getReply()
     {
         return $this->hasOne(TicketReply::class, ['id' => 'reply_id']);
+    }
+
+    /**
+     * Файлы, пришедшие с письмом
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAttachments()
+    {
+        return $this->hasMany(EmailAttachment::class, ['email_message_id' => 'id'])
+            ->orderBy(['id' => SORT_ASC]);
     }
 
     /**

@@ -17,6 +17,28 @@ use RuntimeException;
  */
 class ImapClient
 {
+    /** Максимальный размер одного вложения, байт */
+    const MAX_ATTACHMENT_SIZE = 10485760; // 10 МБ
+
+    /** Максимальный суммарный размер вложений одного письма, байт */
+    const MAX_ATTACHMENTS_TOTAL = 26214400; // 25 МБ
+
+    /** Максимальное число вложений в одном письме */
+    const MAX_ATTACHMENTS_COUNT = 20;
+
+    /**
+     * Расширения, которые портал не принимает.
+     *
+     * Исполняемые файлы и скрипты не нужны в заявке, а их хранение и раздача
+     * создают лишний риск: заявитель отправит «инструкцию.exe», а сотрудник
+     * скачает и запустит.
+     */
+    const BLOCKED_EXTENSIONS = [
+        'exe', 'com', 'bat', 'cmd', 'msi', 'scr', 'pif', 'vbs', 'vbe', 'js', 'jse',
+        'wsf', 'wsh', 'ps1', 'psm1', 'jar', 'app', 'dll', 'sys', 'reg',
+        'php', 'phtml', 'phar', 'sh', 'bash', 'cgi', 'pl',
+    ];
+
     /** @var Mailbox */
     protected $mailbox;
 
@@ -177,8 +199,17 @@ class ImapClient
         $structure = @imap_fetchstructure($this->connection, $uid, FT_UID);
 
         $bodies = ['text' => '', 'html' => ''];
+        $attachments = [];
+        $rejected = [];
+
         if ($structure !== false) {
-            $this->collectParts($uid, $structure, '', $bodies);
+            $this->collectParts($uid, $structure, '', $bodies, $attachments, $rejected);
+        }
+
+        // Файлы, которые портал не принял, упоминаются в тексте заявки:
+        // сотрудник должен знать, что вложение было, и запросить его иначе.
+        foreach ($rejected as $note) {
+            $bodies['text'] .= "\n[вложение не сохранено: " . $note['name'] . ' — ' . $note['reason'] . ']';
         }
 
         $from = $this->firstAddress($headers->from ?? []);
@@ -198,23 +229,33 @@ class ImapClient
             'body_html' => trim($bodies['html']),
             'raw_headers' => $rawHeaders,
             'is_auto' => $this->looksAutomatic($rawHeaders),
+            'attachments' => $attachments,
+            'rejected_attachments' => $rejected,
         ];
     }
 
     /**
-     * Рекурсивно собирает текстовые части письма.
+     * Рекурсивно собирает текстовые части и вложения письма.
      *
-     * Вложения на этом этапе не сохраняются: в портале ещё нет файлового
-     * хранилища. Имена файлов попадают в текст письма, поэтому оператор видит,
-     * что вложение было, и может запросить его отдельно.
+     * Содержимое вложений возвращается в памяти, поэтому действуют лимиты
+     * по размеру и количеству: одно письмо с архивом на полгигабайта не должно
+     * ронять приём почты по memory_limit.
      *
      * @param int $uid
      * @param object $part
      * @param string $section
      * @param array $bodies
+     * @param array $attachments Собранные вложения
+     * @param array $rejected Файлы, которые не приняты, с причиной
      */
-    protected function collectParts(int $uid, $part, string $section, array &$bodies): void
-    {
+    protected function collectParts(
+        int $uid,
+        $part,
+        string $section,
+        array &$bodies,
+        array &$attachments = [],
+        array &$rejected = []
+    ): void {
         $subtype = strtolower((string)($part->subtype ?? ''));
 
         // Составное письмо: спускаемся во вложенные части (text/plain,
@@ -222,7 +263,7 @@ class ImapClient
         if (!empty($part->parts)) {
             foreach ($part->parts as $index => $child) {
                 $childSection = $section === '' ? (string)($index + 1) : $section . '.' . ($index + 1);
-                $this->collectParts($uid, $child, $childSection, $bodies);
+                $this->collectParts($uid, $child, $childSection, $bodies, $attachments, $rejected);
             }
 
             return;
@@ -230,7 +271,7 @@ class ImapClient
 
         $fileName = $this->partFileName($part);
         if ($fileName !== null) {
-            $bodies['text'] .= "\n[вложение: " . $fileName . "]";
+            $this->collectAttachment($uid, $part, $section, $fileName, $attachments, $rejected);
 
             return;
         }
@@ -248,6 +289,161 @@ class ImapClient
         } else {
             $bodies['text'] .= $content;
         }
+    }
+
+    /**
+     * Забирает одно вложение с учётом ограничений.
+     *
+     * Проверки идут до загрузки содержимого: размер известен из структуры
+     * письма, и тянуть с сервера файл, который всё равно будет отброшен,
+     * нет смысла.
+     *
+     * @param int $uid
+     * @param object $part
+     * @param string $section
+     * @param string $fileName
+     * @param array $attachments
+     * @param array $rejected
+     */
+    protected function collectAttachment(
+        int $uid,
+        $part,
+        string $section,
+        string $fileName,
+        array &$attachments,
+        array &$rejected
+    ): void {
+        $fileName = $this->sanitizeFileName($fileName);
+        $declaredSize = (int)($part->bytes ?? 0);
+
+        if (count($attachments) >= self::MAX_ATTACHMENTS_COUNT) {
+            $rejected[] = ['name' => $fileName, 'reason' => 'в письме слишком много файлов'];
+
+            return;
+        }
+
+        if ($this->isBlockedFile($fileName)) {
+            $rejected[] = ['name' => $fileName, 'reason' => 'тип файла запрещён'];
+
+            return;
+        }
+
+        if ($declaredSize > self::MAX_ATTACHMENT_SIZE) {
+            $rejected[] = [
+                'name' => $fileName,
+                'reason' => 'размер больше ' . round(self::MAX_ATTACHMENT_SIZE / 1048576) . ' МБ',
+            ];
+
+            return;
+        }
+
+        $raw = (string)@imap_fetchbody($this->connection, $uid, $section === '' ? '1' : $section, FT_UID);
+        $content = $this->decodeBody($raw, (int)($part->encoding ?? 0));
+        unset($raw);
+
+        $size = strlen($content);
+
+        if ($size === 0) {
+            $rejected[] = ['name' => $fileName, 'reason' => 'пустой файл'];
+
+            return;
+        }
+
+        if ($size > self::MAX_ATTACHMENT_SIZE) {
+            $rejected[] = [
+                'name' => $fileName,
+                'reason' => 'размер больше ' . round(self::MAX_ATTACHMENT_SIZE / 1048576) . ' МБ',
+            ];
+
+            return;
+        }
+
+        $total = $size;
+        foreach ($attachments as $collected) {
+            $total += (int)$collected['size'];
+        }
+
+        if ($total > self::MAX_ATTACHMENTS_TOTAL) {
+            $rejected[] = ['name' => $fileName, 'reason' => 'превышен суммарный размер вложений'];
+
+            return;
+        }
+
+        $attachments[] = [
+            'name' => $fileName,
+            'mime' => $this->partMimeType($part),
+            'size' => $size,
+            'content' => $content,
+            'is_inline' => strtolower((string)($part->disposition ?? '')) === 'inline',
+        ];
+    }
+
+    /**
+     * MIME-тип части письма по её структуре
+     * @param object $part
+     * @return string
+     */
+    protected function partMimeType($part): string
+    {
+        $primary = [
+            TYPETEXT => 'text',
+            TYPEMULTIPART => 'multipart',
+            TYPEMESSAGE => 'message',
+            TYPEAPPLICATION => 'application',
+            TYPEAUDIO => 'audio',
+            TYPEIMAGE => 'image',
+            TYPEVIDEO => 'video',
+            TYPEMODEL => 'model',
+            TYPEOTHER => 'application',
+        ];
+
+        $type = $primary[(int)($part->type ?? TYPEOTHER)] ?? 'application';
+        $subtype = strtolower((string)($part->subtype ?? 'octet-stream'));
+        $subtype = preg_replace('/[^a-z0-9.+\-]/', '', $subtype);
+
+        return mb_substr($type . '/' . ($subtype !== '' ? $subtype : 'octet-stream'), 0, 150);
+    }
+
+    /**
+     * Очищает имя файла из письма.
+     *
+     * Имя пришло извне, поэтому из него убираются пути и управляющие
+     * символы: оно показывается в интерфейсе и попадает в заголовок
+     * Content-Disposition при скачивании.
+     *
+     * @param string $fileName
+     * @return string
+     */
+    protected function sanitizeFileName(string $fileName): string
+    {
+        $fileName = str_replace(['\\', '/'], '_', $fileName);
+        $fileName = preg_replace('/[\x00-\x1F\x7F"]+/u', '', $fileName);
+        $fileName = trim((string)$fileName, " .\t");
+
+        if ($fileName === '') {
+            $fileName = 'вложение';
+        }
+
+        return mb_substr($fileName, 0, 255);
+    }
+
+    /**
+     * Запрещён ли файл по расширению (в том числе двойному вида .pdf.exe)
+     * @param string $fileName
+     * @return bool
+     */
+    protected function isBlockedFile(string $fileName): bool
+    {
+        $parts = array_map('strtolower', explode('.', $fileName));
+        array_shift($parts);
+
+        foreach ($parts as $extension) {
+            if (in_array($extension, self::BLOCKED_EXTENSIONS, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

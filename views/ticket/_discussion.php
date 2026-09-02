@@ -5,6 +5,9 @@ use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $replies app\models\TicketReply[] */
+/* @var $attachments array<int, app\models\EmailAttachment[]> Файлы писем по записям обсуждения */
+
+$attachments = $attachments ?? [];
 ?>
 
 <?php if (empty($replies)) : ?>
@@ -41,6 +44,10 @@ use yii\helpers\Html;
                     </span>
                 </div>
                 <div class="mb-0"><?= nl2br(Html::encode((string)$entry->text)) ?></div>
+
+                <?= $this->render('_attachments', [
+                    'attachments' => $attachments[$entry->id] ?? [],
+                ]) ?>
 
                 <?php if ($fromOperator) : ?>
                     <div class="mt-2 small">

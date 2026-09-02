@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\mail\OutgoingReplyMailer;
 use app\models\Author;
+use app\models\EmailAttachment;
 use app\models\Mailbox;
 use app\models\Organization;
 use app\models\Ticket;
@@ -32,7 +33,7 @@ class TicketController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['index', 'view'],
+                        'actions' => ['index', 'view', 'attachment'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -109,6 +110,42 @@ class TicketController extends Controller
             'statuses' => Ticket::statusList(),
             'canProcess' => User::canProcessTickets(),
             'canEmailAuthor' => $model->getCanEmailAuthor(),
+            'attachments' => EmailAttachment::groupedByReply((int)$model->id),
+        ]);
+    }
+
+    /**
+     * Скачивание вложения из письма.
+     *
+     * Файлы лежат вне web-корня, поэтому единственный способ их получить —
+     * это действие, доступное только авторизованному сотруднику. Содержимое
+     * всегда отдаётся как загрузка и с нейтральным типом: письмо пришло
+     * извне, и открывать его HTML или SVG в браузере на домене портала нельзя.
+     *
+     * @param int $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionAttachment($id)
+    {
+        $attachment = EmailAttachment::findOne((int)$id);
+
+        if ($attachment === null) {
+            throw new NotFoundHttpException('Вложение не найдено.');
+        }
+
+        $path = $attachment->getAbsolutePath();
+
+        if ($path === null) {
+            throw new NotFoundHttpException('Файл вложения не найден в хранилище.');
+        }
+
+        Yii::$app->response->headers->set('X-Content-Type-Options', 'nosniff');
+        Yii::$app->response->headers->set('Content-Security-Policy', "default-src 'none'");
+
+        return Yii::$app->response->sendFile($path, $attachment->original_name, [
+            'mimeType' => 'application/octet-stream',
+            'inline' => false,
         ]);
     }
 

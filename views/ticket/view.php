@@ -13,6 +13,9 @@ use yii\widgets\ActiveForm;
 /* @var $statuses app\models\Status[] */
 /* @var $canProcess bool */
 /* @var $canEmailAuthor bool */
+/* @var $attachments array<int, app\models\EmailAttachment[]> Файлы писем: ключ 0 — исходное письмо */
+
+$attachments = $attachments ?? [];
 
 $this->title = 'Заявка ' . $model->ticket_number;
 ?>
@@ -79,6 +82,11 @@ $this->title = 'Заявка ' . $model->ticket_number;
                         <?php else : ?>
                             <p class="text-muted mb-0">Описание не заполнено.</p>
                         <?php endif; ?>
+
+                        <?= $this->render('_attachments', [
+                            'attachments' => $attachments[0] ?? [],
+                            'title' => 'Файлы из первого письма',
+                        ]) ?>
                     </div>
                 </div>
 
@@ -87,7 +95,10 @@ $this->title = 'Заявка ' . $model->ticket_number;
                         <h3 class="card-title mb-0">Обсуждение</h3>
                     </div>
                     <div class="card-body">
-                        <?= $this->render('_discussion', ['replies' => $replies]) ?>
+                        <?= $this->render('_discussion', [
+                            'replies' => $replies,
+                            'attachments' => $attachments,
+                        ]) ?>
                     </div>
 
                     <?php if ($canProcess) : ?>

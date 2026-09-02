@@ -109,6 +109,7 @@ $config = [
                 'ticket/delete/<id:\d+>' => 'ticket/delete',
                 'ticket/reply/<id:\d+>' => 'ticket/reply',
                 'ticket/change-status/<id:\d+>' => 'ticket/change-status',
+                'ticket/attachment/<id:\d+>' => 'ticket/attachment',
                 'mailbox' => 'mailbox/index',
                 'mailbox/create' => 'mailbox/create',
                 'mailbox/<id:\d+>' => 'mailbox/view',

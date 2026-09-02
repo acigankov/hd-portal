@@ -3,6 +3,7 @@
 namespace app\components\mail;
 
 use app\models\Author;
+use app\models\EmailAttachment;
 use app\models\EmailMessage;
 use app\models\Mailbox;
 use app\models\Ticket;
@@ -123,7 +124,7 @@ class IncomingMailProcessor
                 $result = 'replies';
             }
 
-            $this->logMessage(
+            $record = $this->logMessage(
                 $mailbox,
                 $message,
                 EmailMessage::STATUS_PROCESSED,
@@ -131,14 +132,100 @@ class IncomingMailProcessor
                 $reply !== null ? (int)$reply->id : null
             );
 
+            $savedFiles = $this->saveAttachments($mailbox, $record, $message['attachments'] ?? []);
+
             $transaction->commit();
         } catch (Throwable $exception) {
             $transaction->rollBack();
+            $this->cleanupFiles($savedFiles ?? []);
 
             throw $exception;
         }
 
         return $result;
+    }
+
+    /**
+     * Сохраняет вложения письма.
+     *
+     * Файл ложится на диск вне web-корня, в базе остаётся только путь и описание.
+     * Ошибка на одном файле не должна отменять заявку целиком: текст
+     * обращения важнее приложенного скриншота, поэтому сбой попадает в лог.
+     *
+     * @param Mailbox $mailbox
+     * @param EmailMessage $record
+     * @param array $attachments Список из ImapClient::fetchMessage()
+     * @return string[] Относительные пути записанных файлов
+     */
+    protected function saveAttachments(Mailbox $mailbox, EmailMessage $record, array $attachments): array
+    {
+        if (empty($attachments) || $record->getIsNewRecord()) {
+            return [];
+        }
+
+        $storage = new AttachmentStorage();
+        $saved = [];
+
+        foreach ($attachments as $attachment) {
+            $content = (string)($attachment['content'] ?? '');
+
+            if ($content === '') {
+                continue;
+            }
+
+            try {
+                $path = $storage->save((int)$mailbox->id, $content, (string)$attachment['name']);
+            } catch (Throwable $exception) {
+                Yii::error(
+                    'Не удалось сохранить вложение «' . $attachment['name'] . '»: ' . $exception->getMessage(),
+                    __METHOD__
+                );
+
+                continue;
+            }
+
+            $model = new EmailAttachment();
+            $model->email_message_id = (int)$record->id;
+            $model->original_name = mb_substr((string)$attachment['name'], 0, 255);
+            $model->mime_type = $attachment['mime'] ?? null;
+            $model->size = (int)$attachment['size'];
+            $model->storage_path = $path;
+            $model->checksum = hash('sha256', $content);
+            $model->is_inline = !empty($attachment['is_inline']);
+
+            if ($model->save()) {
+                $saved[] = $path;
+            } else {
+                $storage->delete($path);
+                Yii::error(
+                    'Не удалось записать вложение в базу: ' . $this->errorsToString($model),
+                    __METHOD__
+                );
+            }
+        }
+
+        return $saved;
+    }
+
+    /**
+     * Удаляет файлы, записанные в откаченной транзакции.
+     *
+     * Файловая система не участвует в транзакции базы, поэтому после отката
+     * файлы остались бы на диске без единой ссылки на них.
+     *
+     * @param string[] $paths
+     */
+    protected function cleanupFiles(array $paths): void
+    {
+        if (empty($paths)) {
+            return;
+        }
+
+        $storage = new AttachmentStorage();
+
+        foreach ($paths as $path) {
+            $storage->delete($path);
+        }
     }
 
     /**
