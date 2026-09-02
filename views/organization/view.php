@@ -71,8 +71,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <hr>
 
-                            <p>Создана: <?= $model->formattedCreatedAt ?> </p>
-                            <p>Обновлена: <?= $model->formattedUpdatedAt ?> </p>
+                            <p>Создана: <?= Html::encode($model->formattedCreatedAt) ?> </p>
+                            <p>Обновлена: <?= Html::encode($model->formattedUpdatedAt) ?> </p>
                             <?php if ($model->createdBy): ?>
                                 <p>Создал: <?= Html::encode($model->createdBy->login)?> </p>
                             <?php endif; ?>
