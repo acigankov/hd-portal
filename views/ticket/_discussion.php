@@ -1,9 +1,13 @@
 <?php
 
+use app\models\TicketReply;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $replies app\models\TicketReply[] */
+/* @var $attachments array<int, app\models\EmailAttachment[]> Файлы писем по записям обсуждения */
+
+$attachments = $attachments ?? [];
 ?>
 
 <?php if (empty($replies)) : ?>
@@ -40,6 +44,41 @@ use yii\helpers\Html;
                     </span>
                 </div>
                 <div class="mb-0"><?= nl2br(Html::encode((string)$entry->text)) ?></div>
+
+                <?= $this->render('_attachments', [
+                    'attachments' => $attachments[$entry->id] ?? [],
+                    'title' => $fromOperator ? 'Приложенные файлы' : 'Файлы из письма',
+                ]) ?>
+
+                <?php if ($fromOperator) : ?>
+                    <div class="mt-2 small">
+                        <?php if (!$entry->is_public) : ?>
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-lock"></i> Внутренняя заметка
+                            </span>
+                        <?php elseif ($entry->email_status === TicketReply::EMAIL_SENT) : ?>
+                            <span class="badge bg-success">
+                                <i class="bi bi-envelope-check"></i>
+                                Отправлено заявителю
+                                <?php if (!empty($entry->email_sent_at)) : ?>
+                                    · <?= Html::encode(Yii::$app->formatter->asDatetime($entry->email_sent_at, 'php:d.m.Y H:i')) ?>
+                                <?php endif; ?>
+                            </span>
+                        <?php elseif ($entry->email_status === TicketReply::EMAIL_QUEUED) : ?>
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-hourglass-split"></i> В очереди на отправку
+                            </span>
+                        <?php elseif ($entry->email_status === TicketReply::EMAIL_FAILED) : ?>
+                            <span class="badge bg-danger">
+                                <i class="bi bi-exclamation-triangle"></i> Ошибка отправки письма
+                            </span>
+                        <?php else : ?>
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-chat-left-text"></i> Без отправки по email
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>

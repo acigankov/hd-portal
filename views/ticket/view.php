@@ -1,5 +1,6 @@
 <?php
 
+use app\components\mail\AttachmentPolicy;
 use app\models\TicketReply;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -12,6 +13,10 @@ use yii\widgets\ActiveForm;
 /* @var $reply app\models\TicketReply */
 /* @var $statuses app\models\Status[] */
 /* @var $canProcess bool */
+/* @var $canEmailAuthor bool */
+/* @var $attachments array<int, app\models\EmailAttachment[]> Файлы писем: ключ 0 — исходное письмо */
+
+$attachments = $attachments ?? [];
 
 $this->title = 'Заявка ' . $model->ticket_number;
 ?>
@@ -78,6 +83,11 @@ $this->title = 'Заявка ' . $model->ticket_number;
                         <?php else : ?>
                             <p class="text-muted mb-0">Описание не заполнено.</p>
                         <?php endif; ?>
+
+                        <?= $this->render('_attachments', [
+                            'attachments' => $attachments[0] ?? [],
+                            'title' => 'Файлы из первого письма',
+                        ]) ?>
                     </div>
                 </div>
 
@@ -86,7 +96,10 @@ $this->title = 'Заявка ' . $model->ticket_number;
                         <h3 class="card-title mb-0">Обсуждение</h3>
                     </div>
                     <div class="card-body">
-                        <?= $this->render('_discussion', ['replies' => $replies]) ?>
+                        <?= $this->render('_discussion', [
+                            'replies' => $replies,
+                            'attachments' => $attachments,
+                        ]) ?>
                     </div>
 
                     <?php if ($canProcess) : ?>
@@ -94,6 +107,8 @@ $this->title = 'Заявка ' . $model->ticket_number;
                             <?php $form = ActiveForm::begin([
                                 'action' => ['reply', 'id' => $model->id],
                                 'id' => 'ticket-reply-form',
+                                // Без multipart файлы до сервера не дойдут.
+                                'options' => ['enctype' => 'multipart/form-data'],
                                 'fieldConfig' => [
                                     'options' => ['class' => 'mb-2'],
                                     'labelOptions' => ['class' => 'form-label'],
@@ -104,8 +119,18 @@ $this->title = 'Заявка ' . $model->ticket_number;
                                 ->textarea(['rows' => 4, 'placeholder' => 'Текст ответа'])
                                 ->label('Ответ') ?>
 
+                            <?= $form->field($reply, 'uploadedFiles[]')
+                                ->fileInput(['multiple' => true, 'class' => 'form-control'])
+                                ->hint(
+                                    'До ' . AttachmentPolicy::MAX_COUNT . ' файлов, каждый до '
+                                    . AttachmentPolicy::maxFileSizeMb()
+                                    . ' МБ. Исполняемые файлы не принимаются. '
+                                    . 'При ответе заявителю файлы уйдут вместе с письмом.'
+                                )
+                                ->label('Файлы') ?>
+
                             <div class="row g-2 align-items-end">
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <?= $form->field($reply, 'author_side')
                                         ->dropDownList([
                                             TicketReply::SIDE_OPERATOR => 'От специалиста',
@@ -113,12 +138,31 @@ $this->title = 'Заявка ' . $model->ticket_number;
                                         ])
                                         ->label('Сторона') ?>
                                 </div>
-                                <div class="col-md-7 mb-2">
-                                    <?= Html::submitButton('<i class="bi bi-send"></i> Отправить', ['class' => 'btn btn-primary']) ?>
-                                    <span class="small text-muted ms-2">
-                                        Ответ заявителя выбирают, когда он пришёл по телефону или письмом.
-                                    </span>
+                                <div class="col-md-4">
+                                    <?= $form->field($reply, 'is_public')
+                                        ->dropDownList([
+                                            0 => 'Внутренняя заметка',
+                                            1 => 'Ответ заявителю (email)',
+                                        ], ['disabled' => !$canEmailAuthor])
+                                        ->label('Тип сообщения') ?>
                                 </div>
+                                <div class="col-md-4 mb-2">
+                                    <?= Html::submitButton('<i class="bi bi-send"></i> Сохранить', ['class' => 'btn btn-primary']) ?>
+                                </div>
+                            </div>
+
+                            <div class="small text-muted">
+                                <?php if ($canEmailAuthor) : ?>
+                                    Ответ заявителю уйдёт на
+                                    <strong><?= Html::encode((string)$model->author_email) ?></strong>
+                                    с адреса <strong><?= Html::encode((string)$model->mailbox->email) ?></strong>.
+                                    Внутреннюю заметку заявитель не увидит.
+                                <?php elseif (empty($model->author_email)) : ?>
+                                    У заявителя не указан email, поэтому ответ сохраняется только в портале.
+                                <?php else : ?>
+                                    Заявка не связана с почтовым каналом с настроенной отправкой —
+                                    выберите канал в редактировании заявки, чтобы ответы уходили по email.
+                                <?php endif; ?>
                             </div>
 
                             <?php ActiveForm::end(); ?>
@@ -188,6 +232,17 @@ $this->title = 'Заявка ' . $model->ticket_number;
                             <tr>
                                 <th class="text-muted fw-normal">Организация</th>
                                 <td><?= $model->organization !== null ? Html::encode($model->organization->name) : '—' ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted fw-normal">Почтовый канал</th>
+                                <td>
+                                    <?php if ($model->mailbox !== null) : ?>
+                                        <?= Html::encode($model->mailbox->name) ?>
+                                        <span class="text-muted">&lt;<?= Html::encode($model->mailbox->email) ?>&gt;</span>
+                                    <?php else : ?>
+                                        <span class="text-muted">заявка создана вручную</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                             <tr>
                                 <th class="text-muted fw-normal">Специалист</th>

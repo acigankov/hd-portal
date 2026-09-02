@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Ticket */
+/* @var $mailboxes app\models\Mailbox[] */
 /* @var $organizations app\models\Organization[] */
 /* @var $authors app\models\Author[] */
 /* @var $categories app\models\Category[] */
@@ -96,6 +97,18 @@ $form = ActiveForm::begin([
                     ['prompt' => 'Без категории']
                 )
                 ->label('Категория') ?>
+
+            <?php if (!empty($mailboxes)) : ?>
+                <?= $form->field($model, 'mailbox_id')
+                    ->dropDownList(
+                        ArrayHelper::map($mailboxes, 'id', static function ($mailbox) {
+                            return $mailbox->name . ' (' . $mailbox->email . ')';
+                        }),
+                        ['prompt' => 'Не связана с почтовым каналом']
+                    )
+                    ->label('Почтовый канал')
+                    ->hint('Ответы заявителю уйдут с адреса этого ящика.') ?>
+            <?php endif; ?>
 
             <?= $form->field($model, 'assigned_id')
                 ->dropDownList(

@@ -42,6 +42,6 @@ class TicketQuery extends \yii\db\ActiveQuery
      */
     public function withRelations()
     {
-        return $this->with(['organization', 'author', 'assigned', 'category', 'ticketStatus']);
+        return $this->with(['organization', 'author', 'assigned', 'category', 'ticketStatus', 'mailbox']);
     }
 }
