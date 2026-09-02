@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\components\mail\AttachmentPolicy;
+use app\components\mail\AttachmentStorage;
 use app\components\mail\OutgoingReplyMailer;
 use app\models\Author;
 use app\models\EmailAttachment;
@@ -16,6 +18,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * Раздел заявок: список, карточка с обсуждением, создание, редактирование,
@@ -211,6 +214,7 @@ class TicketController extends Controller
 
         $reply = new TicketReply();
         $reply->load(Yii::$app->request->post());
+        $reply->uploadedFiles = UploadedFile::getInstances($reply, 'uploadedFiles');
 
         // Служебные поля задаёт сервер: иначе сторону, автора и тип записи
         // можно было бы подменить скрытыми полями формы.
@@ -237,9 +241,74 @@ class TicketController extends Controller
             return $this->redirect(['view', 'id' => $model->id, '#' => 'discussion']);
         }
 
+        // Файлы сохраняются до постановки письма в очередь: отправка берёт
+        // вложения из базы, а не из формы.
+        $this->saveReplyAttachments($model, $reply);
+
         Yii::$app->session->setFlash('success', $this->replySavedMessage($model, $reply));
 
         return $this->redirect(['view', 'id' => $model->id, '#' => 'discussion']);
+    }
+
+    /**
+     * Сохраняет файлы, приложенные сотрудником к ответу.
+     *
+     * Файл ложится в то же хранилище, что и вложения входящих писем,
+     * и сразу виден в заявке — даже если это внутренняя заметка и письмо
+     * никуда не уйдёт. Ошибка на файле не отменяет уже сохранённый ответ.
+     *
+     * @param Ticket $ticket
+     * @param TicketReply $reply
+     */
+    protected function saveReplyAttachments(Ticket $ticket, TicketReply $reply): void
+    {
+        $files = is_array($reply->uploadedFiles) ? $reply->uploadedFiles : [];
+
+        if (empty($files)) {
+            return;
+        }
+
+        $storage = new AttachmentStorage();
+        $failed = [];
+
+        foreach ($files as $file) {
+            $name = AttachmentPolicy::sanitizeFileName((string)$file->name);
+            $content = @file_get_contents($file->tempName);
+
+            if ($content === false || $content === '') {
+                $failed[] = $name;
+
+                continue;
+            }
+
+            try {
+                $path = $storage->save((int)($ticket->mailbox_id ?: 0), $content, $name);
+            } catch (\Throwable $exception) {
+                Yii::error('Не удалось сохранить файл «' . $name . '»: ' . $exception->getMessage(), __METHOD__);
+                $failed[] = $name;
+
+                continue;
+            }
+
+            $attachment = new EmailAttachment();
+            $attachment->reply_id = (int)$reply->id;
+            $attachment->original_name = $name;
+            $attachment->mime_type = mb_substr((string)$file->type, 0, 150) ?: 'application/octet-stream';
+            $attachment->size = strlen($content);
+            $attachment->storage_path = $path;
+            $attachment->checksum = hash('sha256', $content);
+            $attachment->is_inline = false;
+
+            if (!$attachment->save()) {
+                $storage->delete($path);
+                $failed[] = $name;
+                Yii::error('Не удалось записать вложение ответа: ' . $this->firstError($attachment), __METHOD__);
+            }
+        }
+
+        if (!empty($failed)) {
+            Yii::$app->session->setFlash('error', 'Не удалось приложить файлы: ' . implode(', ', $failed) . '.');
+        }
     }
 
     /**

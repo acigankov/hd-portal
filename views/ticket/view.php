@@ -1,5 +1,6 @@
 <?php
 
+use app\components\mail\AttachmentPolicy;
 use app\models\TicketReply;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -106,6 +107,8 @@ $this->title = 'Заявка ' . $model->ticket_number;
                             <?php $form = ActiveForm::begin([
                                 'action' => ['reply', 'id' => $model->id],
                                 'id' => 'ticket-reply-form',
+                                // Без multipart файлы до сервера не дойдут.
+                                'options' => ['enctype' => 'multipart/form-data'],
                                 'fieldConfig' => [
                                     'options' => ['class' => 'mb-2'],
                                     'labelOptions' => ['class' => 'form-label'],
@@ -115,6 +118,16 @@ $this->title = 'Заявка ' . $model->ticket_number;
                             <?= $form->field($reply, 'text')
                                 ->textarea(['rows' => 4, 'placeholder' => 'Текст ответа'])
                                 ->label('Ответ') ?>
+
+                            <?= $form->field($reply, 'uploadedFiles[]')
+                                ->fileInput(['multiple' => true, 'class' => 'form-control'])
+                                ->hint(
+                                    'До ' . AttachmentPolicy::MAX_COUNT . ' файлов, каждый до '
+                                    . AttachmentPolicy::maxFileSizeMb()
+                                    . ' МБ. Исполняемые файлы не принимаются. '
+                                    . 'При ответе заявителю файлы уйдут вместе с письмом.'
+                                )
+                                ->label('Файлы') ?>
 
                             <div class="row g-2 align-items-end">
                                 <div class="col-md-4">

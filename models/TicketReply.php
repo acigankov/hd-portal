@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\mail\AttachmentPolicy;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -48,6 +49,16 @@ class TicketReply extends ActiveRecord
     const EMAIL_QUEUED = 'queued';
     const EMAIL_SENT = 'sent';
     const EMAIL_FAILED = 'failed';
+
+    /**
+     * Файлы из формы ответа.
+     *
+     * Не хранится в таблице: после сохранения ответа файлы переезжают
+     * в хранилище вложений и записываются в email_attachments.
+     *
+     * @var \yii\web\UploadedFile[]
+     */
+    public $uploadedFiles = [];
 
     /**
      * {@inheritdoc}
@@ -99,10 +110,50 @@ class TicketReply extends ActiveRecord
             [['text'], 'required', 'when' => function (self $model) {
                 return $model->type !== self::TYPE_SYSTEM;
             }, 'whenClient' => false, 'message' => 'Введите текст ответа'],
+            [
+                ['uploadedFiles'],
+                'file',
+                'skipOnEmpty' => true,
+                'maxFiles' => AttachmentPolicy::MAX_COUNT,
+                'maxSize' => AttachmentPolicy::MAX_FILE_SIZE,
+                // Исполняемые файлы не принимаются ни от заявителя по почте,
+                // ни от сотрудника через форму ответа.
+                'checkExtensionByMimeType' => false,
+                'tooBig' => 'Файл больше ' . AttachmentPolicy::maxFileSizeMb() . ' МБ.',
+                'tooMany' => 'Можно приложить не более ' . AttachmentPolicy::MAX_COUNT . ' файлов.',
+            ],
+            [['uploadedFiles'], 'validateUploadedFiles'],
             [['ticket_id'], 'exist', 'targetClass' => Ticket::class, 'targetAttribute' => 'id'],
             [['user_id'], 'exist', 'targetClass' => User::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
             [['author_id'], 'exist', 'targetClass' => Author::class, 'targetAttribute' => 'id', 'skipOnEmpty' => true],
         ];
+    }
+
+    /**
+     * Проверяет типы и суммарный размер приложенных файлов
+     * @param string $attribute
+     */
+    public function validateUploadedFiles($attribute): void
+    {
+        $files = is_array($this->$attribute) ? $this->$attribute : [];
+        $total = 0;
+
+        foreach ($files as $file) {
+            if (AttachmentPolicy::isBlocked((string)$file->name)) {
+                $this->addError($attribute, 'Файл «' . $file->name . '» запрещённого типа.');
+
+                continue;
+            }
+
+            $total += (int)$file->size;
+        }
+
+        if ($total > AttachmentPolicy::MAX_TOTAL_SIZE) {
+            $this->addError(
+                $attribute,
+                'Суммарный размер файлов больше ' . round(AttachmentPolicy::MAX_TOTAL_SIZE / 1048576) . ' МБ.'
+            );
+        }
     }
 
     /**
@@ -124,6 +175,7 @@ class TicketReply extends ActiveRecord
             'is_public' => 'Отправить заявителю',
             'email_status' => 'Состояние отправки',
             'email_sent_at' => 'Письмо отправлено',
+            'uploadedFiles' => 'Файлы',
             'created_at' => 'Создан',
             'updated_at' => 'Изменён',
         ];

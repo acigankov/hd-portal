@@ -29,6 +29,9 @@ RUN docker-php-ext-install \
     curl \
     opcache
 
+# Лимиты загрузки файлов для вложений в ответах
+COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+
 # Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

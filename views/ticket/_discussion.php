@@ -47,6 +47,7 @@ $attachments = $attachments ?? [];
 
                 <?= $this->render('_attachments', [
                     'attachments' => $attachments[$entry->id] ?? [],
+                    'title' => $fromOperator ? 'Приложенные файлы' : 'Файлы из письма',
                 ]) ?>
 
                 <?php if ($fromOperator) : ?>

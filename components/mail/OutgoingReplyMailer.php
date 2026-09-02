@@ -2,6 +2,7 @@
 
 namespace app\components\mail;
 
+use app\models\EmailAttachment;
 use app\models\EmailMessage;
 use app\models\Mailbox;
 use app\models\Ticket;
@@ -145,6 +146,7 @@ class OutgoingReplyMailer
             ->setSubject((string)$record->subject);
 
         $this->applyThreadHeaders($message, $record);
+        $this->attachFiles($message, $record);
 
         if (!$mailer->send($message)) {
             throw new RuntimeException('SMTP отклонил письмо.');
@@ -152,6 +154,42 @@ class OutgoingReplyMailer
 
         $record->markSent();
         $this->markReplyStatus($record, TicketReply::EMAIL_SENT);
+    }
+
+    /**
+     * Прикладывает к письму файлы из ответа.
+     *
+     * Файлы берутся из хранилища в момент отправки, а не из формы:
+     * отправка идёт отдельной командой и может повторяться после сбоя SMTP.
+     * Потерянный файл не должен блокировать ответ: текст важнее,
+     * поэтому такой случай попадает в лог, а письмо уходит.
+     *
+     * @param \yii\mail\MessageInterface $message
+     * @param EmailMessage $record
+     */
+    protected function attachFiles($message, EmailMessage $record): void
+    {
+        if (empty($record->reply_id)) {
+            return;
+        }
+
+        foreach (EmailAttachment::forReply((int)$record->reply_id) as $attachment) {
+            $path = $attachment->getAbsolutePath();
+
+            if ($path === null) {
+                Yii::warning(
+                    'Файл вложения #' . $attachment->id . ' не найден, письмо уйдёт без него.',
+                    __METHOD__
+                );
+
+                continue;
+            }
+
+            $message->attach($path, [
+                'fileName' => $attachment->original_name,
+                'contentType' => $attachment->mime_type ?: 'application/octet-stream',
+            ]);
+        }
     }
 
     /**

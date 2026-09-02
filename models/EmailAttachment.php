@@ -13,7 +13,8 @@ use yii\db\ActiveRecord;
  * через действие скачивания, которое проверяет права пользователя.
  *
  * @property int $id
- * @property int $email_message_id Письмо, к которому приложен файл
+ * @property int|null $email_message_id Входящее письмо, если файл пришёл по почте
+ * @property int|null $reply_id Запись обсуждения, если файл приложил сотрудник
  * @property string $original_name Имя файла из письма
  * @property string|null $mime_type Тип содержимого
  * @property int $size Размер в байтах
@@ -22,7 +23,8 @@ use yii\db\ActiveRecord;
  * @property bool $is_inline Встроенное изображение из HTML-письма
  * @property string $created_at
  *
- * @property EmailMessage $emailMessage
+ * @property EmailMessage|null $emailMessage
+ * @property TicketReply|null $reply
  */
 class EmailAttachment extends ActiveRecord
 {
@@ -40,14 +42,20 @@ class EmailAttachment extends ActiveRecord
     public function rules()
     {
         return [
-            [['email_message_id', 'original_name', 'storage_path'], 'required'],
-            [['email_message_id', 'size'], 'integer'],
+            [['original_name', 'storage_path'], 'required'],
+            [['email_message_id', 'reply_id', 'size'], 'integer'],
+            // Файл без владельца был бы мусором в хранилище: его нельзя
+            // ни показать в заявке, ни удалить вместе с ней.
+            [['email_message_id'], 'required', 'when' => function (self $model) {
+                return empty($model->reply_id);
+            }, 'message' => 'Вложение должно быть связано с письмом или с ответом.'],
             [['is_inline'], 'boolean'],
             [['original_name', 'storage_path'], 'string', 'max' => 255],
             [['mime_type'], 'string', 'max' => 150],
             [['checksum'], 'string', 'max' => 64],
             [['created_at'], 'safe'],
-            [['email_message_id'], 'exist', 'targetClass' => EmailMessage::class, 'targetAttribute' => 'id'],
+            [['email_message_id'], 'exist', 'skipOnEmpty' => true, 'targetClass' => EmailMessage::class, 'targetAttribute' => 'id'],
+            [['reply_id'], 'exist', 'skipOnEmpty' => true, 'targetClass' => TicketReply::class, 'targetAttribute' => 'id'],
         ];
     }
 
@@ -75,18 +83,25 @@ class EmailAttachment extends ActiveRecord
     }
 
     /**
-     * Вложения заявки: и из первого письма, и из ответов заявителя
+     * Запись обсуждения, если файл приложил сотрудник
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReply()
+    {
+        return $this->hasOne(TicketReply::class, ['id' => 'reply_id']);
+    }
+
+    /**
+     * Файлы, приложенные к ответу сотрудника — их надо вложить в письмо
      *
-     * @param int $ticketId
+     * @param int $replyId
      * @return self[]
      */
-    public static function forTicket(int $ticketId): array
+    public static function forReply(int $replyId): array
     {
         return self::find()
-            ->alias('a')
-            ->innerJoin(['m' => EmailMessage::tableName()], 'm.id = a.email_message_id')
-            ->andWhere(['m.ticket_id' => $ticketId])
-            ->orderBy(['a.id' => SORT_ASC])
+            ->andWhere(['reply_id' => $replyId])
+            ->orderBy(['id' => SORT_ASC])
             ->all();
     }
 
@@ -101,22 +116,29 @@ class EmailAttachment extends ActiveRecord
      */
     public static function groupedByReply(int $ticketId): array
     {
-        $messages = EmailMessage::find()
-            ->andWhere(['ticket_id' => $ticketId, 'direction' => EmailMessage::DIRECTION_INCOMING])
-            ->with('attachments')
+        $incomingIds = EmailMessage::find()
+            ->select('id')
+            ->andWhere(['ticket_id' => $ticketId, 'direction' => EmailMessage::DIRECTION_INCOMING]);
+
+        $replyIds = TicketReply::find()
+            ->select('id')
+            ->andWhere(['ticket_id' => $ticketId]);
+
+        $rows = self::find()
+            ->andWhere(['or', ['email_message_id' => $incomingIds], ['reply_id' => $replyIds]])
+            ->with('emailMessage')
             ->orderBy(['id' => SORT_ASC])
             ->all();
 
         $grouped = [];
-        foreach ($messages as $message) {
-            if (empty($message->attachments)) {
-                continue;
-            }
+        foreach ($rows as $row) {
+            // Файл сотрудника привязан к ответу напрямую, файл из письма —
+            // через запись журнала; у первого письма записи обсуждения нет.
+            $key = $row->reply_id !== null
+                ? (int)$row->reply_id
+                : (int)($row->emailMessage->reply_id ?? 0);
 
-            $key = $message->reply_id === null ? 0 : (int)$message->reply_id;
-            foreach ($message->attachments as $attachment) {
-                $grouped[$key][] = $attachment;
-            }
+            $grouped[$key][] = $row;
         }
 
         return $grouped;

@@ -17,28 +17,6 @@ use RuntimeException;
  */
 class ImapClient
 {
-    /** Максимальный размер одного вложения, байт */
-    const MAX_ATTACHMENT_SIZE = 10485760; // 10 МБ
-
-    /** Максимальный суммарный размер вложений одного письма, байт */
-    const MAX_ATTACHMENTS_TOTAL = 26214400; // 25 МБ
-
-    /** Максимальное число вложений в одном письме */
-    const MAX_ATTACHMENTS_COUNT = 20;
-
-    /**
-     * Расширения, которые портал не принимает.
-     *
-     * Исполняемые файлы и скрипты не нужны в заявке, а их хранение и раздача
-     * создают лишний риск: заявитель отправит «инструкцию.exe», а сотрудник
-     * скачает и запустит.
-     */
-    const BLOCKED_EXTENSIONS = [
-        'exe', 'com', 'bat', 'cmd', 'msi', 'scr', 'pif', 'vbs', 'vbe', 'js', 'jse',
-        'wsf', 'wsh', 'ps1', 'psm1', 'jar', 'app', 'dll', 'sys', 'reg',
-        'php', 'phtml', 'phar', 'sh', 'bash', 'cgi', 'pl',
-    ];
-
     /** @var Mailbox */
     protected $mailbox;
 
@@ -313,25 +291,25 @@ class ImapClient
         array &$attachments,
         array &$rejected
     ): void {
-        $fileName = $this->sanitizeFileName($fileName);
+        $fileName = AttachmentPolicy::sanitizeFileName($fileName);
         $declaredSize = (int)($part->bytes ?? 0);
 
-        if (count($attachments) >= self::MAX_ATTACHMENTS_COUNT) {
+        if (count($attachments) >= AttachmentPolicy::MAX_COUNT) {
             $rejected[] = ['name' => $fileName, 'reason' => 'в письме слишком много файлов'];
 
             return;
         }
 
-        if ($this->isBlockedFile($fileName)) {
+        if (AttachmentPolicy::isBlocked($fileName)) {
             $rejected[] = ['name' => $fileName, 'reason' => 'тип файла запрещён'];
 
             return;
         }
 
-        if ($declaredSize > self::MAX_ATTACHMENT_SIZE) {
+        if ($declaredSize > AttachmentPolicy::MAX_FILE_SIZE) {
             $rejected[] = [
                 'name' => $fileName,
-                'reason' => 'размер больше ' . round(self::MAX_ATTACHMENT_SIZE / 1048576) . ' МБ',
+                'reason' => 'размер больше ' . round(AttachmentPolicy::MAX_FILE_SIZE / 1048576) . ' МБ',
             ];
 
             return;
@@ -349,10 +327,10 @@ class ImapClient
             return;
         }
 
-        if ($size > self::MAX_ATTACHMENT_SIZE) {
+        if ($size > AttachmentPolicy::MAX_FILE_SIZE) {
             $rejected[] = [
                 'name' => $fileName,
-                'reason' => 'размер больше ' . round(self::MAX_ATTACHMENT_SIZE / 1048576) . ' МБ',
+                'reason' => 'размер больше ' . round(AttachmentPolicy::MAX_FILE_SIZE / 1048576) . ' МБ',
             ];
 
             return;
@@ -363,7 +341,7 @@ class ImapClient
             $total += (int)$collected['size'];
         }
 
-        if ($total > self::MAX_ATTACHMENTS_TOTAL) {
+        if ($total > AttachmentPolicy::MAX_TOTAL_SIZE) {
             $rejected[] = ['name' => $fileName, 'reason' => 'превышен суммарный размер вложений'];
 
             return;
@@ -402,48 +380,6 @@ class ImapClient
         $subtype = preg_replace('/[^a-z0-9.+\-]/', '', $subtype);
 
         return mb_substr($type . '/' . ($subtype !== '' ? $subtype : 'octet-stream'), 0, 150);
-    }
-
-    /**
-     * Очищает имя файла из письма.
-     *
-     * Имя пришло извне, поэтому из него убираются пути и управляющие
-     * символы: оно показывается в интерфейсе и попадает в заголовок
-     * Content-Disposition при скачивании.
-     *
-     * @param string $fileName
-     * @return string
-     */
-    protected function sanitizeFileName(string $fileName): string
-    {
-        $fileName = str_replace(['\\', '/'], '_', $fileName);
-        $fileName = preg_replace('/[\x00-\x1F\x7F"]+/u', '', $fileName);
-        $fileName = trim((string)$fileName, " .\t");
-
-        if ($fileName === '') {
-            $fileName = 'вложение';
-        }
-
-        return mb_substr($fileName, 0, 255);
-    }
-
-    /**
-     * Запрещён ли файл по расширению (в том числе двойному вида .pdf.exe)
-     * @param string $fileName
-     * @return bool
-     */
-    protected function isBlockedFile(string $fileName): bool
-    {
-        $parts = array_map('strtolower', explode('.', $fileName));
-        array_shift($parts);
-
-        foreach ($parts as $extension) {
-            if (in_array($extension, self::BLOCKED_EXTENSIONS, true)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
