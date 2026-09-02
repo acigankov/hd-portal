@@ -7,8 +7,8 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\Organization */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = 'Создать организацию';
-$this->params['breadcrumbs'][] = ['label' => 'Организации', 'url' => ['index']];
+$this->title = Yii::t('app', 'Create organization');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Organizations'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
                     <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
                 </ol>
             </div>
@@ -51,57 +51,57 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]); ?>
 
                             <?= $form->field($model, 'name')
-                                ->textInput(['autofocus' => true, 'placeholder' => 'Введите название организации'])
-                                ->label('Название *') ?>
+                                ->textInput(['autofocus' => true, 'placeholder' => Yii::t('app', 'Enter organization name')])
+                                ->label(Yii::t('app', 'Name') . ' *') ?>
 
                             <?= $form->field($model, 'inn')
                                 ->textInput(['maxlength' => 12, 'placeholder' => '123456789012'])
-                                ->label('ИНН *') ?>
+                                ->label(Yii::t('app', 'INN') . ' *') ?>
 
                             <?= $form->field($model, 'kpp')
                                 ->textInput(['maxlength' => 9, 'placeholder' => '123456789'])
-                                ->label('КПП') ?>
+                                ->label(Yii::t('app', 'KPP')) ?>
 
                             <?= $form->field($model, 'ogrn')
                                 ->textInput(['maxlength' => 15, 'placeholder' => '1234567890123'])
-                                ->label('ОГРН') ?>
+                                ->label(Yii::t('app', 'OGRN')) ?>
 
                             <?= $form->field($model, 'director_name')
-                                ->textInput(['maxlength' => true, 'placeholder' => 'Иванов Иван Иванович'])
-                                ->label('Директор') ?>
+                                ->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Enter director name')])
+                                ->label(Yii::t('app', 'Director')) ?>
 
                             <?= $form->field($model, 'phone')
                                 ->textInput(['maxlength' => 20, 'placeholder' => '+7 (XXX) XXX-XX-XX'])
-                                ->label('Телефон') ?>
+                                ->label(Yii::t('app', 'Phone')) ?>
 
                             <?= $form->field($model, 'email')
                                 ->textInput(['type' => 'email', 'placeholder' => 'info@example.com'])
-                                ->label('Email') ?>
+                                ->label(Yii::t('app', 'Email')) ?>
 
                             <?= $form->field($model, 'website')
                                 ->textInput(['maxlength' => true, 'placeholder' => 'https://example.com'])
-                                ->label('Сайт') ?>
+                                ->label(Yii::t('app', 'Website')) ?>
 
                             <?= $form->field($model, 'legal_address')
-                                ->textarea(['rows' => 3, 'placeholder' => 'Юридический адрес'])
-                                ->label('Юридический адрес') ?>
+                                ->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Legal address')])
+                                ->label(Yii::t('app', 'Legal address')) ?>
 
                             <?= $form->field($model, 'actual_address')
-                                ->textarea(['rows' => 3, 'placeholder' => 'Фактический адрес'])
-                                ->label('Фактический адрес') ?>
+                                ->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Actual address')])
+                                ->label(Yii::t('app', 'Actual address')) ?>
 
                             <?= $form->field($model, 'status')
                                 ->dropDownList([
-                                    \app\models\Organization::STATUS_ACTIVE => 'Активна',
-                                    \app\models\Organization::STATUS_INACTIVE => 'Неактивна',
+                                    \app\models\Organization::STATUS_ACTIVE => Yii::t('app', 'Active'),
+                                    \app\models\Organization::STATUS_INACTIVE => Yii::t('app', 'Inactive'),
                                 ])
-                                ->label('Статус') ?>
+                                ->label(Yii::t('app', 'Status')) ?>
 
                             <div class="form-group">
-                                <?= Html::submitButton('<i class="fas fa-save"></i> Создать организацию', [
+                                <?= Html::submitButton('<i class="fas fa-save"></i> ' . Yii::t('app', 'Create organization'), [
                                     'class' => 'btn btn-primary'
                                 ]) ?>
-                                <?= Html::a('Отмена', ['index'], ['class' => 'btn btn-secondary']) ?>
+                                <?= Html::a(Yii::t('app', 'Cancel'), ['index'], ['class' => 'btn btn-secondary']) ?>
                             </div>
 
                             <?php ActiveForm::end(); ?>

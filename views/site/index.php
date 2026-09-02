@@ -2,7 +2,7 @@
 
 /** @var yii\web\View $this */
 
-$this->title = 'Дашборд';
+$this->title = Yii::t('app', 'Dashboard');
 ?>
     <!--begin::App Content Header-->
     <div class="app-content-header">
@@ -10,11 +10,11 @@ $this->title = 'Дашборд';
         <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-                <div class="col-sm-6"><h3 class="mb-0">Дашборд</h3></div>
+                <div class="col-sm-6"><h3 class="mb-0"><?= Yii::t('app', 'Dashboard') ?></h3></div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Дашборд</li>
+                        <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?= Yii::t('app', 'Dashboard') ?></li>
                     </ol>
                 </div>
             </div>
@@ -35,7 +35,7 @@ $this->title = 'Дашборд';
                     <div class="small-box text-bg-primary">
                         <div class="inner">
                             <h3>150</h3>
-                            <p>New Orders</p>
+                            <p><?= Yii::t('app', 'New Orders') ?></p>
                         </div>
                         <svg
                                 class="small-box-icon"
@@ -52,7 +52,7 @@ $this->title = 'Дашборд';
                                 href="#"
                                 class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
                         >
-                            More info <i class="bi bi-link-45deg"></i>
+                            <?= Yii::t('app', 'More info') ?> <i class="bi bi-link-45deg"></i>
                         </a>
                     </div>
                     <!--end::Small Box Widget 1-->
@@ -63,7 +63,7 @@ $this->title = 'Дашборд';
                     <div class="small-box text-bg-success">
                         <div class="inner">
                             <h3>53<sup class="fs-5">%</sup></h3>
-                            <p>Bounce Rate</p>
+                            <p><?= Yii::t('app', 'Bounce Rate') ?></p>
                         </div>
                         <svg
                                 class="small-box-icon"
@@ -80,7 +80,7 @@ $this->title = 'Дашборд';
                                 href="#"
                                 class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
                         >
-                            More info <i class="bi bi-link-45deg"></i>
+                            <?= Yii::t('app', 'More info') ?> <i class="bi bi-link-45deg"></i>
                         </a>
                     </div>
                     <!--end::Small Box Widget 2-->
@@ -91,7 +91,7 @@ $this->title = 'Дашборд';
                     <div class="small-box text-bg-warning">
                         <div class="inner">
                             <h3>44</h3>
-                            <p>User Registrations</p>
+                            <p><?= Yii::t('app', 'User Registrations') ?></p>
                         </div>
                         <svg
                                 class="small-box-icon"
@@ -108,7 +108,7 @@ $this->title = 'Дашборд';
                                 href="#"
                                 class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover"
                         >
-                            More info <i class="bi bi-link-45deg"></i>
+                            <?= Yii::t('app', 'More info') ?> <i class="bi bi-link-45deg"></i>
                         </a>
                     </div>
                     <!--end::Small Box Widget 3-->
@@ -119,7 +119,7 @@ $this->title = 'Дашборд';
                     <div class="small-box text-bg-danger">
                         <div class="inner">
                             <h3>65</h3>
-                            <p>Unique Visitors</p>
+                            <p><?= Yii::t('app', 'Unique Visitors') ?></p>
                         </div>
                         <svg
                                 class="small-box-icon"
@@ -143,7 +143,7 @@ $this->title = 'Дашборд';
                                 href="#"
                                 class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
                         >
-                            More info <i class="bi bi-link-45deg"></i>
+                            <?= Yii::t('app', 'More info') ?> <i class="bi bi-link-45deg"></i>
                         </a>
                     </div>
                     <!--end::Small Box Widget 4-->
@@ -156,14 +156,14 @@ $this->title = 'Дашборд';
                 <!-- Start col -->
                 <div class="col-lg-7 connectedSortable">
                     <div class="card mb-4">
-                        <div class="card-header"><h3 class="card-title">Sales Value</h3></div>
+                        <div class="card-header"><h3 class="card-title"><?= Yii::t('app', 'Sales Value') ?></h3></div>
                         <div class="card-body"><div id="revenue-chart"></div></div>
                     </div>
                     <!-- /.card -->
                     <!-- DIRECT CHAT -->
                     <div class="card direct-chat direct-chat-primary mb-4">
                         <div class="card-header">
-                            <h3 class="card-title">Direct Chat</h3>
+                            <h3 class="card-title"><?= Yii::t('app', 'Direct Chat') ?></h3>
                             <div class="card-tools">
                                 <span title="3 New Messages" class="badge text-bg-primary"> 3 </span>
                                 <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse">
@@ -384,11 +384,11 @@ $this->title = 'Дашборд';
                                     <input
                                             type="text"
                                             name="message"
-                                            placeholder="Type Message ..."
+                                            placeholder="<?= Yii::t('app', 'Type Message ...') ?>"
                                             class="form-control"
                                     />
                                     <span class="input-group-append">
-                          <button type="button" class="btn btn-primary">Send</button>
+                          <button type="button" class="btn btn-primary"><?= Yii::t('app', 'Send') ?></button>
                         </span>
                                 </div>
                             </form>
@@ -402,7 +402,7 @@ $this->title = 'Дашборд';
                 <div class="col-lg-5 connectedSortable">
                     <div class="card text-white bg-primary bg-gradient border-primary mb-4">
                         <div class="card-header border-0">
-                            <h3 class="card-title">Sales Value</h3>
+                            <h3 class="card-title"><?= Yii::t('app', 'Sales Value') ?></h3>
                             <div class="card-tools">
                                 <button
                                         type="button"
@@ -420,15 +420,15 @@ $this->title = 'Дашборд';
                             <div class="row">
                                 <div class="col-4 text-center">
                                     <div id="sparkline-1" class="text-dark"></div>
-                                    <div class="text-white">Visitors</div>
+                                    <div class="text-white"><?= Yii::t('app', 'Visitors') ?></div>
                                 </div>
                                 <div class="col-4 text-center">
                                     <div id="sparkline-2" class="text-dark"></div>
-                                    <div class="text-white">Online</div>
+                                    <div class="text-white"><?= Yii::t('app', 'Online') ?></div>
                                 </div>
                                 <div class="col-4 text-center">
                                     <div id="sparkline-3" class="text-dark"></div>
-                                    <div class="text-white">Sales</div>
+                                    <div class="text-white"><?= Yii::t('app', 'Sales') ?></div>
                                 </div>
                             </div>
                             <!--end::Row-->

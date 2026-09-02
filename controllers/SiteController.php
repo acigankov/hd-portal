@@ -2,10 +2,8 @@
 
 namespace app\controllers;
 
-use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
-use yii\helpers\VarDumper;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -24,6 +22,17 @@ class SiteController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['set-language'],
+                'rules' => [
+                    [
+                        'actions' => ['set-language'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -51,11 +60,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $user = User::findIdentity(1);
-//        VarDumper::dump($user, 10, true);
-
-
-        return $this->render('index', ['user' => $user]);
+        return $this->render('index', ['user' => Yii::$app->user->identity]);
     }
 
     /**
@@ -116,5 +121,22 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Set language action.
+     *
+     * @return Response
+     */
+    public function actionSetLanguage()
+    {
+        $language = Yii::$app->request->post('language');
+        $allowedLanguages = ['ru-RU', 'en-US'];
+        
+        if (in_array($language, $allowedLanguages)) {
+            Yii::$app->session['language'] = $language;
+        }
+        
+        return $this->redirect(Yii::$app->request->referrer ?: ['/site/index']);
     }
 }

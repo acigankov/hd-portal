@@ -1,0 +1,46 @@
+<?php
+
+use yii\helpers\Html;
+
+/* @var $this yii\web\View */
+/* @var $replies app\models\TicketReply[] */
+?>
+
+<?php if (empty($replies)) : ?>
+    <p class="text-muted mb-0">Обсуждение пустое — ответов по заявке ещё не было.</p>
+<?php endif; ?>
+
+<?php foreach ($replies as $entry) : ?>
+    <?php if ($entry->getIsSystem()) : ?>
+        <div class="text-center my-3">
+            <span class="badge bg-light text-dark border">
+                <i class="bi bi-arrow-repeat"></i>
+                Статус:
+                <?= $entry->statusFrom !== null ? Html::encode($entry->statusFrom->name) : 'не указан' ?>
+                &rarr;
+                <strong><?= $entry->statusTo !== null ? Html::encode($entry->statusTo->name) : 'не указан' ?></strong>
+                <span class="text-muted">
+                    · <?= Html::encode($entry->getFormattedCreatedAt()) ?>
+                    <?php if (!empty($entry->author_name)) : ?>
+                        · <?= Html::encode($entry->author_name) ?>
+                    <?php endif; ?>
+                </span>
+            </span>
+        </div>
+    <?php else : ?>
+        <?php $fromOperator = $entry->getIsFromOperator(); ?>
+        <div class="d-flex mb-3 <?= $fromOperator ? 'justify-content-end' : 'justify-content-start' ?>">
+            <div class="p-3 rounded-3 <?= $fromOperator ? 'bg-primary-subtle border border-primary-subtle' : 'bg-body-secondary border' ?>"
+                 style="max-width: 80%;">
+                <div class="d-flex justify-content-between align-items-baseline gap-3 mb-1">
+                    <strong class="small"><?= Html::encode($entry->getDisplayName()) ?></strong>
+                    <span class="small text-muted text-nowrap">
+                        <?= $fromOperator ? 'специалист' : 'заявитель' ?>,
+                        <?= Html::encode($entry->getFormattedCreatedAt()) ?>
+                    </span>
+                </div>
+                <div class="mb-0"><?= nl2br(Html::encode((string)$entry->text)) ?></div>
+            </div>
+        </div>
+    <?php endif; ?>
+<?php endforeach; ?>

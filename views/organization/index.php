@@ -9,7 +9,7 @@ use yii\web\View;
 /* @var $dataProvider \yii\data\ActiveDataProvider */
 /* @var $model Organization[]*/
 
-$this->title = 'Организации';
+$this->title = Yii::t('app', 'Organizations');
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
                     </ol>
                 </div>
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="row mb-4">
                 <div class="col">
                     <?php if (Yii::$app->user->can('admin')): ?>
-                        <a class="btn btn-primary" href="<?= \yii\helpers\Url::to(['/organization/create'])?>" role="button">Новая организация</a>
+                        <a class="btn btn-primary" href="<?= \yii\helpers\Url::to(['/organization/create'])?>" role="button"><?= Yii::t('app', 'New organization') ?></a>
                     <?php endif; ?>
                 </div>
 
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Список Организаций</h3>
+                            <h3 class="card-title"><?= Yii::t('app', 'List of Organizations') ?></h3>
 
                         </div>
                         <!-- /.card-header -->
@@ -63,15 +63,15 @@ $this->params['breadcrumbs'][] = $this->title;
                             <table class="table table-hover text-nowrap">
                                 <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Название</th>
-                                    <th>ИНН</th>
-                                    <th>КПП</th>
-                                    <th>Директор</th>
-                                    <th>Телефон</th>
-                                    <th>Email</th>
-                                    <th>Статус</th>
-                                    <th>Действия</th>
+                                    <th><?= Yii::t('app', 'ID') ?></th>
+                                    <th><?= Yii::t('app', 'Name') ?></th>
+                                    <th><?= Yii::t('app', 'INN') ?></th>
+                                    <th><?= Yii::t('app', 'KPP') ?></th>
+                                    <th><?= Yii::t('app', 'Director') ?></th>
+                                    <th><?= Yii::t('app', 'Phone') ?></th>
+                                    <th><?= Yii::t('app', 'Email') ?></th>
+                                    <th><?= Yii::t('app', 'Status') ?></th>
+                                    <th><?= Yii::t('app', 'Actions') ?></th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -91,10 +91,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <span class="badge <?= $badgeClass ?>"><?= Html::encode($item->getStatusLabel()) ?></span>
                                         </td>
                                         <td>
-                                            <?= Html::a('Просмотр', Yii::$app->urlManager->createUrl(['organization/view', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
+                                            <?= Html::a(Yii::t('app', 'View'), Yii::$app->urlManager->createUrl(['organization/view', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
                                             <?php if(Yii::$app->user->can('admin')): ?>
-                                                <?= Html::a('Редактировать', Yii::$app->urlManager->createUrl(['organization/update', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
-                                                <?= Html::button('Удалить', [
+                                                <?= Html::a(Yii::t('app', 'Edit'), Yii::$app->urlManager->createUrl(['organization/update', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
+                                                <?= Html::button(Yii::t('app', 'Delete'), [
                                                     'class' => 'btn btn-danger btn-sm delete-btn',
                                                     'data-id' => $item->id,
                                                     'data-name' => $item->name,
@@ -127,15 +127,15 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Подтверждение удаления</h4>
+                    <h4 class="modal-title" id="myModalLabel"><?= Yii::t('app', 'Confirm deletion') ?></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Подтвердите удаление организации:  <span class="fw-bold fs-5" id="deleteUserName"></span>
+                    <?= Yii::t('app', 'Confirm deletion of group') ?>:  <span class="fw-bold fs-5" id="deleteUserName"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Да, удалить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= Yii::t('app', 'Cancel') ?></button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn"><?= Yii::t('app', 'Yes, delete') ?></button>
                 </div>
             </div>
         </div>
@@ -173,12 +173,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.message || 'Не удалось удалить организацию');
+                    alert(response.message || '<?= Yii::t("app", "Error") ?>');
                     $('#confirmDeleteModal').modal('hide');
                 }
             },
             error: function() {
-                alert('Произошла ошибка при удалении');
+                alert('<?= Yii::t("app", "Error") ?>');
                 $('#confirmDeleteModal').modal('hide');
             }
         });

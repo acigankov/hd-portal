@@ -22,9 +22,12 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/adminlte.css',
         'css/site.css',
+        '//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
     ];
     public $js = [
         'js/adminlte.js',
+        '//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+        '//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/ru.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',
