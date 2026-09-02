@@ -42,6 +42,28 @@ class CommentController extends Controller
     }
 
     /**
+     * Для AJAX-запросов всегда отвечаем JSON.
+     *
+     * Действия create/update/delete возвращают массивы, а при формате HTML
+     * yii\web\Response::prepare() бросает "Response content must not be an array",
+     * то есть клиент получал 500 вместо ответа.
+     *
+     * {@inheritdoc}
+     */
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+        }
+
+        return true;
+    }
+
+    /**
      * Возвращает комментарии для сущности (AJAX)
      * @param string $entityClass класс сущности (app\models\Task, etc.)
      * @param int $entityId ID сущности

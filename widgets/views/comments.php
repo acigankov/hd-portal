@@ -2,6 +2,7 @@
 
 use yii\widgets\LinkPager;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * @var yii\data\ActiveDataProvider $dataProvider
@@ -14,7 +15,14 @@ use yii\helpers\Html;
 $comments = $dataProvider->getModels();
 $pagination = $dataProvider->getPagination();
 $currentUser = Yii::$app->user->identity;
-$uniqueId = 'comments-widget-' . $modelClass . '-' . $modelId;
+// Идентификатор должен быть безопасен и для HTML-атрибута, и для JS-строки:
+// имя класса содержит обратные слэши (app\models\Task), которые в JS-строке
+// съедаются как escape-последовательности, из-за чего селекторы не совпадали
+// с реальными id и обработчик отправки формы не навешивался.
+$uniqueId = 'comments-widget-' . preg_replace('/[^A-Za-z0-9_-]/', '-', $modelClass . '-' . $modelId);
+$deleteUrl = Url::to(['/comment/delete']);
+$csrfParam = Yii::$app->request->csrfParam;
+$csrfToken = Yii::$app->request->csrfToken;
 $sortOrder = Yii::$app->request->get('sort', $defaultSort === 'ASC' ? 'ASC' : 'DESC');
 $oppositeSort = $sortOrder === 'ASC' ? 'DESC' : 'ASC';
 $sortLabel = $sortOrder === 'ASC' ? 'Сначала старые' : 'Сначала новые';
@@ -191,9 +199,9 @@ $script = <<<JS
         var commentItem = $('#comment-' + commentId);
         
         $.ajax({
-            url: '/comment/delete',
+            url: '{$deleteUrl}',
             type: 'POST',
-            data: { id: commentId },
+            data: { id: commentId, '{$csrfParam}': '{$csrfToken}' },
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
