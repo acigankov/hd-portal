@@ -80,9 +80,6 @@ class CommentController extends Controller
             $model->is_edited = 0;
 
             if ($model->save()) {
-                // Загружаем автора для отображения
-                $model->author = $model->getAuthor()->one();
-                
                 if (Yii::$app->request->isAjax) {
                     return [
                         'success' => true,
@@ -135,9 +132,6 @@ class CommentController extends Controller
             $model->is_edited = 1;
 
             if ($model->save()) {
-                // Загружаем автора для отображения
-                $model->author = $model->getAuthor()->one();
-                
                 if (Yii::$app->request->isAjax) {
                     return [
                         'success' => true,
@@ -215,10 +209,8 @@ class CommentController extends Controller
      */
     private function renderComment($comment)
     {
-        // Явно загружаем автора, чтобы избежать проблемы с отображением "удаленный пользователь"
-        if (!$comment->isRelationPopulated('author')) {
-            $comment->author = $comment->getAuthor()->one();
-        }
+        // Явно загружаем автора через with, чтобы избежать проблемы с read-only свойством
+        $comment->populateRelation('author', $comment->getAuthor()->one());
         
         return Yii::$app->controller->renderPartial('@app/views/comment/_item', [
             'model' => $comment,
