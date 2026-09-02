@@ -4,8 +4,13 @@ use yii\db\Migration;
 use yii\base\Security;
 
 /**
- * Добавление 10 пользователей: 1 админ и 9 операторов
- * Данные максимально приближены к реальности
+ * Добавление 10 пользователей: 1 админ и 9 операторов.
+ *
+ * Пароли НЕ хранятся в коде. Для каждого пользователя генерируется
+ * случайный пароль, который один раз печатается в вывод миграции —
+ * его нужно сохранить в менеджере паролей и сменить при первом входе.
+ * Единый пароль для всех можно задать переменной SEED_DEFAULT_PASSWORD
+ * (только для локальной разработки).
  */
 class m260901_130000_seed_users_data extends Migration
 {
@@ -18,7 +23,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'a.volkov',
                 'name' => 'Александр Волков',
-                'password' => 'Volkov@2024',
                 'role' => 'admin',
                 'email' => 'alexandr.volkov@company.local',
                 'status' => 1,
@@ -27,7 +31,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'e.smirnova',
                 'name' => 'Елена Смирнова',
-                'password' => 'Smirnova@2024',
                 'role' => 'operator',
                 'email' => 'elena.smirnova@company.local',
                 'status' => 1,
@@ -35,7 +38,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'd.kuznetsov',
                 'name' => 'Дмитрий Кузнецов',
-                'password' => 'Kuznetsov@2024',
                 'role' => 'operator',
                 'email' => 'dmitry.kuznetsov@company.local',
                 'status' => 1,
@@ -43,7 +45,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'o.popova',
                 'name' => 'Ольга Попова',
-                'password' => 'Popova@2024',
                 'role' => 'operator',
                 'email' => 'olga.popova@company.local',
                 'status' => 1,
@@ -51,7 +52,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'm.sokolov',
                 'name' => 'Максим Соколов',
-                'password' => 'Sokolov@2024',
                 'role' => 'operator',
                 'email' => 'maxim.sokolov@company.local',
                 'status' => 1,
@@ -59,7 +59,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'n.lebedeva',
                 'name' => 'Наталья Лебедева',
-                'password' => 'Lebedeva@2024',
                 'role' => 'operator',
                 'email' => 'natalia.lebedeva@company.local',
                 'status' => 1,
@@ -67,7 +66,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'i.kozlov',
                 'name' => 'Иван Козлов',
-                'password' => 'Kozlov@2024',
                 'role' => 'operator',
                 'email' => 'ivan.kozlov@company.local',
                 'status' => 1,
@@ -75,7 +73,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 'a.novikova',
                 'name' => 'Анна Новикова',
-                'password' => 'Novikova@2024',
                 'role' => 'operator',
                 'email' => 'anna.novikova@company.local',
                 'status' => 1,
@@ -83,7 +80,6 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 's.morozov',
                 'name' => 'Сергей Морозов',
-                'password' => 'Morozov@2024',
                 'role' => 'operator',
                 'email' => 'sergey.morozov@company.local',
                 'status' => 1,
@@ -91,18 +87,23 @@ class m260901_130000_seed_users_data extends Migration
             [
                 'login' => 't.fedorova',
                 'name' => 'Татьяна Федорова',
-                'password' => 'Fedorova@2024',
                 'role' => 'operator',
                 'email' => 'tatiana.fedorova@company.local',
                 'status' => 1,
             ],
         ];
 
+        $credentials = [];
+
         foreach ($users as $user) {
+            // Пароль берётся из окружения (локальная разработка) либо генерируется случайно
+            $password = $_ENV['SEED_DEFAULT_PASSWORD'] ?? $security->generateRandomString(12);
+            $credentials[$user['login']] = $password;
+
             $this->insert('{{%users}}', [
                 'login' => $user['login'],
                 'name' => $user['name'],
-                'password_hash' => $security->generatePasswordHash($user['password']),
+                'password_hash' => $security->generatePasswordHash($password),
                 'email' => $user['email'],
                 'status' => $user['status'],
                 'role' => $user['role'],
@@ -110,6 +111,12 @@ class m260901_130000_seed_users_data extends Migration
                 'created_at' => date('Y-m-d H:i:s'),
             ]);
         }
+
+        echo "\nСозданные пользователи (пароли показываются один раз, сохраните их):\n";
+        foreach ($credentials as $login => $password) {
+            echo sprintf("  %-14s %s\n", $login, $password);
+        }
+        echo "\n";
     }
 
     public function safeDown()

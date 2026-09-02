@@ -55,9 +55,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <p>Логин: <?= $model->login?> </p>
-                            <p>Email: <?= $model->email?> </p>
-                            <p>Статус: <?= $model->status ? 'Активен' : 'Неактивен'?> </p>
+                            <p>Логин: <?= Html::encode($model->login) ?> </p>
+                            <p>Email: <?= Html::encode($model->email) ?> </p>
+                            <p>Статус: <?= $model->status ? 'Активен' : 'Неактивен' ?> </p>
                         </div>
                         <!-- /.card-body -->
                     </div>

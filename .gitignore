@@ -11,12 +11,20 @@ __pycache__/
 *.out
 
 # Dependencies
+vendor/
 node_modules/
 venv/
 .venv/
 .env
 .env.local
 .env.*
+!.env.example
+
+# Секреты и выгрузки с учётными данными
+users_credentials.txt
+*credentials*.txt
+*.pem
+*.key
 
 # Logs and temp files
 *.log
