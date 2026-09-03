@@ -27,7 +27,7 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="/" class="nav-link ">
+        <a href="/problem" class="nav-link ">
             <i class="nav-icon bi bi-exclamation-triangle"></i>
             <p><?= Yii::t('app', 'Problems') ?></p>
         </a>

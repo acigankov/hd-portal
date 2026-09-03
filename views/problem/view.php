@@ -17,10 +17,15 @@ $status = $model->getStatusById($model->status_id);
 
 <div class="problem-view">
 
-    <!--begin::App Content Header-->\n    <div class="app-content-header">
-        <!--begin::Container-->\n        <div class="container-fluid">
-            <!--begin::Row-->\n            <div class="row">
-                <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3>
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
@@ -29,17 +34,25 @@ $status = $model->getStatusById($model->status_id);
                     </ol>
                 </div>
             </div>
-            <!--end::Row-->\n        </div>
-        <!--end::Container-->\n    </div>
-    <!--end::App Content Header-->\n    <!--begin::App Content-->\n    <div class="app-content">
-        <!--begin::Container-->\n        <div class="container-fluid mb-4">
-            <!--begin::Row-->\n            <div class="row">
-                <!--begin::Col-->\n                <div class="col">
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->
+    <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid mb-4">
+            <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title"><?= Yii::t('app', 'Problem information') ?></h3>
                         </div>
-                        <!-- /.card-header -->\n                        <div class="card-body">
+                        <!-- /.card-header -->
+                        <div class="card-body">
                             <table class="table">
                                 <tbody>
                                     <tr>
@@ -170,15 +183,29 @@ $status = $model->getStatusById($model->status_id);
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.card-body -->\n                        <div class="card-footer">
+                        <!-- /.card-body -->
+                        <div class="card-footer">
                             <?php if(Yii::$app->user->can('admin')): ?>
-                                <?= Html::a(Yii::t('app', 'Edit'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>\n                            <?php endif; ?>
-                            <?= Html::a(Yii::t('app', 'Back to list'), ['index'], ['class' => 'btn btn-secondary']) ?>\n                        </div>
+                                <?= Html::a(Yii::t('app', 'Edit'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                            <?php endif; ?>
+                            <?= Html::a(Yii::t('app', 'Back to list'), ['index'], ['class' => 'btn btn-secondary']) ?>
+                        </div>
                     </div>
                 </div>
-                <!--end::Col-->\n            </div>
-            <!--end::Row-->\n        </div>
-        <!--end::Container-->\n        <!--begin::Container-->\n        <div class="container-fluid">
-            <?= \app\widgets\CommentsWidget::widget([\n                'modelClass' => get_class($model),\n                'modelId' => $model->id,\n                'title' => Yii::t('app', 'Comments'),\n            ]) ?>\n        </div>
-        <!--end::Container-->\n    </div>
-    <!--end::App Content-->\n\n\n\n\n</div>
+                <!--end::Col-->
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <?= \app\widgets\CommentsWidget::widget([
+                    'modelClass' => get_class($model),
+                'modelId' => $model->id,
+                'title' => Yii::t('app', 'Comments'),
+                ]) ?>
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->
+</div>

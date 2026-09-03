@@ -21,7 +21,6 @@ use yii\db\BaseActiveRecord;
  * @property int|null $responsible_id ID ответственного
  * @property int $priority Приоритет (1-низкий, 2-средний, 3-высокий)
  * @property string|null $due_date Срок выполнения
- * @property int $status Статус записи (1 - активен, 0 - неактивен)
  * @property string $created_at Дата создания
  * @property string|null $updated_at Дата обновления
  * @property int|null $created_by ID пользователя создателя
@@ -35,8 +34,6 @@ use yii\db\BaseActiveRecord;
  */
 class Problem extends ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
 
     const PRIORITY_LOW = 1;
     const PRIORITY_MEDIUM = 2;
@@ -81,8 +78,7 @@ class Problem extends ActiveRecord
             [['problem_number'], 'string', 'max' => 20],
             [['problem_number'], 'unique', 'message' => 'Проблема с таким номером уже существует'],
             [['priority'], 'in', 'range' => [self::PRIORITY_LOW, self::PRIORITY_MEDIUM, self::PRIORITY_HIGH]],
-            [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
-            [['status'], 'default', 'value' => self::STATUS_ACTIVE],
+
         ];
     }
 

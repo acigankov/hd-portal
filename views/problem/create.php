@@ -17,9 +17,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Problems'), 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<!--begin::App Content Header-->\n<div class="app-content-header">
-    <!--begin::Container-->\n    <div class="container-fluid">
-        <!--begin::Row-->\n        <div class="row">
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
             <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
@@ -29,16 +32,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 </ol>
             </div>
         </div>
-        <!--end::Row-->\n    </div>
-    <!--end::Container-->\n</div>
-<!--end::App Content Header-->\n\n\n<!--begin::App Content -->\n<div class="app-content">
+        <!--end::Row-->
+    </div>
+    <!--end::Container-->
+</div>
+<!--end::App Content Header-->
+<!--begin::App Content -->
+<div class="app-content">
     <div class="container-fluid">
         <div class="row">
             <div class="col-8">
                 <div class="problem-form">
                     <div class="card">
                         <div class="card-body">
-                            <?php $form = ActiveForm::begin([\n                                'id' => 'problem-create-form',\n                                'errorCssClass' => 'invalid-feedback',\n                                'fieldConfig' => [\n                                    'template' => "{label}\\n<div class=\"col\">{input}</div>\\n<div class=\"col\">{error}</div>",\n                                    'labelOptions' => ['class' => 'col-sm-3 col-form-label'],\n                                ],\n                            ]); ?>
+                            <?php $form = ActiveForm::begin([
+                                    'id' => 'problem-create-form',
+                                'errorCssClass' => 'invalid-feedback',
+                                'fieldConfig' => [
+                                        'template' => "{label}<div class=\"col\">{input}</div><div class=\"col\">{error}</div>",
+                                    'labelOptions' => ['class' => 'col-sm-3 col-form-label'],
+                                    ],
+                                ]); ?>
 
                             <?= $form->field($model, 'title')
                                 ->textInput(['maxlength' => 255, 'autofocus' => true, 'placeholder' => Yii::t('app', 'Enter problem title')])
@@ -81,13 +95,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->label(Yii::t('app', 'Responsible') . ' *') ?>
 
                             <?= $form->field($model, 'priority')
-                                ->dropDownList([\n                                    \app\models\Problem::PRIORITY_LOW => Yii::t('app', 'Low'),\n                                    \app\models\Problem::PRIORITY_MEDIUM => Yii::t('app', 'Medium'),\n                                    \app\models\Problem::PRIORITY_HIGH => Yii::t('app', 'High'),\n                                ])\n                                ->label(Yii::t('app', 'Priority')) ?>
+                                ->dropDownList([\app\models\Problem::PRIORITY_LOW => Yii::t('app', 'Low'),
+                                    \app\models\Problem::PRIORITY_MEDIUM => Yii::t('app', 'Medium'),
+                                    \app\models\Problem::PRIORITY_HIGH => Yii::t('app', 'High'),
+                                    ])
+                                ->label(Yii::t('app', 'Priority')) ?>
 
                             <?= $form->field($model, 'due_date')
                                 ->input('date', ['format' => 'yyyy-MM-dd'])
                                 ->label(Yii::t('app', 'Due Date')) ?>
 
-                            <?= $form->field($model, 'ticket_ids')
+                            <?= $form->field($model, 'tickets')
                                 ->listBox(
                                     \yii\helpers\ArrayHelper::map($tickets, 'id', 'ticket_number'),
                                     ['multiple' => true, 'size' => 10]
@@ -96,9 +114,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                             <div class="form-group">
-                                <?= Html::submitButton('<i class="fas fa-save"></i> ' . Yii::t('app', 'Save'), [\n                                    'class' => 'btn btn-primary'\n                                ]) ?>\n                                <?= Html::a(Yii::t('app', 'Cancel'), ['index'], ['class' => 'btn btn-secondary']) ?>\n                            </div>
-
-                            <?php ActiveForm::end(); ?>\n                        </div>
+                                <?= Html::submitButton('<i class="fas fa-save"></i> ' . Yii::t('app', 'Save'), [
+                                        'class' => 'btn btn-primary'
+                                ]) ?>
+                                <?= Html::a(Yii::t('app', 'Cancel'), ['index'], ['class' => 'btn btn-secondary']) ?>
+                            </div>
+                            <?php ActiveForm::end(); ?>
+                        </div>
                     </div>
                 </div>
             </div>
