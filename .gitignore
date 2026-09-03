@@ -1,44 +1,71 @@
+```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.out
+dist/
+build/
+target/
+
 # Dependencies
-vendor/
+.venv/
+venv/
+node_modules/
+.mypy_cache/
+.pytest_cache/
+.coverage
+coverage/
+htmlcov/
+.gradle/
 
-# Logs
+# Logs and temp files
 *.log
+*.tmp
+*.swp
+*.swo
 
-# Environment specific
+# Environment
 .env
 .env.local
-.env.*
+*.env.*
 
-# IDE
+# Editors
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# OS
+# System
 .DS_Store
 Thumbs.db
 
-# Tests
-.phpunit.result.cache
-
-# Yii Framework
-yii
-yii.bat
-assets/
-runtime/
-web/assets/
-!web/assets/.gitkeep
-
-# Composer
-composer.phar
-composer.lock
-
-# Web server
-.htaccess
-web/.htaccess
-
-# Database migrations backup
-migrations/*.sql
-
-# User uploads (if stored in project)
-web/uploads/
-web/images/avatars/
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+```
