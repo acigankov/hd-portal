@@ -38,6 +38,23 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function rules(): array
+    {
+        return [
+            [['login', 'password_hash'], 'required'],
+            [['login', 'name', 'email'], 'string', 'max' => 128],
+            [['avatar'], 'string', 'max' => 255],
+            [['status', 'role', 'created_by', 'updated_by'], 'integer'],
+            [['auth_key'], 'string', 'max' => 32],
+            [['access_token'], 'string', 'max' => 255],
+            [['email'], 'email'],
+            [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DISABLED]],
+        ];
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

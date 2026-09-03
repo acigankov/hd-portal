@@ -62,6 +62,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'model' => $model,
                                 'attributes' => [
                                     'id',
+                                    [
+                                        'attribute' => 'avatar',
+                                        'value' => function ($model) {
+                                            return !empty($model->avatar) ? '/img/' . $model->avatar : null;
+                                        },
+                                        'format' => ['image', ['width' => 100, 'height' => 100]],
+                                        'label' => Yii::t('app', 'Avatar'),
+                                    ],
                                     'full_name',
                                     'email:email',
                                     'phone',

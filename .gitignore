@@ -1,56 +1,44 @@
-```php
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-*.class
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
 # Dependencies
-node_modules/
 vendor/
-composer.lock
+
+# Logs
+*.log
+
+# Environment specific
 .env
 .env.local
 .env.*
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
-
-# Editors
+# IDE
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# Coverage
-.coverage
-coverage/
-htmlcov/
-
-# Build directories
-dist/
-build/
-target/
-*.jar
-*.war
-*.zip
-*.tar.gz
-
-# OS specific
+# OS
 .DS_Store
 Thumbs.db
 
-# Cache directories
-.mypy_cache/
-.pytest_cache/
-.gradle/
-```
+# Tests
+.phpunit.result.cache
+
+# Yii Framework
+yii
+yii.bat
+assets/
+runtime/
+web/assets/
+!web/assets/.gitkeep
+
+# Composer
+composer.phar
+composer.lock
+
+# Web server
+.htaccess
+web/.htaccess
+
+# Database migrations backup
+migrations/*.sql
+
+# User uploads (if stored in project)
+web/uploads/
+web/images/avatars/
