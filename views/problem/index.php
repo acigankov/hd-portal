@@ -1,13 +1,16 @@
 <?php
 
 use app\models\Problem;
+use app\models\ProblemSearch;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\View;
 
-/* @var $this \yii\web\View */
-/* @var $searchModel \app\models\ProblemSearch */
-/* @var $dataProvider \yii\data\ActiveDataProvider */
+/* @var $this View */
+/* @var $searchModel ProblemSearch */
+/* @var $dataProvider ActiveDataProvider */
 /* @var $categories array */
 /* @var $statuses array */
 /* @var $users array */
@@ -19,37 +22,51 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="problem-index">
 
-    <!--begin::App Content Header-->\n    <div class="app-content-header">
-        <!--begin::Container-->\n        <div class="container-fluid">
-            <!--begin::Row-->\n            <div class="row">
-                <div class="col-sm-6"><h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
+    <!--begin::App Content Header-->
+    <div class="app-content-header">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0"><?php echo Html::encode($this->title); ?></h3></div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
+                        <li class="breadcrumb-item active"
+                            aria-current="page"><?php echo Html::encode($this->title); ?></li>
                     </ol>
                 </div>
             </div>
-            <!--end::Row-->\n        </div>
-        <!--end::Container-->\n    </div>
-    <!--end::App Content Header-->\n    <!--begin::App Content-->\n    <div class="app-content">
-        <!--begin::Container-->\n        <div class="container-fluid">
-            <!--begin::Row-->\n            <div class="row mb-4">
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content Header-->   <!--begin::App Content-->
+    <div class="app-content">
+        <!--begin::Container-->
+        <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row mb-4">
                 <div class="col">
                     <?php if (Yii::$app->user->can('admin')): ?>
-                        <a class="btn btn-primary" href="<?= \yii\helpers\Url::to(['/problem/create'])?>" role="button"><?= Yii::t('app', 'New problem') ?></a>
+                        <a class="btn btn-primary" href="<?= Url::to(['/problem/create']) ?>"
+                           role="button"><?= Yii::t('app', 'New problem') ?></a>
                     <?php endif; ?>
                 </div>
 
             </div>
-            <!--end::Row-->\n            <!--begin::Row-->\n            <div class="row">
-                <!--begin::Col-->\n                <div class="col">
+            <!--end::Row-->           <!--begin::Row-->
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title"><?= Yii::t('app', 'List of Problems') ?></h3>
 
                         </div>
-                        <!-- /.card-header -->\n                        <div class="card-body table-responsive p-0">
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap">
                                 <thead>
                                 <tr>
@@ -66,14 +83,17 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach ($dataProvider->getModels() as $item):?>
+                                <?php foreach ($dataProvider->getModels() as $item): ?>
                                     <tr>
                                         <td><?= $item->id ?></td>
-                                        <td><span class="badge bg-info"><?= Html::encode($item->problem_number) ?></span></td>
+                                        <td>
+                                            <span class="badge bg-info"><?= Html::encode($item->problem_number) ?></span>
+                                        </td>
                                         <td><?= Html::a(Html::encode($item->title), ['/problem/view', 'id' => $item->id]) ?></td>
                                         <td>
                                             <?php if (!empty($item->jira_ticket)): ?>
-                                                <a href="<?= Html::encode($item->jira_ticket) ?>" target="_blank" rel="noopener noreferrer">
+                                                <a href="<?= Html::encode($item->jira_ticket) ?>" target="_blank"
+                                                   rel="noopener noreferrer">
                                                     <i class="fas fa-external-link-alt"></i> <?= Html::encode($item->jira_ticket) ?>
                                                 </a>
                                             <?php else: ?>
@@ -81,10 +101,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?php 
+                                            <?php
                                             $category = $categories[$item->category_id] ?? null;
-                                            if ($category): 
-                                            ?>
+                                            if ($category):
+                                                ?>
                                                 <span class="badge bg-<?= Html::encode($category->color) ?>">
                                                     <?= Html::encode($category->name) ?>
                                                 </span>
@@ -93,10 +113,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?php 
+                                            <?php
                                             $status = $statuses[$item->status_id] ?? null;
-                                            if ($status): 
-                                            ?>
+                                            if ($status):
+                                                ?>
                                                 <span class="badge bg-<?= Html::encode($status->color) ?>">
                                                     <?= Html::encode($status->name) ?>
                                                 </span>
@@ -110,10 +130,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                             </span>
                                         </td>
                                         <td>
-                                            <?php 
+                                            <?php
                                             $user = $users[$item->responsible_id] ?? null;
-                                            if ($user): 
-                                            ?>
+                                            if ($user):
+                                                ?>
                                                 <?= Html::encode($user->login) ?>
                                             <?php else: ?>
                                                 -
@@ -127,9 +147,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <?= Html::a(Yii::t('app', 'View'), Yii::$app->urlManager->createUrl(['problem/view', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
-                                            <?php if(Yii::$app->user->can('admin')): ?>
-                                                <?= Html::a(Yii::t('app', 'Edit'), Yii::$app->urlManager->createUrl(['problem/update', 'id' => $item->id]) , ['class' => 'btn btn-primary btn-sm' , 'role' => 'button']); ?>
+                                            <?= Html::a(Yii::t('app', 'View'), Yii::$app->urlManager->createUrl(['problem/view', 'id' => $item->id]), ['class' => 'btn btn-primary btn-sm', 'role' => 'button']); ?>
+                                            <?php if (Yii::$app->user->can('admin')): ?>
+                                                <?= Html::a(Yii::t('app', 'Edit'), Yii::$app->urlManager->createUrl(['problem/update', 'id' => $item->id]), ['class' => 'btn btn-primary btn-sm', 'role' => 'button']); ?>
                                                 <?= Html::button(Yii::t('app', 'Delete'), [
                                                     'class' => 'btn btn-danger btn-sm delete-btn',
                                                     'data-id' => $item->id,
@@ -142,27 +162,37 @@ $this->params['breadcrumbs'][] = $this->title;
                                         </td>
                                     </tr>
 
-                                <?php endforeach;?>
+                                <?php endforeach; ?>
 
                                 </tbody>
                             </table>
                         </div>
-                        <!-- /.card-body -->\n                    </div>
+                        <!-- /.card-body -->
+                    </div>
                 </div>
-                <!--end::Col-->\n            </div>
-            <!--end::Row-->\n        </div>
-        <!--end::Container-->\n    </div>
-    <!--end::App Content-->\n\n    <!-- Модальное окно подтверждения -->\n    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">\n        <div class="modal-dialog modal-dialog-centered">\n            <div class="modal-content">
+                <!--end::Col-->
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Container-->
+    </div>
+    <!--end::App Content-->  <!-- Модальное окно подтверждения -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel"><?= Yii::t('app', 'Confirm deletion') ?></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <?= Yii::t('app', 'Confirm deletion of problem') ?>:  <span class="fw-bold fs-5" id="deleteUserName"></span>
+                    <?= Yii::t('app', 'Confirm deletion of problem') ?>: <span class="fw-bold fs-5"
+                                                                               id="deleteUserName"></span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= Yii::t('app', 'Cancel') ?></button>
-                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn"><?= Yii::t('app', 'Yes, delete') ?></button>
+                    <button type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal"><?= Yii::t('app', 'Cancel') ?></button>
+                    <button type="button" class="btn btn-danger"
+                            id="confirmDeleteBtn"><?= Yii::t('app', 'Yes, delete') ?></button>
                 </div>
             </div>
         </div>
@@ -175,7 +205,7 @@ $this->params['breadcrumbs'][] = $this->title;
     var deleteUrl = '';
     var csrfToken = '{$csrfToken}';
 
-    // При клике на кнопку удаления — открываем модалку\n    $('.delete-btn').on('click', function(e) {
+    // При клике на кнопку удаления — открываем модалку   $('.delete-btn').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -185,7 +215,7 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#confirmDeleteModal').modal('show');
     });
 
-    // При клике на "Да, удалить"\n    $('#confirmDeleteBtn').on('click', function() {
+    // При клике на "Да, удалить"   $('#confirmDeleteBtn').on('click', function() {
         if (!deleteUrl) return;
 
         $.ajax({

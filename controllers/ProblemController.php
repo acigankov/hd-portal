@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Ticket;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
