@@ -1,65 +1,75 @@
-```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
-*.o
-*.obj
-dist/
-build/
-target/
 
 # Dependencies
-.venv/
-venv/
+vendor/
 node_modules/
-.julia/
-zig*/
-.deps/
+composer.lock
 
 # Logs and temp files
 *.log
 *.tmp
 *.swp
-*.swo
 
 # Environment
 .env
 .env.local
-.env.*
+*.env.*
 
 # Editors
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
 
-# Python specific
-*.pyc
-__pycache__/
-.pytest_cache/
-.mypy_cache/
-
-# Node specific
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Java/Gradle
-.gradle/
+# Distribution / packaging
+dist/
 build/
-target/
+*.tar.gz
+*.whl
+*.egg-info/
 
-# Compressed files
+# PHP specific
+*.php~
+.php_cs.cache
+
+# Web assets that might be generated
+web/assets/
+web/css/*.css.map
+web/js/*.js.map
+
+# Cache
+.cache/
+.cargo/
+.target/
+
+# Testing
+.phpunit.result.cache
+.phpunit.xml
+
+# IDE
+.nyc_output/
+coverage/lcov-report/
+
+# Backup files
+*~
+*.bak
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+
+# Compression archives
 *.zip
 *.gz
 *.tar
@@ -82,4 +92,311 @@ target/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-```
+
+# Session files
+sess_*
+
+# Lock files
+*.lock
+
+# Output of build tools
+output/
+bin/
+lib/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# SASS/SCSS
+.sass-cache/
+*.css.map
+*.scss.map
+
+# Bower components
+bower_components/
+
+# Grunt generated files
+grunt-cache/
+
+# NPM debug log
+npm-debug.log*
+
+# Yarn files
+.yarn/
+yarn-error.log
+
+# Composer cache
+vendor/composer/installed.json
+
+# PHPUnit
+.phpunit.result.cache
+
+# Laravel specific
+storage/
+bootstrap/cache/
+
+# Symfony specific
+var/
+app/cache/
+app/logs/
+
+# WordPress specific
+wp-content/cache/
+
+# Drupal specific
+sites/default/files/
+
+# Magento specific
+var/
+generated/
+pub/static/_cache/
+
+# Jenkins specific
+.jenkins/
+jenkins/
+
+# Travis CI
+.travis.yml
+.travis/
+
+# CircleCI
+.circleci/
+
+# GitHub Actions
+.github/
+
+# Docker
+.docker/
+
+# Vagrant
+.vagrant/
+
+# Ansible
+.retry
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfvars
+
+# Kubernetes
+.kube/
+
+# Configuration management
+.salt/
+.puppet/
+.chef/
+.opscode/
+
+# Cloud related
+.aws/
+.azure/
+.gcp/
+
+# Security
+.id_rsa
+.id_dsa
+*.key
+*.pem
+*.crt
+*.cert
+
+# Browser extensions
+*.crx
+*.xpi
+
+# Fonts
+*.ttf
+*.woff
+*.woff2
+*.eot
+*.svg
+
+# Documentation
+docs/_build/
+docs/api/
+
+# Images (if generated)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.ico
+*.svg
+*.webp
+
+# Videos
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+
+# Audio
+*.mp3
+*.wav
+*.ogg
+*.flac
+*.aac
+
+# Archives
+*.rar
+*.zip
+*.7z
+*.tar
+*.gz
+*.bz2
+*.xz
+
+# Logs
+logs/
+log/
+
+# Temp
+tmp/
+temp/
+
+# Cache
+.cache/
+.caches/
+
+# Build output
+build/
+dist/
+out/
+output/
+target/
+
+# Dependencies
+node_modules/
+vendor/
+libs/
+lib/
+
+# IDE
+.idea/
+.vscode/
+.settings/
+.project
+.classpath
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+.directory
+.Spotlight-V100
+.Trashes
+apfsctl
+fseventsd
+.Ubuntu-ID
+.vagrant
+.Vagrantfile
+.vagrant.d/
+
+# Editor
+*.swp
+*.swo
+*~
+*.tmp
+*.temp
+
+# Testing
+coverage/
+nyc-output/
+istanbul/
+.mocha.opts
+.jest/
+jest.config.js
+
+# Debug
+*.stackdump
+*.core
+*.dmp
+
+# Local configuration
+local.properties
+local.conf
+config/local.*
+!config/web.php
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+.env.*
+!.env.example
+!.env.sample
+!.env.template
+
+# Secrets
+secrets/
+secret/
+private/
+.key
+.pem
+.crt
+.cert
+
+# Database dumps
+*.sql
+*.dump
+*.dmp
+*.sql.gz
+
+# Performance
+.profile
+.prof
+
+# Memory
+*.heap
+*.snapshot
+
+# Generated code
+gen/
+generated/
+.autotools/
+autom4te.cache/
+
+# Version control
+.git/
+.hg/
+.svn/
+.cvs/
+
+# Package managers
+package-lock.json
+yarn.lock
+composer.lock
+Gemfile.lock
+Pipfile.lock
+poetry.lock
+
+# PHP specific
+.php_cs.cache
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# Web specific
+web/assets/
+web/css/*.map
+web/js/*.map
+web/sitemap.xml
+web/robots.txt
+
+# Images
+web/img/*.gif
+web/img/*.png
+web/img/*.jpg
+web/img/*.jpeg
+web/img/*.bmp
+web/img/*.ico
+web/img/*.svg
+web/img/*.webp

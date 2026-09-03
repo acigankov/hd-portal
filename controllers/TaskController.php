@@ -111,9 +111,15 @@ class TaskController extends Controller
         $authors = Author::find()->active()->all();
         $users = User::find()->where(['status' => User::STATUS_ACTIVE])->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Task successfully created.'));
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            // Устанавливаем ID текущего пользователя как создателя
+            $model->created_by = Yii::$app->user->id;
+            $model->updated_by = Yii::$app->user->id;
+            
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Task successfully created.'));
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -142,9 +148,14 @@ class TaskController extends Controller
         $authors = Author::find()->active()->all();
         $users = User::find()->where(['status' => User::STATUS_ACTIVE])->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Task successfully updated.'));
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            // Устанавливаем ID текущего пользователя как редактора
+            $model->updated_by = Yii::$app->user->id;
+            
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Task successfully updated.'));
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [

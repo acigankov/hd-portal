@@ -1,6 +1,7 @@
 /**
  * Quill.js Editor Initialization
  * Автоматически инициализирует Quill редактор для всех textarea с классом quill-editor
+ * С поддержкой загрузки изображений на сервер
  */
 
 (function() {
@@ -12,19 +13,27 @@
     }
     window.quillEditorInitialized = true;
     
+    // URL для загрузки изображений
+    var imageUploadUrl = '/image-upload/upload';
+    
     // Конфигурация Quill по умолчанию
     var defaultOptions = {
         theme: 'snow',
         modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
-                ['link', 'image'],
-                ['clean']
-            ]
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: imageHandler
+                }
+            }
         },
         placeholder: 'Введите текст...',
         formats: [
@@ -35,6 +44,87 @@
             'link', 'image'
         ]
     };
+    
+    /**
+     * Обработчик кнопки изображения
+     * Открывает диалог выбора файла и загружает изображение на сервер
+     */
+    function imageHandler() {
+        var quill = this;
+        var fileInput = document.createElement('input');
+        fileInput.setAttribute('type', 'file');
+        fileInput.setAttribute('accept', 'image/*');
+        fileInput.style.display = 'none';
+        
+        fileInput.addEventListener('change', function() {
+            var file = fileInput.files[0];
+            if (!file) {
+                return;
+            }
+            
+            // Проверка типа файла
+            if (!file.type.match('image.*')) {
+                alert('Пожалуйста, выберите изображение');
+                return;
+            }
+            
+            // Проверка размера файла (максимум 5MB)
+            var maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Файл слишком большой. Максимальный размер: 5MB');
+                return;
+            }
+            
+            // Показываем индикатор загрузки
+            var range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', '/img/loading.gif', {
+                alt: 'Загрузка...'
+            });
+            
+            // Загружаем файл на сервер
+            var formData = new FormData();
+            formData.append('image', file);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', imageUploadUrl, true);
+            
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.success && response.url) {
+                            // Удаляем временное изображение и вставляем реальное
+                            quill.deleteText(range.index, 1);
+                            quill.insertEmbed(range.index, 'image', response.url, {
+                                alt: file.name
+                            });
+                        } else {
+                            // Ошибка загрузки
+                            quill.deleteText(range.index, 1);
+                            alert(response.error || 'Ошибка при загрузке изображения');
+                        }
+                    } catch (e) {
+                        quill.deleteText(range.index, 1);
+                        alert('Ошибка при обработке ответа сервера');
+                    }
+                } else {
+                    quill.deleteText(range.index, 1);
+                    alert('Ошибка HTTP: ' + xhr.status);
+                }
+            };
+            
+            xhr.onerror = function() {
+                quill.deleteText(range.index, 1);
+                alert('Ошибка сети при загрузке изображения');
+            };
+            
+            xhr.send(formData);
+        });
+        
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
+    }
     
     /**
      * Инициализация Quill редактора для textarea
