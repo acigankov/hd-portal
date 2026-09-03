@@ -1,5 +1,7 @@
 <?php
 
+use app\models\Problem;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -69,36 +71,36 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <?= $form->field($model, 'category_id')
                                 ->dropDownList(
-                                    \yii\helpers\ArrayHelper::map($categories, 'id', 'name'),
+                                    ArrayHelper::map($categories, 'id', 'name'),
                                     ['prompt' => Yii::t('app', 'Select category')]
                                 )
                                 ->label(Yii::t('app', 'Category')) ?>
 
                             <?= $form->field($model, 'status_id')
                                 ->dropDownList(
-                                    \yii\helpers\ArrayHelper::map($statuses, 'id', 'name'),
+                                    ArrayHelper::map($statuses, 'id', 'name'),
                                     ['prompt' => Yii::t('app', 'Select status')]
                                 )
                                 ->label(Yii::t('app', 'Status')) ?>
 
                             <?= $form->field($model, 'author_id')
                                 ->dropDownList(
-                                    \yii\helpers\ArrayHelper::map($authors, 'id', 'fullName'),
+                                    ArrayHelper::map($authors, 'id', 'fullName'),
                                     ['prompt' => Yii::t('app', 'Select author')]
                                 )
                                 ->label(Yii::t('app', 'Author')) ?>
 
                             <?= $form->field($model, 'responsible_id')
                                 ->dropDownList(
-                                    \yii\helpers\ArrayHelper::map($users, 'id', 'login'),
+                                    ArrayHelper::map($users, 'id', 'login'),
                                     ['prompt' => Yii::t('app', 'Select responsible')]
                                 )
                                 ->label(Yii::t('app', 'Responsible') . ' *') ?>
 
                             <?= $form->field($model, 'priority')
-                                ->dropDownList([\app\models\Problem::PRIORITY_LOW => Yii::t('app', 'Low'),
-                                    \app\models\Problem::PRIORITY_MEDIUM => Yii::t('app', 'Medium'),
-                                    \app\models\Problem::PRIORITY_HIGH => Yii::t('app', 'High'),
+                                ->dropDownList([Problem::PRIORITY_LOW => Yii::t('app', 'Low'),
+                                    Problem::PRIORITY_MEDIUM => Yii::t('app', 'Medium'),
+                                    Problem::PRIORITY_HIGH => Yii::t('app', 'High'),
                                     ])
                                 ->label(Yii::t('app', 'Priority')) ?>
 
@@ -108,7 +110,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <?= $form->field($model, 'tickets')
                                 ->listBox(
-                                    \yii\helpers\ArrayHelper::map($tickets, 'id', 'ticket_number'),
+                                    ArrayHelper::map($tickets, 'id', 'ticket_number'),
                                     ['multiple' => true, 'size' => 10]
                                 )
                                 ->label(Yii::t('app', 'Related Tickets')) ?>
