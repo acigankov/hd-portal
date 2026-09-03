@@ -44,7 +44,7 @@ JS);
 
     <div class="row">
         <div class="col-md-12">
-            <?= $form->field($model, 'description')->textarea(['rows' => 4, 'class' => 'form-control', 'placeholder' => 'Введите описание группы']) ?>
+            <?= $form->field($model, 'description')->textarea(['rows' => 4, 'class' => 'form-control quill-editor', 'placeholder' => 'Введите описание группы']) ?>
         </div>
     </div>
 

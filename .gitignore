@@ -4,11 +4,6 @@
 __pycache__/
 *.o
 *.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
 dist/
 build/
 target/
@@ -17,12 +12,9 @@ target/
 .venv/
 venv/
 node_modules/
-.mypy_cache/
-.pytest_cache/
-.coverage
-coverage/
-htmlcov/
-.gradle/
+.julia/
+zig*/
+.deps/
 
 # Logs and temp files
 *.log
@@ -33,7 +25,7 @@ htmlcov/
 # Environment
 .env
 .env.local
-*.env.*
+.env.*
 
 # Editors
 .vscode/
@@ -41,9 +33,31 @@ htmlcov/
 *.swp
 *.swo
 
-# System
+# OS
 .DS_Store
 Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Python specific
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+
+# Node specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Java/Gradle
+.gradle/
+build/
+target/
 
 # Compressed files
 *.zip
