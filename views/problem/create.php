@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -27,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
                     <li class="breadcrumb-item"><a href="#"><?= Yii::t('app', 'Home') ?></a></li>
-                    <li class="breadcrumb-item"><a href="<?= \yii\helpers\Url::to(['index']) ?>"><?= Yii::t('app', 'Problems') ?></a></li>
+                    <li class="breadcrumb-item"><a href="<?= Url::to(['index']) ?>"><?= Yii::t('app', 'Problems') ?></a></li>
                     <li class="breadcrumb-item active" aria-current="page"><?php echo Html::encode($this->title); ?></li>
                 </ol>
             </div>
