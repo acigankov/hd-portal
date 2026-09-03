@@ -216,14 +216,14 @@ class ProblemController extends Controller
     protected function saveProblemTickets($model, $ticketIds)
     {
         // Удаляем старые связи
-        \yii\db\Query::createCommand()
+        \Yii::$app->db->createCommand()
             ->delete('{{%problem_tickets}}', ['problem_id' => $model->id])
             ->execute();
 
         // Добавляем новые связи
         if (!empty($ticketIds) && is_array($ticketIds)) {
             foreach ($ticketIds as $ticketId) {
-                \yii\db\Query::createCommand()
+                \Yii::$app->db->createCommand()
                     ->insert('{{%problem_tickets}}', [
                         'problem_id' => $model->id,
                         'ticket_id' => $ticketId,
