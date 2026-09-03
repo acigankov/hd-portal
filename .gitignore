@@ -1,3 +1,4 @@
+```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -11,20 +12,12 @@ __pycache__/
 *.out
 
 # Dependencies
-vendor/
 node_modules/
 venv/
 .venv/
 .env
 .env.local
 .env.*
-!.env.example
-
-# Секреты и выгрузки с учётными данными
-users_credentials.txt
-*credentials*.txt
-*.pem
-*.key
 
 # Logs and temp files
 *.log
@@ -36,24 +29,24 @@ users_credentials.txt
 .vscode/
 .idea/
 
+# System files
+.DS_Store
+Thumbs.db
+
 # Coverage
 coverage/
 htmlcov/
 .coverage
 
-# Build systems
-build/
+# Build directories
 dist/
+build/
 target/
-.gradle/
 .mypy_cache/
 .pytest_cache/
+.gradle/
 
-# System files
-.DS_Store
-Thumbs.db
-
-# Compressed files
+# Common compressed files
 *.zip
 *.gz
 *.tar
@@ -76,3 +69,4 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
+```
