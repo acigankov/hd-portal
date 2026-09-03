@@ -212,7 +212,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.message || '<?= Yii::t("app", "Error") ?>');
                     $('#confirmDeleteModal').modal('hide');
                 }
             },

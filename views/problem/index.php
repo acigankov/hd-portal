@@ -205,7 +205,8 @@ $this->params['breadcrumbs'][] = $this->title;
     var deleteUrl = '';
     var csrfToken = '{$csrfToken}';
 
-    // При клике на кнопку удаления — открываем модалку   $('.delete-btn').on('click', function(e) {
+    // При клике на кнопку удаления — открываем модалку
+    $('.delete-btn').on('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -215,7 +216,8 @@ $this->params['breadcrumbs'][] = $this->title;
         $('#confirmDeleteModal').modal('show');
     });
 
-    // При клике на "Да, удалить"   $('#confirmDeleteBtn').on('click', function() {
+    // При клике на "Да, удалить"
+    $('#confirmDeleteBtn').on('click', function() {
         if (!deleteUrl) return;
 
         $.ajax({
@@ -228,7 +230,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 if (response.success) {
                     location.reload();
                 } else {
-                    alert(response.message || '<?= Yii::t("app", "Error") ?>');
                     $('#confirmDeleteModal').modal('hide');
                 }
             },
@@ -241,6 +242,8 @@ $this->params['breadcrumbs'][] = $this->title;
 JS
         , View::POS_END);
     ?>
+
+
 
 
 </div>
