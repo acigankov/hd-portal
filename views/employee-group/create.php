@@ -75,7 +75,7 @@ JS);
                                 ->label('Название группы *') ?>
 
                             <?= $form->field($model, 'description')
-                                ->textarea(['rows' => 4, 'placeholder' => 'Введите описание группы'])
+                                ->textarea(['rows' => 4, 'placeholder' => 'Введите описание группы', 'class' => 'form-control quill-editor'])
                                 ->label('Описание') ?>
 
                             <?= $form->field($model, 'organization_id')

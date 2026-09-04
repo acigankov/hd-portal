@@ -63,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <thead>
                                 <tr>
                                     <th><?= Yii::t('app', 'ID') ?></th>
+                                    <th><?= Yii::t('app', 'Avatar') ?></th>
                                     <th><?= Yii::t('app', 'Full Name') ?></th>
                                     <th><?= Yii::t('app', 'Email') ?></th>
                                     <th><?= Yii::t('app', 'Phone') ?></th>
@@ -76,6 +77,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <?php foreach ($dataProvider->getModels() as $item):?>
                                     <tr>
                                         <td><?= $item->id ?></td>
+                                        <td>
+                                            <?php if (!empty($item->avatar)): ?>
+                                                <img src="/img/<?= Html::encode($item->avatar) ?>" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                            <?php else: ?>
+                                                <img src="/img/avatar.png" alt="Default Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                            <?php endif; ?>
+                                        </td>
                                         <td><?= Html::a(Html::encode($item->full_name), ['/author/view', 'id' => $item->id]) ?></td>
                                         <td><?= Html::encode($item->email) ?></td>
                                         <td><?= Html::encode($item->phone) ?></td>

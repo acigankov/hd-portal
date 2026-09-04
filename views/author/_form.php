@@ -48,6 +48,8 @@ $organizations = Organization::find()->orderBy(['name' => SORT_ASC])->all();
 
                             <?= $form->field($model, 'full_name')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Enter full name')]) ?>
 
+                            <?= $form->field($model, 'avatar')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Enter avatar path')]) ?>
+
                             <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Enter email')]) ?>
 
                             <?= $form->field($model, 'phone')->textInput(['maxlength' => true, 'placeholder' => Yii::t('app', 'Enter phone')]) ?>

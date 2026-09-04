@@ -198,23 +198,27 @@ $this->registerJs($js);
             <!--begin::User Menu Dropdown-->
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                    <?php
+                    $user = Yii::$app->user->identity;
+                    $avatarSrc = !empty($user->avatar) ? '/img/' . htmlspecialchars($user->avatar) : '/img/user2-160x160.jpg';
+                    ?>
                     <img
-                            src="/img/user2-160x160.jpg"
+                            src="<?= $avatarSrc ?>"
                             class="user-image rounded-circle shadow"
                             alt="User Image"
                     />
-                    <span class="d-none d-md-inline"><?= YII::$app->user->identity->login?></span>
+                    <span class="d-none d-md-inline"><?= htmlspecialchars(YII::$app->user->identity->login)?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                     <!--begin::User Image-->
                     <li class="user-header text-bg-primary">
                         <img
-                                src="/img/user2-160x160.jpg"
+                                src="<?= $avatarSrc ?>"
                                 class="rounded-circle shadow"
                                 alt="User Image"
                         />
                         <p>
-                            <?= YII::$app->user->identity->login?>
+                            <?= htmlspecialchars(YII::$app->user->identity->login)?>
                             <small>Member since Nov. 2023</small>
                         </p>
                     </li>

@@ -127,6 +127,7 @@ $config = [
                 'status/create' => 'status/create',
                 'status/update/<id:\d+>' => 'status/update',
                 'status/delete/<id:\d+>' => 'status/delete',
+                'image-upload/upload' => 'image-upload/upload',
             ],
         ],
         'i18n' => [

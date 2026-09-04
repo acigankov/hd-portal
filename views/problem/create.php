@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ->label(Yii::t('app', 'Title') . ' *') ?>
 
                             <?= $form->field($model, 'description')
-                                ->textarea(['rows' => 4, 'placeholder' => Yii::t('app', 'Enter description')])
+                                ->textarea(['rows' => 4, 'placeholder' => Yii::t('app', 'Enter description'), 'class' => 'form-control quill-editor'])
                                 ->label(Yii::t('app', 'Description')) ?>
 
                             <?= $form->field($model, 'jira_ticket')

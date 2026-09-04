@@ -12,6 +12,7 @@ use yii\db\BaseActiveRecord;
  *
  * @property int $id
  * @property string $full_name ФИО автора
+ * @property string|null $avatar Путь к аватарке
  * @property string|null $email Email автора
  * @property string|null $phone Телефон автора
  * @property int|null $organization_id ID организации
@@ -62,6 +63,7 @@ class Author extends ActiveRecord
         return [
             [['full_name'], 'required'],
             [['full_name', 'position'], 'string', 'max' => 255],
+            [['avatar'], 'string', 'max' => 255],
             [['email'], 'email'],
             [['email'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 50],
@@ -78,6 +80,7 @@ class Author extends ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'full_name' => Yii::t('app', 'Full Name'),
+            'avatar' => Yii::t('app', 'Avatar'),
             'email' => Yii::t('app', 'Email'),
             'phone' => Yii::t('app', 'Phone'),
             'organization_id' => Yii::t('app', 'Organization'),

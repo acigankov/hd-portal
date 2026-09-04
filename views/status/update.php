@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Edit');
                                 ->label(Yii::t('app', 'Code') . ' *') ?>
 
                             <?= $form->field($model, 'description')
-                                ->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Enter description')])
+                                ->textarea(['rows' => 3, 'placeholder' => Yii::t('app', 'Enter description'), 'class' => 'form-control quill-editor'])
                                 ->label(Yii::t('app', 'Description')) ?>
 
                             <?= $form->field($model, 'color')

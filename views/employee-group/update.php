@@ -80,7 +80,7 @@ JS);
                             <?php $form = ActiveForm::begin(); ?>
 
                             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-                            <?= $form->field($model, 'description')->textarea(['rows' => 4]) ?>
+                            <?= $form->field($model, 'description')->textarea(['rows' => 4, 'class' => 'form-control quill-editor']) ?>
                             <?= $form->field($model, 'organization_id')->dropDownList(
                                 \yii\helpers\ArrayHelper::map($organizations, 'id', 'name'),
                                 ['prompt' => 'Выберите организацию']
